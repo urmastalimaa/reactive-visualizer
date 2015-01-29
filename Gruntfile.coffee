@@ -1,0 +1,68 @@
+module.exports = (grunt) ->
+  grunt.initConfig
+    pkg: grunt.file.readJSON('package.json')
+    sass:
+      options:
+        loadPath: [
+          'bower_components/bourbon/dist/'
+        ]
+      dist:
+        files:
+          'public/assets/application.css': 'assets/stylesheets/application.sass'
+    coffee:
+      compile:
+        options:
+          sourceMap: true
+        files:
+          'public/assets/analyzer.js': [
+            'assets/javascripts/app.coffee'
+          ]
+    concat:
+      dist:
+        src: [
+          'bower_components/rxjs/dist/rx.all.js'
+          'bower_components/rxjs/dist/rx.testing.js'
+          'bower_components/ramda/dist/ramda.js'
+          'bower_components/jquery/dist/jquery.js'
+          'public/assets/analyzer.js'
+        ]
+        dest: 'public/assets/application.js'
+    slim:
+      dist:
+        files: [
+          expand: true
+          cwd: 'templates'
+          src: ['{,*/}*.slim']
+          dest: 'public'
+          ext: '.html'
+        ]
+    watch:
+      sass:
+        files: ['assets/stylesheets/**/*.sass']
+        tasks: ['sass']
+      coffee:
+        files: ['assets/javascripts/**/*.coffee']
+        tasks: ['coffee', 'concat']
+      slim:
+        files: ['templates/**/*.slim']
+        tasks: ['slim']
+      deps:
+        files: ['bower_components/rxjs/dist/rx.all.js']
+        tasks: ['concat']
+
+    'http-server':
+      dev:
+        root: 'public'
+        port: 3700
+        cache: -1
+        runInBackground: true
+
+  grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.loadNpmTasks 'grunt-contrib-sass'
+  grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-contrib-concat'
+  grunt.loadNpmTasks 'grunt-slim'
+  grunt.loadNpmTasks 'grunt-http-server'
+
+  grunt.registerTask 'default', ['sass', 'coffee', 'slim', 'concat']
+  grunt.registerTask 'run', ['default', 'http-server:dev', 'watch']
