@@ -1,0 +1,44 @@
+doctype html
+html ng-app="Reactive visualizer"
+  head
+    title Reactive visualizer
+    meta charset="utf-8"
+    script src="assets/application.js" type="text/javascript"
+    link href="assets/application.css" media="screen" rel="stylesheet" type="text/css"
+
+  body
+    div#of
+      div.source
+        ' Rx.Observable.of(
+        textarea type="text" style="height:150;width:300px;" 1, 2, 3, 4, 5, 6
+        ')
+      div.value
+      div.error
+      div.complete
+    div#map
+      div.source
+        '.map(function(value) {
+        textarea type="text" style="height:150;width:300px;" return value * value;
+        ' })
+      div.value
+      div.error
+      div.complete
+    div#delay
+      div.source
+        '.delay(
+        textarea type="text" style="height:150;width:300px;" 1000
+        ')
+      div.value
+      div.error
+      div.complete
+    div#filter
+      div.source
+        '.filter(function(value) {
+        textarea type="text" style="height:150;width:300px;" return value < 20;
+        ' })
+      div.value
+      div.error
+      div.complete
+
+    div
+      button#start "Start" 

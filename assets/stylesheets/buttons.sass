@@ -1,0 +1,33 @@
+@import "bourbon"
+
+.btn
+  margin: 5px 2px
+  font-family: arial
+  font-size: 10px
+  font-weight: bold
+  padding: 4px 11px
+  width: auto
+  &:hover
+    cursor: pointer
+  &.big
+    font-size: 22px
+
+.btn.ok
+  color: #14396A
+  text-shadow: 1px 1px 0px #7CACDE
+  box-shadow: 1px 1px 1px #BEE2F9
+  border: 1px solid #3866A3
+  @include linear-gradient(to top, #468CCF,  #63B8EE)
+  &:hover
+    @include linear-gradient(to top, #63B8EE,  #468CCF)
+    color: #14396A
+
+.btn.cancel
+  color: #333
+  text-shadow: 0px 1px 0px #ffffff
+  box-shadow: inset 0px 1px 0px 0px #ffffff
+  border: 1px solid #AAA
+  @include linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%)
+
+  &:hover
+    @include linear-gradient(to bottom, #e9e9e9 5%, #f9f9f9 100%)

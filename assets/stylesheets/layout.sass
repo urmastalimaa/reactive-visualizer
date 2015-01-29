@@ -1,0 +1,65 @@
+@charset 'utf-8'
+
+::-webkit-inner-spin-button
+  display: none
+
+html
+  font-family: 'lucida grande', tahoma, verdana, arial, sans-serif
+
+body
+  padding: 0
+  margin: 0
+
+a
+  text-decoration: none
+  color: #555
+  &:hover
+    color: #222
+    text-decoration: underline
+
+ul
+  margin-left: 15px
+
+li
+  padding: 3px
+
+h1
+  font-size: 1.3em
+  font-weight: bold
+  padding-bottom: 10px
+
+h2
+  font-weight: bold
+
+.pl20
+  padding-left: 20px
+
+.inline
+  display: inline
+
+.container
+  padding: 20px
+
+.basic, .context, .sources, .actions, .conditions
+  padding-left: 5px
+  padding-top: 10px
+  padding-bottom: 10px
+
+input[type="text"], input[type="number"], input[type="time"]
+  outline: none
+  padding: 4px
+  border: 1px solid #000
+
+input.short
+  width: 2em
+
+input.ng-invalid
+  border: 1px solid #dadada
+  border-color: #fa787e
+  box-shadow: 0 0 4px #fa787e
+
+a.delete
+  &:before
+    content: '✖'
+  text-decoration: none
+  color: #cc0000
