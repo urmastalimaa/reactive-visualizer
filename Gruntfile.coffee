@@ -25,9 +25,8 @@ module.exports = (grunt) ->
         src: [
           'bower_components/rxjs/dist/rx.all.js'
           'bower_components/rxjs/dist/rx.testing.js'
-          'bower_components/ramda/dist/ramda.js'
           'bower_components/jquery/dist/jquery.js'
-          'node_modules/react/dist/JSXTransformer.js'
+          'node_modules/ramda/dist/ramda.js'
           'node_modules/react/dist/react.js'
           'public/assets/analyzer.js'
         ]
