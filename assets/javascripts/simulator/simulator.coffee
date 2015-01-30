@@ -1,5 +1,4 @@
 runObservables = (observableFactories) ->
-  console.log "running observables", observableFactories
   R.foldl((map, key) ->
     scheduler = new Rx.TestScheduler
     results = scheduler.startWithTiming ->
