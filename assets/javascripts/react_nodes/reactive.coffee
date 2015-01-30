@@ -1,21 +1,25 @@
 Observable = React.createClass
 
   handleAddOperator: (type) ->
-    currentOperators = @props.observable.operators
-    last = R.last(currentOperators)
-    newOperators = currentOperators.concat([type: type, id: "#{last.id}o"])
-    @props.onChange(root: @props.observable.root, operators: newOperators)
+    {root, operators} = @props.observable
+    last = R.last(operators)
+    newOperators = operators.concat([type: type, id: "#{last.id}o"])
+    @props.onChange(root: root, operators: newOperators)
+
+  removeOperator: (operator) ->
+    {root, operators} = @props.observable
+    newOperators = R.clone(operators)
+    newOperators.splice(operators.indexOf(operator), 1)
+    @props.onChange(root: root, operators: newOperators)
 
   render: ->
     {root, operators} = @props.observable
 
-    rootNode = <ObservableRoot type={root.type} id={root.id} />
-
-    operatorNodes = operators.map ({type, id}) ->
-      <ObservableOperator type={type} id={id}/>
+    operatorNodes = operators.map (operator) =>
+      <ObservableOperator operator={operator} onRemove={@removeOperator} />
 
     <div className="observable">
-     {rootNode}
+     <ObservableRoot type={root.type} id={root.id} />
      {operatorNodes}
      <AddOperator rootId={root.id} onSelect={@handleAddOperator}/>
     </div>
@@ -46,13 +50,24 @@ ObservableRoot = React.createClass
     </div>
 
 ObservableOperator = React.createClass
-  render: ->
-    simulationArea = <SimulationArea />
-    opEl = React.createElement(opClasses[@props.type], id: @props.id, simulationArea)
+  handleRemove: ->
+    @props.onRemove(@props.operator)
 
-    <div className="observableOperator">
-      {opEl}
+  render: ->
+    {id, type} = @props.operator
+    opEl = React.createElement(opClasses[type], id: id)
+
+    <div className={type} id={id} style={width: '50%'}>
+      {".#{type}("} {opEl} {')'}
+      <RemoveOperator onRemove={@handleRemove}/>
+      <SimulationArea />
     </div>
+
+RemoveOperator = React.createClass
+  handleClick: ->
+    @props.onRemove()
+  render: ->
+    <button className='remove' onClick={@handleClick}>-</button>
 
 FunctionArea = React.createClass
   render: ->
