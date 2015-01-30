@@ -101,3 +101,8 @@ describe 'buildObservable', ->
           onNext(405, [4,5])
           onCompleted(405)
         ]
+
+    context 'flatMap', ->
+      type.is -> 'flatMap'
+      rootValue.is -> '1,2,3'
+

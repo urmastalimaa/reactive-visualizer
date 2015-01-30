@@ -1,23 +1,30 @@
 
 evaluator = (uiValuator) ->
-  evalFunc: (id) ->
-    eval("a = function(value) { #{uiValuator.textArea(id)} }")
+  evalFunc: (context, id) ->
+    eval("#{@contextDefinition(context)} f = #{uiValuator.textArea(id)}")
 
-  evalVarargsAsArray: (id) ->
-    [].concat.apply eval("[#{uiValuator.textArea(id)}]")
+  contextDefinition: (context) ->
+    return "" if R.keys(context).length == 0
+    contextAssignments = R.keys(context).map (key) ->
+      "#{key}=#{JSON.stringify(context[key])}"
+    contextAssignment = R.join(",", contextAssignments)
+    "var #{contextAssignment};"
 
-  evalInt: (id) ->
-    eval(uiValuator.textArea(id))
+  evalVarargsAsArray: (context, id) ->
+    [].concat.apply eval("#{@contextDefinition(context)} [#{uiValuator.textArea(id)}]")
 
-observableFactory = (evaluator) ->
+  evalInt: (context, id) ->
+    eval("#{@contextDefinition(context)} #{uiValuator.textArea(id)}")
+
+observableFactory = (evaluator, buildObservableWithContext) ->
   root:
-    of: (id) ->
+    of: (context, id) ->
       (scheduler) ->
-        Rx.Observable.of.apply(null, evaluator.evalVarargsAsArray(id))
+        Rx.Observable.of.apply(null, evaluator.evalVarargsAsArray(context, id))
 
-    fromTime: (id) ->
+    fromTime: (context, id) ->
       (scheduler) ->
-        timeAndValues = evaluator.evalVarargsAsArray(id)[0]
+        timeAndValues = evaluator.evalVarargsAsArray(context, id)[0]
 
         timers = R.keys(timeAndValues)
           .map (relativeTime) -> [parseInt(relativeTime), timeAndValues[relativeTime]]
@@ -27,41 +34,64 @@ observableFactory = (evaluator) ->
         Rx.Observable.merge(timers)
 
   operators:
-    map: (createParent, id) ->
+    map: (context, createParent, {id}) ->
       (scheduler) ->
         createParent(scheduler)
-          .map evaluator.evalFunc(id)
+          .map evaluator.evalFunc(context, id)
 
-    filter: (createParent, id) ->
+    filter: (context, createParent, {id}) ->
       (scheduler) ->
         createParent(scheduler)
           .do -> #why is this necessary?
             1 + 1
-          .filter evaluator.evalFunc(id)
+          .filter evaluator.evalFunc(context, id)
 
-    delay: (createParent, id) ->
+    delay: (context, createParent, {id}) ->
       (scheduler) ->
-        dueTime = evaluator.evalInt(id)
+        dueTime = evaluator.evalInt(context, id)
         createParent(scheduler)
           .delay(dueTime, scheduler)
 
-    bufferWithTime: (createParent, id) ->
+    bufferWithTime: (context, createParent, {id}) ->
       (scheduler) ->
-        timeWindow = evaluator.evalInt(id)
+        timeWindow = evaluator.evalInt(context, id)
         createParent(scheduler).bufferWithTime(timeWindow, scheduler)
 
-buildObservables = (factory, {root, operators})->
-  rootFact = factory.root[root.type](root.id)
+    flatMap: (context, createParent, structure) ->
+      id = structure.id
+      (scheduler) ->
+        el = $("##{id}")
+        container = el.children(".recursiveContainer")
+        functionDeclaration = container.children(".functionDeclaration").find("textarea")
+
+        getArgsToBind = (decl) ->
+          decl.substring(decl.indexOf("(") + 1, decl.indexOf(")"))
+
+        argToBind = getArgsToBind(functionDeclaration.val())
+
+        createParent(scheduler).flatMap (value) ->
+          contextArgs = {}
+          contextArgs[argToBind] = value
+          rid = id + "r"
+          obs = buildObservableWithContext(contextArgs)(structure.observable)[rid](scheduler)
+          obs.do (value) ->
+            console.log "inside flatmap", value
+
+
+buildObservables = (factory, context, {root, operators})->
+  rootFact = factory.root[root.type](context, root.id)
 
   operatorMap = {}
   previous = rootFact
   for op in operators
-    opFact = factory.operators[op.type](previous, op.id)
+    opFact = factory.operators[op.type](context, previous, op)
     previous = opFact
     operatorMap[op.id] = opFact
 
   R.assoc(root.id, rootFact, operatorMap)
 
-Visualizer.buildObservable = (uiValuator) ->
-  factory = observableFactory(evaluator(uiValuator))
-  R.curry(buildObservables)(factory)
+Visualizer.buildObservable = buildObservable = R.curryN(2, (uiValuator, context) ->
+  buildObservableWithContext = buildObservable(uiValuator)
+  factory = observableFactory(evaluator(uiValuator), buildObservableWithContext)
+  R.curry(buildObservables)(factory)(context)
+)

@@ -4,9 +4,17 @@ N = V.ReactNodes
 Observable = React.createClass
   handleAddOperator: (type) ->
     {root, operators} = @props.observable
-    last = R.last(operators)
-    newOperators = operators.concat([type: type, id: "#{last.id}o"])
+    lastId = R.last(operators)?.id || @props.id
+    newOperators = operators.concat([type: type, id: "#{lastId}o"])
     @props.onChange(root: root, operators: newOperators)
+
+  handleChildObservableChange: (operator, observable) ->
+    {root, operators} = @props.observable
+    op = R.find(R.propEq('id', operator.id), operators)
+    op.observable = observable
+    operator.observable = observable
+    operators
+    @setState root: root, operators: operators
 
   removeOperator: (operator) ->
     {root, operators} = @props.observable
@@ -18,9 +26,9 @@ Observable = React.createClass
     {root, operators} = @props.observable
 
     operatorNodes = operators.map (operator) =>
-      <ObservableOperator operator={operator} onRemove={@removeOperator} />
+      <ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} />
 
-    <div className="observable">
+    <div className="observable" style={paddingLeft: 'inherit'}>
      <ObservableRoot type={root.type} id={root.id} />
      {operatorNodes}
      <AddOperator rootId={root.id} onSelect={@handleAddOperator}/>
@@ -55,9 +63,12 @@ ObservableOperator = React.createClass
   handleRemove: ->
     @props.onRemove(@props.operator)
 
+  handleChildObservableChange: (observable) ->
+    @props.onChildOperatorChange(@props.operator, observable)
+
   render: ->
     {id, type} = @props.operator
-    opEl = React.createElement(N.Operators[type], id: id)
+    opEl = React.createElement(N.Operators[type], id: id, onChildOperatorChange: @handleChildObservableChange)
 
     <div className={type} id={id} style={width: '100%'}>
       {".#{type}("} {opEl} {')'}
