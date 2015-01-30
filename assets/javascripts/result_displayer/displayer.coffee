@@ -2,17 +2,18 @@ messageDisplayer = ->
   onTime = (time, cb) ->
     setTimeout cb, 200 + time
 
+  append: (key, resultType, value) ->
+    $("##{key} .simulationArea .#{resultType}")
+      .append("<span>#{JSON.stringify(value)} </span>")
+
   value: (key, time, value) ->
-    onTime time, ->
-      $("##{key} .simulationArea .value").html(JSON.stringify(value))
+    onTime time, => @append(key, "value", value)
 
   error: (key, time, error) ->
-    onTime time, ->
-      $("##{key} .simulationArea .error").html(JSON.stringify(error))
+    onTime time, => @append(key, "error", error)
 
   complete: (key, time) ->
-    onTime time, ->
-      $("##{key} .simulationArea .complete").html("C")
+    onTime time, => @append(key, "complete", "C")
 
 resultDisplayer = (messageDisplayer) ->
   sortResults: R.compose(R.sortBy(R.length), R.keys)
