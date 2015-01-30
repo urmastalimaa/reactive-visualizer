@@ -110,8 +110,18 @@ Of = React.createClass
       {@props.children}
     </div>
 
+FromTime = React.createClass
+  render: ->
+    defArgs = "{500: 1, 1000: 2, 1500: 3, 2000: 4, 2500: 5}"
+    <div className="fromTime" id={@props.id}>
+      {'Rx.Observable.fromTime('} <VarargsArea defaultValue={defArgs}/> {')'}
+      {@props.children}
+    </div>
+
+
 rootClasses =
   'of': Of
+  'fromTime': FromTime
 
 opClasses =
   'map': Map

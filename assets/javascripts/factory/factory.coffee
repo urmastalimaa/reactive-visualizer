@@ -15,6 +15,17 @@ observableFactory = (evaluator) ->
       (scheduler) ->
         Rx.Observable.of.apply(null, evaluator.evalVarargsAsArray(id))
 
+    fromTime: (id) ->
+      (scheduler) ->
+        timeAndValues = evaluator.evalVarargsAsArray(id)[0]
+
+        timers = R.keys(timeAndValues)
+          .map (relativeTime) -> [parseInt(relativeTime), timeAndValues[relativeTime]]
+          .map ([time, value]) ->
+            Rx.Observable.timer(time, scheduler).map R.I(value)
+
+        Rx.Observable.merge(timers)
+
   operators:
     map: (createParent, id) ->
       (scheduler) ->

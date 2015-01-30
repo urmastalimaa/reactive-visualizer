@@ -15,9 +15,11 @@ messageDisplayer = ->
       $("##{key} .simulationArea .complete").html("C")
 
 resultDisplayer = (messageDisplayer) ->
+  sortResults: R.compose(R.sortBy(R.length), R.keys)
   display: (results) ->
     @clear()
-    for key, result of results
+    for key in @sortResults(results)
+      result = results[key]
       for message in result.messages
         switch message.value.kind
           when "N" then messageDisplayer.value(key, message.time, message.value.value)

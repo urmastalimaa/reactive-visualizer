@@ -2,7 +2,7 @@ window.Visualizer = V = {}
 
 defaultStructure = {
   root:
-    type: 'of', id: 'r'
+    type: 'fromTime', id: 'r'
   operators: [
     {type: 'map', id: 'ro'}
     {type: 'delay', id: 'roo'}
