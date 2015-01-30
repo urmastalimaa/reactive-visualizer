@@ -1,5 +1,9 @@
 window.Visualizer = V = {}
 
+V.ReactNodes = Nodes = {}
+Nodes.Operators = {}
+Nodes.Roots = {}
+
 defaultStructure = {
   root:
     type: 'fromTime', id: 'r'
