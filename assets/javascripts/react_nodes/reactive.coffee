@@ -96,7 +96,7 @@ Filter = React.createClass
 
 Delay = React.createClass
   render: ->
-    defVal = "1000"
+    defVal = "100"
     <div className="delay" id={@props.id}>
       {'.delay('} <VarargsArea defaultValue={defVal} /> {')'}
       {@props.children}

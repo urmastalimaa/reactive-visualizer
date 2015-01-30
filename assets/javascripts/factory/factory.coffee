@@ -1,6 +1,3 @@
-uiValuator =
-  textArea: (id) ->
-    $("##{id} textarea").val()
 
 evaluator = (uiValuator) ->
   evalFunc: (id) ->
@@ -49,5 +46,6 @@ buildObservables = (factory, {root, operators})->
 
   R.assoc(root.id, rootFact, operatorMap)
 
-factory = observableFactory(evaluator(uiValuator))
-Visualizer.buildObservable = R.curry(buildObservables)(factory)
+Visualizer.buildObservable = (uiValuator) ->
+  factory = observableFactory(evaluator(uiValuator))
+  R.curry(buildObservables)(factory)

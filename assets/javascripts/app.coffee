@@ -10,6 +10,9 @@ defaultStructure = {
   ]
 }
 
+uiValuator =
+  textArea: (id) ->
+    $("##{id} textarea").val()
 
 $(document).ready ->
   observableFromUI = new Rx.Subject
@@ -19,7 +22,7 @@ $(document).ready ->
 
   Rx.Observable.fromEvent($("#start"), 'click')
     .withLatestFrom(observableFromUI.startWith(defaultStructure), (_, observable) -> observable)
-    .subscribe R.compose(V.displayResults, V.simulateObservable, V.buildObservable)
+    .subscribe R.compose(V.displayResults, V.simulateObservable, V.buildObservable(uiValuator))
 
   $("#start").click()
 
