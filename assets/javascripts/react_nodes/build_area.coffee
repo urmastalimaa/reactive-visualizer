@@ -12,4 +12,4 @@ BuildArea = React.createClass
       <button className="start" id="start">Start</button>
     </div>
 
-window.BuildArea = BuildArea
+Visualizer.BuildArea = BuildArea

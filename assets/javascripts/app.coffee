@@ -17,7 +17,7 @@ uiValuator =
 $(document).ready ->
   observableFromUI = new Rx.Subject
 
-  buildArea = <BuildArea defaultObservable={defaultStructure} onChange={observableFromUI.onNext.bind(observableFromUI)} />
+  buildArea = <V.BuildArea defaultObservable={defaultStructure} onChange={observableFromUI.onNext.bind(observableFromUI)} />
   React.render(buildArea, document.getElementById('content'))
 
   Rx.Observable.fromEvent($("#start"), 'click')
