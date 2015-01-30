@@ -28,32 +28,35 @@ describe 'buildObservable', ->
 
     targetId.is -> 'rootId'
 
-    it 'has the correct values', ->
+    it 'has correct values', ->
       expect(subject()).toEqual [
         onNext(200, 1)
         onCompleted(200)
       ]
 
   context 'single operator', ->
-    root = type: 'of', id: 'rootId'
+    rootType = memo().is -> 'of'
+    root = memo().is -> type: rootType(), id: 'rootId'
+
     structure.is ->
-      root: root
+      root: root()
       operators: [type: type(), id: 'opId']
+
     targetId.is -> 'opId'
     uiValues.is ->
-      rootId: ofValue()
+      rootId: rootValue()
       opId: opValue()
 
     type = memo().is ->
-    ofValue = memo().is ->
+    rootValue = memo().is ->
     opValue = memo().is ->
 
     context 'map', ->
       type.is -> 'map'
-      ofValue.is -> '1,2,3'
+      rootValue.is -> '1,2,3'
       opValue.is -> 'return value * value;'
 
-      it 'is best', ->
+      it 'has correct values', ->
         expect(subject()).toEqual [
           onNext(200, 1)
           onNext(200, 4)
@@ -63,10 +66,10 @@ describe 'buildObservable', ->
 
     context 'filter', ->
       type.is -> 'filter'
-      ofValue.is -> '2,5,9,10'
+      rootValue.is -> '2,5,9,10'
       opValue.is -> 'return value % 2 == 0'
 
-      it 'is best', ->
+      it 'has correct values', ->
         expect(subject()).toEqual [
           onNext(200, 2)
           onNext(200, 10)
@@ -75,12 +78,26 @@ describe 'buildObservable', ->
 
     context 'delay', ->
       type.is -> 'delay'
-      ofValue.is -> '1,2'
+      rootValue.is -> '1,2'
       opValue.is -> '100'
 
-      it 'has correct result', ->
+      it 'has correct values', ->
         expect(subject()).toEqual [
           onNext(300, 1)
           onNext(300, 2)
           onCompleted(300, 100)
+        ]
+
+    context 'bufferWithTime', ->
+      type.is -> "bufferWithTime"
+      rootType.is -> 'fromTime'
+      rootValue.is -> '{50: 1, 90: 2, 100: 3, 201: 4, 205: 5}'
+      opValue.is -> '100'
+
+      it.only 'has correct values', ->
+        expect(subject()).toEqual [
+          onNext(300, [1,2])
+          onNext(400, [3])
+          onNext(405, [4,5])
+          onCompleted(405)
         ]

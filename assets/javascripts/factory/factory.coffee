@@ -45,6 +45,11 @@ observableFactory = (evaluator) ->
         createParent(scheduler)
           .delay(dueTime, scheduler)
 
+    bufferWithTime: (createParent, id) ->
+      (scheduler) ->
+        timeWindow = evaluator.evalInt(id)
+        createParent(scheduler).bufferWithTime(timeWindow, scheduler)
+
 buildObservables = (factory, {root, operators})->
   rootFact = factory.root[root.type](root.id)
 

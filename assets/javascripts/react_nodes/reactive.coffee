@@ -71,36 +71,45 @@ VarargsArea = React.createClass
 
 SimulationArea = React.createClass
   render: ->
-    <span className="simulationArea">
-      {'Value:'}<span className="value"/>
-      {'Error:'}<span className="error"/>
-      {'Complete:'}<span className="complete"/>
+    <span className="simulationArea" style={float: 'right'} >
+      <SimulationValueArea />
+      <SimulationErrorArea />
+      <SimulationCompleteArea />
+    </span>
+
+SimulationValueArea = React.createClass
+  render: ->
+    <span>
+      {'Value:'}<span className="value" />
+    </span>
+
+SimulationErrorArea = React.createClass
+  render: ->
+    <span>
+      {'Error:'}<span className="error" />
+    </span>
+
+SimulationCompleteArea = React.createClass
+  render: ->
+    <span>
+      {'Complete:'}<span className="complete" />
     </span>
 
 Map = React.createClass
   render: ->
-    defFunc = "return value * value;"
-
-    <div className="map" id={@props.id}>
-      {'.map('} <FunctionArea defaultValue={defFunc}/> {')'}
-      {@props.children}
-    </div>
+    <FunctionArea defaultValue="return value * value;"/>
 
 Filter = React.createClass
   render: ->
-    defFunc = "return value < 20;"
-    <div className="filter" id={@props.id}>
-      {'.filter('} <FunctionArea defaultValue={defFunc}/> {')'}
-      {@props.children}
-    </div>
+    <FunctionArea defaultValue="return value < 20;"/>
 
 Delay = React.createClass
   render: ->
-    defVal = "100"
-    <div className="delay" id={@props.id}>
-      {'.delay('} <VarargsArea defaultValue={defVal} /> {')'}
-      {@props.children}
-    </div>
+    <VarargsArea defaultValue="100" />
+
+BufferWithTime = React.createClass
+  render: ->
+    <VarargsArea defaultValue="1000" />
 
 Of = React.createClass
   render: ->
@@ -118,14 +127,14 @@ FromTime = React.createClass
       {@props.children}
     </div>
 
-
 rootClasses =
-  'of': Of
-  'fromTime': FromTime
+  of: Of
+  fromTime: FromTime
 
 opClasses =
-  'map': Map
-  'filter': Filter
-  'delay': Delay
+  map: Map
+  filter: Filter
+  delay: Delay
+  bufferWithTime: BufferWithTime
 
 window.Observable = Observable

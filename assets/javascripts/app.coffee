@@ -7,6 +7,7 @@ defaultStructure = {
     {type: 'map', id: 'ro'}
     {type: 'delay', id: 'roo'}
     {type: 'filter', id: 'rooo'}
+    {type: 'bufferWithTime', id: 'roooo'}
   ]
 }
 
