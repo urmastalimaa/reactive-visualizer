@@ -13,8 +13,6 @@ Observable = React.createClass
     op = R.find(R.propEq('id', operator.id), operators)
     op.observable = observable
     operator.observable = observable
-    operators
-    @setState root: root, operators: operators
 
   removeOperator: (operator) ->
     {root, operators} = @props.observable

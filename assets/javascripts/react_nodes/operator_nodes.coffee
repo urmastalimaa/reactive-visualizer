@@ -34,7 +34,7 @@ O.flatMap = React.createClass
   render: ->
     # There should be a better way to update the initial root
     setTimeout =>
-      @handleChange(@state.observable)
+      @props.onChildOperatorChange(@state.observable)
 
     root = <Observable observable={@state.observable} ref="observable", onChange={@handleChange} />
     <span className="recursiveContainer" style={paddingLeft: '50px'} >
