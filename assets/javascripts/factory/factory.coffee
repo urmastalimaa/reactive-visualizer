@@ -52,31 +52,32 @@ observableFactory = (evaluator, buildObservableWithContext) ->
         createParent(scheduler)
           .delay(dueTime, scheduler)
 
+    take: (context, createParent, {id}) ->
+      (scheduler) ->
+        nrOfElements = evaluator.evalInt(context, id)
+        createParent(scheduler).take(nrOfElements)
+
     bufferWithTime: (context, createParent, {id}) ->
       (scheduler) ->
         timeWindow = evaluator.evalInt(context, id)
         createParent(scheduler).bufferWithTime(timeWindow, scheduler)
 
-    flatMap: (context, createParent, structure) ->
-      id = structure.id
+    _getFunctionDeclaration: (id) ->
+      el = $("##{id}")
+      container = el.children(".recursiveContainer")
+      container.children(".functionDeclaration").find("textarea").val()
+
+    flatMap: (context, createParent, structure, targetObservableId) ->
+      getArgsToBind = (decl) ->
+        decl.substring(decl.indexOf("(") + 1, decl.indexOf(")"))
+
+      argToBind = getArgsToBind(@_getFunctionDeclaration(structure.id))
+
       (scheduler) ->
-        el = $("##{id}")
-        container = el.children(".recursiveContainer")
-        functionDeclaration = container.children(".functionDeclaration").find("textarea")
-
-        getArgsToBind = (decl) ->
-          decl.substring(decl.indexOf("(") + 1, decl.indexOf(")"))
-
-        argToBind = getArgsToBind(functionDeclaration.val())
-
         createParent(scheduler).flatMap (value) ->
           contextArgs = {}
           contextArgs[argToBind] = value
-          rid = id + "r"
-          obs = buildObservableWithContext(contextArgs)(structure.observable)[rid](scheduler)
-          obs.do (value) ->
-            console.log "inside flatmap", value
-
+          obs = buildObservableWithContext(contextArgs)(structure.observable)[targetObservableId](scheduler)
 
 buildObservables = (factory, context, {root, operators})->
   rootFact = factory.root[root.type](context, root.id)
@@ -84,9 +85,16 @@ buildObservables = (factory, context, {root, operators})->
   operatorMap = {}
   previous = rootFact
   for op in operators
-    opFact = factory.operators[op.type](context, previous, op)
-    previous = opFact
-    operatorMap[op.id] = opFact
+    if op.observable
+      console.log "RECURSIVE!", op, op.observable
+      rootFact = factory.operators[op.type](context, previous, op)
+      previous = rootFact
+      operatorMap[op.id] = rootFact
+    else
+      opFact = factory.operators[op.type](context, previous, op)
+
+      previous = opFact
+      operatorMap[op.id] = opFact
 
   R.assoc(root.id, rootFact, operatorMap)
 

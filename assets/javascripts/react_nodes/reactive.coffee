@@ -65,8 +65,9 @@ ObservableOperator = React.createClass
     @props.onChildOperatorChange(@props.operator, observable)
 
   render: ->
-    {id, type} = @props.operator
-    opEl = React.createElement(N.Operators[type], id: id, onChildOperatorChange: @handleChildObservableChange)
+    {id, type, observable} = @props.operator
+    console.log "renderino", @props.operator
+    opEl = React.createElement(N.Operators[type], id: id, observable: observable, onChildOperatorChange: @handleChildObservableChange)
 
     <div className={type} id={id} style={width: '100%'}>
       {".#{type}("} {opEl} {')'}

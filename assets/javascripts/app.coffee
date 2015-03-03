@@ -12,7 +12,13 @@ defaultStructure = {
     {type: 'delay', id: 'roo'}
     {type: 'filter', id: 'rooo'}
     {type: 'bufferWithTime', id: 'roooo'}
-    {type: 'flatMap', id: 'rooooo'}
+    {type: 'flatMap', id: 'rooooo', observable:
+      root:
+        type: 'of', id: 'rooooor'
+      operators: [
+        {type: 'map', id: 'roooooro'}
+      ]
+    }
   ]
 }
 
@@ -28,7 +34,9 @@ $(document).ready ->
 
   Rx.Observable.fromEvent($("#start"), 'click')
     .withLatestFrom(observableFromUI.startWith(defaultStructure), (_, observable) -> observable)
-    .subscribe R.compose(V.displayResults, V.simulateObservable, V.buildObservable(uiValuator, {}))
+    .subscribe (struc) ->
+      console.log "shaka", struc
+      R.compose(V.displayResults, V.simulateObservable, V.buildObservable(uiValuator, {}))(struc)
 
   setTimeout ->
     $("#start").click()

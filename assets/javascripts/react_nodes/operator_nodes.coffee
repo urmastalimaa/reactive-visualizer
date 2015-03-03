@@ -9,6 +9,10 @@ O.map = React.createClass
   render: ->
     <N.Helpers.TextArea defaultValue={defaultFunc("return value * value;")}/>
 
+O.take = React.createClass
+  render: ->
+    <N.Helpers.VarargsArea defaultValue="2" />
+
 O.filter = React.createClass
   render: ->
     <N.Helpers.TextArea defaultValue={defaultFunc("return value < 20;")}/>
@@ -27,9 +31,7 @@ O.flatMap = React.createClass
     @props.onChildOperatorChange(observable)
 
   getInitialState: ->
-    observable:
-      root: { type: 'of', id: @props.id + "r" }
-      operators: []
+    observable: @props.observable
 
   render: ->
     # There should be a better way to update the initial root
