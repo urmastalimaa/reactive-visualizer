@@ -9,7 +9,8 @@ describe 'buildObservable', ->
 
   subject = ->
     scheduler = new Rx.TestScheduler
-    observableFactory = Visualizer.buildObservable(uiValuator)(structure())
+    observableFactory = Visualizer.buildObservable(uiValuator, {})(structure())
+
     observable = observableFactory[targetId()](scheduler)
     results = scheduler.startWithCreate R.always(observable)
     results.messages
@@ -54,7 +55,7 @@ describe 'buildObservable', ->
     context 'map', ->
       type.is -> 'map'
       rootValue.is -> '1,2,3'
-      opValue.is -> 'return value * value;'
+      opValue.is -> 'function(value) { return value * value }'
 
       it 'has correct values', ->
         expect(subject()).toEqual [
@@ -67,7 +68,7 @@ describe 'buildObservable', ->
     context 'filter', ->
       type.is -> 'filter'
       rootValue.is -> '2,5,9,10'
-      opValue.is -> 'return value % 2 == 0'
+      opValue.is -> 'function(value) { return value % 2 == 0 }'
 
       it 'has correct values', ->
         expect(subject()).toEqual [
@@ -94,7 +95,7 @@ describe 'buildObservable', ->
       rootValue.is -> '{50: 1, 90: 2, 100: 3, 201: 4, 205: 5}'
       opValue.is -> '100'
 
-      it.only 'has correct values', ->
+      it 'has correct values', ->
         expect(subject()).toEqual [
           onNext(300, [1,2])
           onNext(400, [3])
@@ -102,7 +103,31 @@ describe 'buildObservable', ->
           onCompleted(405)
         ]
 
-    context 'flatMap', ->
-      type.is -> 'flatMap'
-      rootValue.is -> '1,2,3'
+    context.only 'flatMap', ->
+      structure.is ->
+        root:
+          type: 'of', id: 'rootId'
+        operators: [
+          {
+            type: 'flatMap'
+            id: 'flatMapId'
+            observable:
+              root:
+                type: 'of', id: 'secondRootId'
+              operators: [
+                { type: 'map', id: 'mapId' }
+              ]
+          }
+        ]
+
+      uiValues.is ->
+        rootId: '1,2,3'
+        flatMapId: 'function(topValue)'
+        secondRootId: "parseInt('1' + topValue)"
+        mapId: 'function(value) { return value * value }'
+
+      targetId.is -> 'mapId'
+
+      it 'has correct values', ->
+        console.log subject()
 
