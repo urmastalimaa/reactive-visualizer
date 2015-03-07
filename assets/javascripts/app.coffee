@@ -1,23 +1,39 @@
 window.Visualizer = V = {}
 
+Rx.Observable.fromTime = (timesAndValues, scheduler) ->
+  timers = R.keys(timesAndValues)
+    .map (relativeTime) -> [parseInt(relativeTime), timesAndValues[relativeTime]]
+    .map ([time, value]) ->
+      Rx.Observable.timer(time, scheduler).map R.I(value)
+
+  Rx.Observable.merge(timers)
+
 V.ReactNodes = Nodes = {}
 Nodes.Operators = {}
 Nodes.Roots = {}
 
 defaultStructure = {
   root:
-    type: 'fromTime', id: 'r'
+    type: 'fromTime', id: 'r', args: "{1000: 1, 3000: 2}"
   operators: [
-    {type: 'map', id: 'ro'}
-    {type: 'delay', id: 'roo'}
-    {type: 'filter', id: 'rooo'}
-    {type: 'bufferWithTime', id: 'roooo'}
-    {type: 'flatMap', id: 'rooooo', observable:
-      root:
-        type: 'of', id: 'rooooor'
-      operators: [
-        {type: 'map', id: 'roooooro'}
-      ]
+    {
+      type: 'flatMap'
+      id: 'ro'
+      args: 'function(outerValue) { return '
+      observable:
+        root:
+          type: 'of', id: 'ror', args: "outerValue, parseInt('' + outerValue + outerValue)"
+        operators: [
+          {
+            type: 'map'
+            id: 'roro'
+          }
+        ]
+    }
+    {
+      type: 'take',
+      id: 'roo'
+      args: '3'
     }
   ]
 }
@@ -35,8 +51,7 @@ $(document).ready ->
   Rx.Observable.fromEvent($("#start"), 'click')
     .withLatestFrom(observableFromUI.startWith(defaultStructure), (_, observable) -> observable)
     .subscribe (struc) ->
-      console.log "shaka", struc
-      R.compose(V.displayResults, V.simulateObservable, V.buildObservable(uiValuator, {}))(struc)
+      R.compose(V.displayResults, V.simulateObservable, V.buildObservable, V.evaluateInput)(struc)
 
   setTimeout ->
     $("#start").click()

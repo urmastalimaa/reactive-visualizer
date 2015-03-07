@@ -1,105 +1,47 @@
+createMockObserver = (scheduler, collect, id) ->
+  Rx.Observer.create(
+    (value) -> collect(id,
+      new Rx.Recorded(scheduler.clock, Rx.Notification.createOnNext(value)))
+    (error) -> collect(id,
+        new Rx.Recorded(scheduler.clock, Rx.Notification.createOnError(error)))
+    -> collect(id,
+        new Rx.Recorded(scheduler.clock, Rx.Notification.createOnCompleted()))
+  )
 
-evaluator = (uiValuator) ->
-  evalFunc: (context, id) ->
-    eval("#{@contextDefinition(context)} f = #{uiValuator.textArea(id)}")
+createCollector = ->
+  resultMap = {}
 
-  contextDefinition: (context) ->
-    return "" if R.keys(context).length == 0
-    contextAssignments = R.keys(context).map (key) ->
-      "#{key}=#{JSON.stringify(context[key])}"
-    contextAssignment = R.join(",", contextAssignments)
-    "var #{contextAssignment};"
+  collect: (id, notification) ->
+    resultMap[id] ?= {}
+    resultMap[id].messages ?= []
+    resultMap[id].messages.push notification
+  results: -> resultMap
 
-  evalVarargsAsArray: (context, id) ->
-    [].concat.apply eval("#{@contextDefinition(context)} [#{uiValuator.textArea(id)}]")
+createOperatorString = (previous, observableString) ->
+  previous + observableString
 
-  evalInt: (context, id) ->
-    eval("#{@contextDefinition(context)} #{uiValuator.textArea(id)}")
-
-observableFactory = (evaluator, buildObservableWithContext) ->
-  root:
-    of: (context, id) ->
-      (scheduler) ->
-        Rx.Observable.of.apply(null, evaluator.evalVarargsAsArray(context, id))
-
-    fromTime: (context, id) ->
-      (scheduler) ->
-        timeAndValues = evaluator.evalVarargsAsArray(context, id)[0]
-
-        timers = R.keys(timeAndValues)
-          .map (relativeTime) -> [parseInt(relativeTime), timeAndValues[relativeTime]]
-          .map ([time, value]) ->
-            Rx.Observable.timer(time, scheduler).map R.I(value)
-
-        Rx.Observable.merge(timers)
-
-  operators:
-    map: (context, createParent, {id}) ->
-      (scheduler) ->
-        createParent(scheduler)
-          .map evaluator.evalFunc(context, id)
-
-    filter: (context, createParent, {id}) ->
-      (scheduler) ->
-        createParent(scheduler)
-          .do -> #why is this necessary?
-            1 + 1
-          .filter evaluator.evalFunc(context, id)
-
-    delay: (context, createParent, {id}) ->
-      (scheduler) ->
-        dueTime = evaluator.evalInt(context, id)
-        createParent(scheduler)
-          .delay(dueTime, scheduler)
-
-    take: (context, createParent, {id}) ->
-      (scheduler) ->
-        nrOfElements = evaluator.evalInt(context, id)
-        createParent(scheduler).take(nrOfElements)
-
-    bufferWithTime: (context, createParent, {id}) ->
-      (scheduler) ->
-        timeWindow = evaluator.evalInt(context, id)
-        createParent(scheduler).bufferWithTime(timeWindow, scheduler)
-
-    _getFunctionDeclaration: (id) ->
-      el = $("##{id}")
-      container = el.children(".recursiveContainer")
-      container.children(".functionDeclaration").find("textarea").val()
-
-    flatMap: (context, createParent, structure, targetObservableId) ->
-      getArgsToBind = (decl) ->
-        decl.substring(decl.indexOf("(") + 1, decl.indexOf(")"))
-
-      argToBind = getArgsToBind(@_getFunctionDeclaration(structure.id))
-
-      (scheduler) ->
-        createParent(scheduler).flatMap (value) ->
-          contextArgs = {}
-          contextArgs[argToBind] = value
-          obs = buildObservableWithContext(contextArgs)(structure.observable)[targetObservableId](scheduler)
-
-buildObservables = (factory, context, {root, operators})->
-  rootFact = factory.root[root.type](context, root.id)
-
-  operatorMap = {}
-  previous = rootFact
-  for op in operators
-    if op.observable
-      console.log "RECURSIVE!", op, op.observable
-      rootFact = factory.operators[op.type](context, previous, op)
-      previous = rootFact
-      operatorMap[op.id] = rootFact
+createObservableString = (observable, wrap) ->
+  {operators, root} = observable
+  observableString = R.foldl( (previousString, description) ->
+    if description.observable
+      previousString + createObservableString(description.observable, (innerObservable) ->
+        wrap(description.populated + innerObservable + " })")
+      ) + ".do(createMockObserver(scheduler, collector.collect, '#{description.id}'))"
     else
-      opFact = factory.operators[op.type](context, previous, op)
+      createOperatorString(previousString, description.populated) +
+      ".do(createMockObserver(scheduler, collector.collect, '#{description.id}'))"
+  )(root.populated + ".do(createMockObserver(scheduler, collector.collect, '#{root.id}'))")(operators)
 
-      previous = opFact
-      operatorMap[op.id] = opFact
+  wrap(observableString)
 
-  R.assoc(root.id, rootFact, operatorMap)
 
-Visualizer.buildObservable = buildObservable = R.curryN(2, (uiValuator, context) ->
-  buildObservableWithContext = buildObservable(uiValuator)
-  factory = observableFactory(evaluator(uiValuator), buildObservableWithContext)
-  R.curry(buildObservables)(factory)(context)
-)
+buildObservables = (observable) ->
+  observableString = createObservableString(observable, R.I)
+
+  collector = createCollector()
+  factory = R.curryN 2, (collector, scheduler) ->
+    eval(observableString)
+
+  [factory(collector), collector]
+
+Visualizer.buildObservable = buildObservables

@@ -7,23 +7,28 @@ defaultFunc = (impl) ->
 
 O.map = React.createClass
   render: ->
-    <N.Helpers.TextArea defaultValue={defaultFunc("return value * value;")}/>
+    args = @props.args || defaultFunc("return value * value;")
+    <N.Helpers.TextArea defaultValue={args}/>
 
 O.take = React.createClass
   render: ->
-    <N.Helpers.VarargsArea defaultValue="2" />
+    args = @props.args || "4"
+    <N.Helpers.VarargsArea defaultValue={args}/>
 
 O.filter = React.createClass
   render: ->
-    <N.Helpers.TextArea defaultValue={defaultFunc("return value < 20;")}/>
+    args = @props.args || defaultFunc("return value < 20;")
+    <N.Helpers.TextArea defaultValue={args}/>
 
 O.delay = React.createClass
   render: ->
-    <N.Helpers.VarargsArea defaultValue="100" />
+    args = @props.args || "100"
+    <N.Helpers.VarargsArea defaultValue={args} />
 
 O.bufferWithTime = React.createClass
   render: ->
-    <N.Helpers.VarargsArea defaultValue="1000" />
+    args = @props.args || "1000"
+    <N.Helpers.VarargsArea defaultValue={args}/>
 
 O.flatMap = React.createClass
   handleChange: (observable) ->
@@ -38,10 +43,11 @@ O.flatMap = React.createClass
     setTimeout =>
       @props.onChildOperatorChange(@state.observable)
 
+    definition = @props.args || 'function(mappedValue) { return '
     root = <Observable observable={@state.observable} ref="observable", onChange={@handleChange} />
     <span className="recursiveContainer" style={paddingLeft: '50px'} >
       <span className="functionDeclaration">
-        <N.Helpers.FunctionDeclaration defaultValue={'function(value) {'} />
+        <N.Helpers.FunctionDeclaration defaultValue={definition} />
       </span>
       {root}
       {'}'}

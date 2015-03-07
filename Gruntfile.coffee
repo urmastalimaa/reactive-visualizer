@@ -15,6 +15,7 @@ module.exports = (grunt) ->
           'public/assets/analyzer.js': [
             'assets/javascripts/app.coffee'
             'assets/javascripts/react_nodes/*.coffee'
+            'assets/javascripts/evaluator/*.coffee'
             'assets/javascripts/factory/*.coffee'
             'assets/javascripts/simulator/*.coffee'
             'assets/javascripts/result_displayer/*.coffee'

@@ -1,11 +1,9 @@
-runObservables = (observableFactories) ->
-  R.foldl((map, key) ->
-    scheduler = new Rx.TestScheduler
-    results = scheduler.startWithTiming ->
-      observableFactories[key](scheduler)
-    , 0, 0, 100000
+runObservables = ([observableFactory, collector]) ->
+  scheduler = new Rx.TestScheduler
+  results = scheduler.startWithTiming ->
+    observableFactory(scheduler)
+  , 0, 0, 100000
 
-    R.assoc(key, results, map)
-  )({}, R.keys(observableFactories))
+  collector.results()
 
 Visualizer.simulateObservable = runObservables

@@ -27,7 +27,7 @@ Observable = React.createClass
       <ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} />
 
     <div className="observable" style={paddingLeft: 'inherit'}>
-     <ObservableRoot type={root.type} id={root.id} />
+     <ObservableRoot type={root.type} id={root.id} args={root.args} />
      {operatorNodes}
      <AddOperator rootId={root.id} onSelect={@handleAddOperator}/>
     </div>
@@ -52,7 +52,7 @@ AddOperator = React.createClass
 ObservableRoot = React.createClass
   render: ->
     simulationArea = <N.SimulationArea />
-    rootEl = React.createElement(N.Roots[@props.type], id: @props.id, simulationArea)
+    rootEl = React.createElement(N.Roots[@props.type], R.pick(['id', 'args'], @props), simulationArea)
     <div className="observableRoot">
       {rootEl}
     </div>
@@ -65,9 +65,8 @@ ObservableOperator = React.createClass
     @props.onChildOperatorChange(@props.operator, observable)
 
   render: ->
-    {id, type, observable} = @props.operator
-    console.log "renderino", @props.operator
-    opEl = React.createElement(N.Operators[type], id: id, observable: observable, onChildOperatorChange: @handleChildObservableChange)
+    {id, type, observable, args} = @props.operator
+    opEl = React.createElement(N.Operators[type], args: args, id: id, observable: observable, onChildOperatorChange: @handleChildObservableChange)
 
     <div className={type} id={id} style={width: '100%'}>
       {".#{type}("} {opEl} {')'}
