@@ -14,70 +14,60 @@ Nodes.Roots = {}
 
 defaultStructure = {
   root:
-    type: 'fromTime', id: 'r', args: "{1000: 1, 3000: 2}"
+    type: 'fromTime', id: 'r', args: "{1000: 1, 3000: 2, 5000: 3}"
   operators: [
     {
-      type: 'flatMap'
+      type: 'map'
       id: 'ro'
-      args: 'function(outerValue) { return '
-      observable:
-        root:
-          type: 'of', id: 'ror', args: "outerValue, parseInt('' + outerValue + outerValue)"
-        operators: [
-          {
-            type: 'map'
-            id: 'roro'
-            args: 'function(value) { return value * outerValue; }'
-          }
-          {
-            type: 'flatMap'
-            id: 'roroo'
-            observable:
-              root:
-                id: 'roroor'
-                type: 'of'
-                args: 'outerValue2, outerValue2 + 5'
-              operators: []
-          }
-        ]
+      args: 'function(value) { return value * value; }'
+    }
+    {
+      type: 'delay'
+      id: 'roo'
+      args: '1000'
     }
     {
       type: 'take',
-      id: 'roo'
-      args: '6'
+      id: 'rooo'
+      args: '2'
     }
   ]
 }
 
-$(document).ready ->
+renderBuildArea = ->
   observableFromUI = new Rx.Subject
 
-  buildArea = <V.BuildArea defaultObservable={defaultStructure} onChange={observableFromUI.onNext.bind(observableFromUI)} />
-  React.render(buildArea, document.getElementById('content'))
+  startingStructure = V.persistency.load() || defaultStructure
 
-  runObservable = R.compose(V.displayResults, V.simulateObservable, V.buildObservable, V.evaluateInput)
+  buildArea = <V.BuildArea defaultObservable={startingStructure} onChange={observableFromUI.onNext.bind(observableFromUI)} />
+  renderedBuildArea = React.render(buildArea, document.getElementById('content'))
 
-  saveObservable = (observable) ->
-    # need to evalute args to save
-    localStorage.savedObservable = JSON.stringify(observable)
+  observableFromUI = observableFromUI.startWith(startingStructure)
 
-  loadObservable = ->
-    try
-      console.log "parsing", localStorage.savedObservable
-      JSON.parse(localStorage.savedObservable)
-    catch error
-      ""
+  {observableFromUI, renderedBuildArea}
 
-  observableToEvaluate = observableFromUI.startWith(loadObservable() || defaultStructure)
+
+$(document).ready ->
+  {observableFromUI, renderedBuildArea} = renderBuildArea()
+
+  observableStructure = Rx.Observable.merge([
+    Rx.Observable.fromEvent($("#load"), 'click').map V.persistency.load
+    Rx.Observable.fromEvent($("#clear"), 'click').map R.always(defaultStructure)
+  ])
+
+  observableStructure
+    .map (structure) -> observable: structure
+    .subscribe renderedBuildArea.setState.bind(renderedBuildArea)
 
   Rx.Observable.fromEvent($("#start"), 'click')
-    .withLatestFrom(observableToEvaluate, R.nthArg(1))
-    .subscribe runObservable
+    .withLatestFrom(observableFromUI, R.nthArg(1))
+    .subscribe R.compose(V.displayResults, V.simulateObservable, V.buildObservable, V.evaluateInput)
 
   Rx.Observable.fromEvent($("#save"), 'click')
-    .withLatestFrom(observableToEvaluate, R.nthArg(1))
-    .subscribe saveObservable
+    .withLatestFrom(observableFromUI, R.nthArg(1))
+    .subscribe R.compose(V.persistency.save, V.evaluateInput)
 
+  Rx.Observable.fromEvent($("#clear"), 'click').subscribe V.persistency.clear
 
   setTimeout ->
     $("#start").click()

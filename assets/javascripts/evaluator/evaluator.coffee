@@ -14,20 +14,28 @@ operatorEvaluators =
   flatMap:        (input) -> ".flatMap(#{input}"
 
 evalRoot = ({id, type}) ->
-  populated: rootEvaluators[type](valFromTextArea(id))
+  args = (valFromTextArea(id))
+  code: rootEvaluators[type](args)
+  args: args
   id: id
+  type: type
 
 evalOperator = ({id, type, observable}) ->
+  args = (valFromTextArea(id))
   if observable
     val = (valFromTextArea(id))
     innerObs = Visualizer.evaluateInput(observable)
 
-    populated: operatorEvaluators[type](valFromTextArea(id))
+    code: operatorEvaluators[type](args)
+    args: args
     id: id
+    type: type
     observable: innerObs
 
   else
-    populated: operatorEvaluators[type](valFromTextArea(id))
+    code: operatorEvaluators[type](args)
+    args: args
+    type: type
     id: id
 
 Visualizer.evaluateInput = ({root, operators}) ->

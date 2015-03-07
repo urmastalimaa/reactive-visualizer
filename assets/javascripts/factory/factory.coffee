@@ -25,12 +25,12 @@ createObservableString = (observable, wrap) ->
   observableString = R.foldl( (previousString, description) ->
     if description.observable
       previousString + createObservableString(description.observable, (innerObservable) ->
-        description.populated + innerObservable + " })"
+        description.code + innerObservable + " })"
       ) + ".do(createMockObserver(scheduler, collector.collect, '#{description.id}'))"
     else
-      createOperatorString(previousString, description.populated) +
+      createOperatorString(previousString, description.code) +
       ".do(createMockObserver(scheduler, collector.collect, '#{description.id}'))"
-  )(root.populated + ".do(createMockObserver(scheduler, collector.collect, '#{root.id}'))")(operators)
+  )(root.code + ".do(createMockObserver(scheduler, collector.collect, '#{root.id}'))")(operators)
 
   wrap(observableString)
 
