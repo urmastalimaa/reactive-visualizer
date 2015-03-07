@@ -1,60 +1,116 @@
 V = Visualizer
 N = V.ReactNodes
 
+N.Roots =
+  of:
+    defaultArgs: "1,2,3"
+  fromTime:
+    defaultArgs: "{500: 1, 1000: 2, 3000: 3}"
+
 Observable = React.createClass
-  handleAddOperator: (type) ->
-    {root, operators} = @props.observable
-    lastId = R.last(operators)?.id || @props.id
-    newOperators = operators.concat([type: type, id: "#{lastId}o"])
-    @props.onChange(root: root, operators: newOperators)
+  handleAddOperator: (operator, type) ->
+    return unless type
+
+    operators = @props.observable.operators
+    operatorIndex = R.indexOf(operator, operators)
+    previous = R.slice(0, operatorIndex + 1, operators)
+    after = R.slice(operatorIndex + 1, operators.length, operators)
+
+    newList = R.concat(R.concat(previous, [{type}]), after)
+
+    @props.onChange R.mixin @props.observable,
+      operators: newList
 
   handleChildObservableChange: (operator, observable) ->
-    {root, operators} = @props.observable
-    op = R.find(R.propEq('id', operator.id), operators)
-    op.observable = observable
     operator.observable = observable
+    @props.onChange @props.observable
 
   removeOperator: (operator) ->
-    {root, operators} = @props.observable
-    newOperators = R.clone(operators)
-    newOperators.splice(operators.indexOf(operator), 1)
-    @props.onChange(root: root, operators: newOperators)
+    @props.onChange R.mixin @props.observable,
+      operators: R.reject(R.eq(operator), @props.observable.operators)
+
+  handleRootChange: (root) ->
+    @props.onChange R.mixin @props.observable,
+      root: root
 
   render: ->
+    handleAddOperatorTo = R.curryN 2, @handleAddOperator
     {root, operators} = @props.observable
 
-    operatorNodes = operators.map (operator) =>
-      <ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel}/>
+    newId = @props.id + Array(operators.length + 2).join("o")
+
+    operatorNodes = operators.map (operator, index) =>
+      id = @props.id + Array(index + 2).join("o")
+      operator.id = id
+      <ObservableOperator id={id} operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel}>
+        <AddOperator id={id} onSelect={handleAddOperatorTo(operator)}/>
+      </ObservableOperator>
 
     <div className="observable" style={paddingLeft: 'inherit'}>
-     <ObservableRoot type={root.type} id={root.id} args={root.args} />
+     <ObservableRoot type={root.type} id={@props.id} args={root.args} handleChange={@handleRootChange} >
+      <AddOperator id={root.id} onSelect={handleAddOperatorTo(root)}/>
+     </ObservableRoot>
      {operatorNodes}
-     <AddOperator rootId={root.id} onSelect={@handleAddOperator}/>
     </div>
 
 AddOperator = React.createClass
   handleChange: ->
     select = @refs.selectOperatorInput.getDOMNode()
     val = select.options[select.selectedIndex].value
+    select.value = ""
     @props.onSelect(val) if val?
 
+  getInitialState: ->
+    hidden: true
+
   render: ->
+    handleMouseEnter = =>
+      @setState hidden: false
+    handleMouseLeave = =>
+      @setState hidden: true
+
     options = R.keys(N.Operators).map (op) ->
       <option value={op}>{op}</option>
+
+    <span onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} ref="addOperatorSpan">
+      {'+'}
+      <select id={@props.id}{'addOperator'} className='addOperators' onChange={@handleChange} ref="selectOperatorInput" hidden={@state.hidden}>
+        <option value="">{'operator'}</option>
+        {options}
+      </select>
+    </span>
+
+SelectRoot = React.createClass
+  handleChange: ->
+    select = @refs.selectRoot.getDOMNode()
+    val = select.options[select.selectedIndex].value
+    @props.onChange(val)
+
+  render: ->
+    options = R.keys(N.Roots).map (root) ->
+      <option value={root} >{root}</option>
+
     <span>
-      {'Add Operator'}
-      <select id={@props.rootId}{'addOperator'} className='addOperators' onChange={@handleChange} ref="selectOperatorInput">
-        <option value="">{'Select'}</option>
+      <select id={@props.id}{'selectRoot'} classnName='selectRoot' onChange={@handleChange} ref="selectRoot" defaultValue={@props.selected}>
         {options}
       </select>
     </span>
 
 ObservableRoot = React.createClass
+  handleRootTypeChange: (type) ->
+    @props.handleChange(type: type, id: @props.id)
+
   render: ->
-    simulationArea = <N.SimulationArea />
-    rootEl = React.createElement(N.Roots[@props.type], R.pick(['id', 'args'], @props), simulationArea)
     <div className="observableRoot">
-      {rootEl}
+      <div className={@props.type} id={@props.id}>
+        {'Rx.Observable.'}
+        <SelectRoot id={@props.id} selected={@props.type} onChange={@handleRootTypeChange}/>
+        {'('}
+        <N.Helpers.InputArea defaultValue={@props.args || N.Roots[@props.type].defaultArgs} />
+        {')'}
+        {@props.children}
+        <N.SimulationArea />
+      </div>
     </div>
 
 ObservableOperator = React.createClass
@@ -65,11 +121,12 @@ ObservableOperator = React.createClass
     @props.onChildOperatorChange(@props.operator, observable)
 
   render: ->
-    {id, type, observable, args} = @props.operator
-    opEl = React.createElement(N.Operators[type], args: args, id: id, observable: observable, onChildOperatorChange: @handleChildObservableChange, recursionLevel: @props.recursionLevel)
+    {type, observable, args} = @props.operator
+    opEl = React.createElement(N.Operators[type], args: args, id: @props.id, observable: observable, onChildOperatorChange: @handleChildObservableChange, recursionLevel: @props.recursionLevel)
 
-    <div className={type} id={id} style={width: '100%'}>
+    <div className={type} id={@props.id} style={width: '100%'}>
       {".#{type}("} {opEl} {')'}
+      {@props.children}
       <RemoveOperator onRemove={@handleRemove}/>
       <N.SimulationArea />
     </div>

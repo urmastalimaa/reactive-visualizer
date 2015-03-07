@@ -35,14 +35,18 @@ defaultStructure = {
 }
 
 renderBuildArea = ->
-  observableFromUI = new Rx.Subject
+  observableSubject = new Rx.Subject
 
   startingStructure = V.persistency.load() || defaultStructure
 
-  buildArea = <V.BuildArea defaultObservable={startingStructure} onChange={observableFromUI.onNext.bind(observableFromUI)} />
+  buildArea = <V.BuildArea defaultObservable={startingStructure}
+    onChange={observableSubject.onNext.bind(observableSubject)} />
   renderedBuildArea = React.render(buildArea, document.getElementById('content'))
 
-  observableFromUI = observableFromUI.startWith(startingStructure)
+  observableFromUI = observableSubject.startWith startingStructure
+    .do (structure) ->
+      console.log "new structure", structure
+    .share()
 
   {observableFromUI, renderedBuildArea}
 
