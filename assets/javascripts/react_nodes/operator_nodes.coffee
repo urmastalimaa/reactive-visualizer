@@ -16,19 +16,22 @@ simpleOperators =
   bufferWithTime:
     defaultArgs: "1000"
 
-recursiveOperators =
+recursiveFunctionOperators =
   flatMap: ''
+
+recursiveOperators =
+  merge: ''
 
 createSimpleOperator = (defaultArgs) ->
   React.createClass
     render: ->
       <N.Helpers.InputArea defaultValue={@props.args || defaultArgs}/>
 
-createRecursiveOperator = ->
+createRecursiveFunctionOperator = ->
   React.createClass
     handleChange: (observable) ->
       @setState observable: observable
-      @props.onChildOperatorChange(observable)
+      @props.onChildOperatorChange(observable, 'function')
 
     getClosedOverArgName: ->
       if @props.recursionLevel == 0
@@ -40,11 +43,17 @@ createRecursiveOperator = ->
       defaultObservable =
         root:
           type: 'of'
+          id: @props.id + "r"
           args: @getClosedOverArgName()
         operators: []
       observable: @props.observable || defaultObservable
 
     render: ->
+      # this is bad, but need to trigger change somehow, don't know where else to initialize the observable
+      unless @props.observable
+        setTimeout =>
+          @handleChange(@state.observable)
+
       definition = @props.args || "function(#{@getClosedOverArgName()}) { return "
       root = <Observable id={@props.id + "r"} observable={@state.observable} ref="observable", recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
       <span className="recursiveContainer" style={paddingLeft: '50px'} >
@@ -55,8 +64,37 @@ createRecursiveOperator = ->
         {'}'}
       </span>
 
-simpleOperatorClasses = R.mapObj(R.compose(createSimpleOperator, R.get('defaultArgs')))(simpleOperators)
-recursiveOperatorClasses = R.mapObj(createRecursiveOperator)(recursiveOperators)
+createRecursiveOperator = ->
+  React.createClass
+    handleChange: (observable) ->
+      @setState observable: observable
+      @props.onChildOperatorChange(observable, 'observable')
 
-N.Operators = R.mixin simpleOperatorClasses, recursiveOperatorClasses
+    getInitialState: ->
+      defaultObservable =
+        root:
+          type: 'of'
+          id: @props.id + "r"
+        operators: []
+      observable: @props.observable || defaultObservable
+
+    render: ->
+      # this is bad, but need to trigger change somehow, don't know where else to initialize the observable
+      unless @props.observable
+        setTimeout =>
+          @handleChange(@state.observable)
+
+      root = <Observable id={@props.id + "r"} observable={@state.observable} ref="observable", recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
+      <span className="recursiveContainer" style={paddingLeft: '50px'} >
+        {root}
+        {'}'}
+      </span>
+
+operatorClasses = [
+  R.mapObj(R.compose(createSimpleOperator, R.get('defaultArgs')))(simpleOperators)
+  R.mapObj(createRecursiveFunctionOperator)(recursiveFunctionOperators)
+  R.mapObj(createRecursiveOperator)(recursiveOperators)
+]
+
+N.Operators = R.foldl(R.mixin, {}, operatorClasses)
 

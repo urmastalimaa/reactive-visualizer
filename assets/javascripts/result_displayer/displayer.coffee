@@ -2,12 +2,16 @@ messageDisplayer = ->
   onTime = (time, cb) ->
     setTimeout cb, 200 + time
 
+  getTargetArea: (key, resultType) ->
+    $("##{key} > .simulationArea .#{resultType}")
+
+
   append: (key, resultType, value) ->
-    $("##{key} .simulationArea .#{resultType}")
+    @getTargetArea(key, resultType)
       .append("<span>#{JSON.stringify(value)} </span>")
 
   set: (key, resultType, value) ->
-    $el = $("##{key} .simulationArea .#{resultType}")
+    $el = @getTargetArea(key, resultType)
     $el.stop().show()
     $el.html("<span>#{JSON.stringify(value)} </span>")
 
@@ -20,9 +24,8 @@ messageDisplayer = ->
       fadeDuration = timeDifference
       fadeTimeout = 0
 
-
     onTime time + fadeTimeout, =>
-      $el = $("##{key} .simulationArea .#{resultType}")
+      $el = @getTargetArea(key, resultType)
       $el.fadeOut(fadeDuration - 100)
 
   value: (key, time, value) ->

@@ -24,9 +24,15 @@ createObservableString = (observable, wrap) ->
   {operators, root} = observable
   observableString = R.foldl( (previousString, description) ->
     if description.observable
-      previousString + createObservableString(description.observable, (innerObservable) ->
-        description.code + innerObservable + " })"
-      ) + ".do(createMockObserver(scheduler, collector.collect, '#{description.id}'))"
+      wrapper = switch description.recursionType
+        when 'function'
+        then ((innerObservable) -> description.code + innerObservable + " })")
+        when 'observable'
+        then ((innerObservable) -> description.code + innerObservable + ")")
+
+      previousString +
+        createObservableString(description.observable, wrapper) +
+        ".do(createMockObserver(scheduler, collector.collect, '#{description.id}'))"
     else
       createOperatorString(previousString, description.code) +
       ".do(createMockObserver(scheduler, collector.collect, '#{description.id}'))"

@@ -21,8 +21,9 @@ Observable = React.createClass
     @props.onChange R.mixin @props.observable,
       operators: newList
 
-  handleChildObservableChange: (operator, observable) ->
+  handleChildObservableChange: (operator, observable, recursionType) ->
     operator.observable = observable
+    operator.recursionType = recursionType
     @props.onChange @props.observable
 
   removeOperator: (operator) ->
@@ -117,8 +118,8 @@ ObservableOperator = React.createClass
   handleRemove: ->
     @props.onRemove(@props.operator)
 
-  handleChildObservableChange: (observable) ->
-    @props.onChildOperatorChange(@props.operator, observable)
+  handleChildObservableChange: (observable, recursionType) ->
+    @props.onChildOperatorChange(@props.operator, observable, recursionType)
 
   render: ->
     {type, observable, args} = @props.operator
