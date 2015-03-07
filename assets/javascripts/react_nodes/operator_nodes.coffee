@@ -30,26 +30,40 @@ O.bufferWithTime = React.createClass
     args = @props.args || "1000"
     <N.Helpers.VarargsArea defaultValue={args}/>
 
-O.flatMap = React.createClass
-  handleChange: (observable) ->
-    @setState observable: observable
-    @props.onChildOperatorChange(observable)
+createRecursiveOperator = (defaultFunctionDeclaration) ->
+  React.createClass
+    handleChange: (observable) ->
+      @setState observable: observable
+      @props.onChildOperatorChange(observable)
 
-  getInitialState: ->
-    observable: @props.observable
+    getClosedOverArgName: ->
+      if @props.recursionLevel == 0
+        'outerValue'
+      else
+        'outerValue' + (@props.recursionLevel + 1)
 
-  render: ->
-    # There should be a better way to update the initial root
-    setTimeout =>
-      @props.onChildOperatorChange(@state.observable)
+    getInitialState: ->
+      defaultObservable =
+        root:
+          id: @props.id + "r"
+          type: 'of'
+          args: @getClosedOverArgName()
+        operators: []
+      observable: @props.observable || defaultObservable
 
-    definition = @props.args || 'function(mappedValue) { return '
-    root = <Observable observable={@state.observable} ref="observable", onChange={@handleChange} />
-    <span className="recursiveContainer" style={paddingLeft: '50px'} >
-      <span className="functionDeclaration">
-        <N.Helpers.FunctionDeclaration defaultValue={definition} />
+    render: ->
+      setTimeout =>
+        @props.onChildOperatorChange(@state.observable)
+
+      definition = @props.args || "function(#{@getClosedOverArgName()}) { return "
+      root = <Observable observable={@state.observable} ref="observable", recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
+      <span className="recursiveContainer" style={paddingLeft: '50px'} >
+        <span className="functionDeclaration">
+          <N.Helpers.FunctionDeclaration defaultValue={definition} />
+        </span>
+        {root}
+        {'}'}
       </span>
-      {root}
-      {'}'}
-    </span>
+
+O.flatMap = createRecursiveOperator()
 

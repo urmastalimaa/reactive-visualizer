@@ -27,20 +27,27 @@ defaultStructure = {
           {
             type: 'map'
             id: 'roro'
+            args: 'function(value) { return value * outerValue; }'
+          }
+          {
+            type: 'flatMap'
+            id: 'roroo'
+            observable:
+              root:
+                id: 'roroor'
+                type: 'of'
+                args: 'outerValue2, outerValue2 + 5'
+              operators: []
           }
         ]
     }
     {
       type: 'take',
       id: 'roo'
-      args: '3'
+      args: '6'
     }
   ]
 }
-
-uiValuator =
-  textArea: (id) ->
-    $("##{id} textarea").val()
 
 $(document).ready ->
   observableFromUI = new Rx.Subject

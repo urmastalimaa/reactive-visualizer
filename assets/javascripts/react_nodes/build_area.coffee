@@ -8,7 +8,7 @@ BuildArea = React.createClass
 
   render: ->
     <div className="buildArea">
-      <Observable observable={@state.observable} ref="observable" onChange={@handleChange}/>
+      <Observable observable={@state.observable} ref="observable" recursionLevel=0 onChange={@handleChange}/>
       <button className="start" id="start">Start</button>
     </div>
 

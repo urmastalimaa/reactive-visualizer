@@ -24,7 +24,7 @@ Observable = React.createClass
     {root, operators} = @props.observable
 
     operatorNodes = operators.map (operator) =>
-      <ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} />
+      <ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel}/>
 
     <div className="observable" style={paddingLeft: 'inherit'}>
      <ObservableRoot type={root.type} id={root.id} args={root.args} />
@@ -66,7 +66,7 @@ ObservableOperator = React.createClass
 
   render: ->
     {id, type, observable, args} = @props.operator
-    opEl = React.createElement(N.Operators[type], args: args, id: id, observable: observable, onChildOperatorChange: @handleChildObservableChange)
+    opEl = React.createElement(N.Operators[type], args: args, id: id, observable: observable, onChildOperatorChange: @handleChildObservableChange, recursionLevel: @props.recursionLevel)
 
     <div className={type} id={id} style={width: '100%'}>
       {".#{type}("} {opEl} {')'}

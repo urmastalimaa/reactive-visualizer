@@ -25,7 +25,7 @@ createObservableString = (observable, wrap) ->
   observableString = R.foldl( (previousString, description) ->
     if description.observable
       previousString + createObservableString(description.observable, (innerObservable) ->
-        wrap(description.populated + innerObservable + " })")
+        description.populated + innerObservable + " })"
       ) + ".do(createMockObserver(scheduler, collector.collect, '#{description.id}'))"
     else
       createOperatorString(previousString, description.populated) +
@@ -40,7 +40,11 @@ buildObservables = (observable) ->
 
   collector = createCollector()
   factory = R.curryN 2, (collector, scheduler) ->
-    eval(observableString)
+    try
+      eval(observableString)
+    catch err
+      console.error "Error during evaluation", err
+      Rx.Observable.empty()
 
   [factory(collector), collector]
 
