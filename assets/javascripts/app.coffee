@@ -55,10 +55,29 @@ $(document).ready ->
   buildArea = <V.BuildArea defaultObservable={defaultStructure} onChange={observableFromUI.onNext.bind(observableFromUI)} />
   React.render(buildArea, document.getElementById('content'))
 
+  runObservable = R.compose(V.displayResults, V.simulateObservable, V.buildObservable, V.evaluateInput)
+
+  saveObservable = (observable) ->
+    # need to evalute args to save
+    localStorage.savedObservable = JSON.stringify(observable)
+
+  loadObservable = ->
+    try
+      console.log "parsing", localStorage.savedObservable
+      JSON.parse(localStorage.savedObservable)
+    catch error
+      ""
+
+  observableToEvaluate = observableFromUI.startWith(loadObservable() || defaultStructure)
+
   Rx.Observable.fromEvent($("#start"), 'click')
-    .withLatestFrom(observableFromUI.startWith(defaultStructure), (_, observable) -> observable)
-    .subscribe (struc) ->
-      R.compose(V.displayResults, V.simulateObservable, V.buildObservable, V.evaluateInput)(struc)
+    .withLatestFrom(observableToEvaluate, R.nthArg(1))
+    .subscribe runObservable
+
+  Rx.Observable.fromEvent($("#save"), 'click')
+    .withLatestFrom(observableToEvaluate, R.nthArg(1))
+    .subscribe saveObservable
+
 
   setTimeout ->
     $("#start").click()

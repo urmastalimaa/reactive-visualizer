@@ -10,6 +10,7 @@ BuildArea = React.createClass
     <div className="buildArea">
       <Observable observable={@state.observable} ref="observable" recursionLevel=0 onChange={@handleChange}/>
       <button className="start" id="start">Start</button>
+      <button className="save" id="save">Save</button>
     </div>
 
 Visualizer.BuildArea = BuildArea
