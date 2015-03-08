@@ -34,9 +34,6 @@ renderBuildArea = ->
   renderedBuildArea = React.render(buildArea, document.getElementById('content'))
 
   observableFromUI = observableSubject.startWith startingStructure
-    .do (structure) ->
-      console.log "new structure", structure
-    .share()
 
   {observableFromUI, renderedBuildArea}
 
