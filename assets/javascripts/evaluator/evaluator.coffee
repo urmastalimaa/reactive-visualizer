@@ -1,12 +1,22 @@
 V = Visualizer
 N = V.ReactNodes
 
+getArgsWithScheduler = ({input, getDefaultArgs, useScheduler}) ->
+  if getDefaultArgs && useScheduler
+    "#{input}, scheduler"
+  else if useScheduler
+    "scheduler"
+  else if getDefaultArgs
+    input
+  else
+    ""
+
 rootEvaluators = R.mapObjIndexed( ({useScheduler, getDefaultArgs}, key) ->
   (input) ->
     R.always(
       "Rx.Observable.#{key}(" +
-        (if getDefaultArgs then input else '') +
-        (if useScheduler then (if getDefaultArgs then ', scheduler)' else 'scheduler)') else ')')
+      getArgsWithScheduler({input, useScheduler, getDefaultArgs}) +
+      ")"
     )
   )(N.Roots)
 
@@ -19,7 +29,9 @@ operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, getDefaultArgs,
           when "observable" then ".#{key}(#{innerObservable})"
           when "observableWithSelector" then ".#{key}(#{innerObservable}, #{input})"
     else
-      R.always(".#{key}(#{input || ''}#{useScheduler && ', scheduler' || ''})")
+      R.always(
+        ".#{key}(#{getArgsWithScheduler({input, useScheduler, getDefaultArgs})})"
+      )
   )(N.Operators)
 
 evalRoot = ({id, type, args}) ->
