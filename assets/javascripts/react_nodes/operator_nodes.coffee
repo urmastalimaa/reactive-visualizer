@@ -15,8 +15,8 @@ getClosedOverArgName = (recursionLevel) ->
 
 simpleCombinerFunction = 'function(first, second){ return {first: first, second: second}; }'
 
-getFunctionDeclaration = (args) ->
-  "function(#{args}) {"
+getReturningFunctionDeclaration = (args) ->
+  "function(#{args}) { return "
 
 simpleOperators =
   map:
@@ -39,7 +39,7 @@ recursiveFunctionOperators =
   flatMap:
     recursive: true
     recursionType: 'function'
-    getDefaultArgs: R.compose(getFunctionDeclaration, getClosedOverArgName)
+    getDefaultArgs: R.compose(getReturningFunctionDeclaration, getClosedOverArgName)
     getDefaultObservable: R.compose(createSimpleObservable('just'), getClosedOverArgName)
 
 recursiveOperators =
@@ -64,35 +64,45 @@ recursiveOperatorsWithTrailingArgs =
     getDefaultObservable: R.always(createSimpleObservable('just')('1,2'))
     getDefaultArgs: R.always(simpleCombinerFunction)
 
-
 SimpleOperator = React.createClass
+  onArgsChange: (args) ->
+    @props.onChange(R.assoc('args', args, @props.operator))
+
   render: ->
-    <N.Helpers.InputArea defaultValue={@props.args}/>
+    if N.Operators[@props.operator.type].getDefaultArgs
+      <N.Helpers.InputArea value={@props.operator.args} id={@props.operator.id} onChange={@onArgsChange} />
+    else
+      false
 
 RecursiveOperator = React.createClass
   render: ->
     <span className="recursiveContainer" style={paddingLeft: '50px'} >
-      <V.Observable id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
+      <V.Observable id={@props.operator.id} observable={@props.operator.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
     </span>
 
 RecursionFunctionOperator = React.createClass
+  onArgsChange: (args) ->
+    @props.onChange(R.assoc('args', args, @props.operator))
+
   render: ->
     <span className="recusiveFunctionOperator">
-      <span className="functionDeclaration" id={@props.id}>
-        <N.Helpers.InputArea defaultValue={@props.args} />
+      <span className="functionDeclaration" id={@props.operator.id}>
+        <N.Helpers.InputArea value={@props.operator.args} onChange={@onArgsChange}/>
       </span>
-      <RecursiveOperator id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange}>
-      </RecursiveOperator>
+      <RecursiveOperator operator={@props.operator} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange} onChange={@props.onChange}/>
       {'}'}
     </span>
 
 RecursiveOperatorWithTrailingArgs = React.createClass
+  onArgsChange: (args) ->
+    @props.onChange(R.assoc('args', args, @props.operator))
+
   render: ->
     <span>
-      <RecursiveOperator id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange}/>
+      <RecursiveOperator operator={@props.operator} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange} onChange={@props.onChange}/>
       ,
-      <span className="recursiveOperatorTrailingArg" id={@props.id}>
-        <N.Helpers.InputArea defaultValue={@props.args} />
+      <span className="recursiveOperatorTrailingArg" id={@props.operator.id}>
+        <N.Helpers.InputArea value={@props.operator.args} onChange={@onArgsChange} />
       </span>
     </span>
 
@@ -113,10 +123,18 @@ N.ObservableOperator = React.createClass
   handleChildObservableChange: (observable) ->
     @props.onChildOperatorChange(@props.operator, observable)
 
+  onChange: (operator) ->
+    @props.onChange(operator)
+
   render: ->
-    opEl = React.createElement(OperatorClasses[@props.operator.type], R.mixin(@props.operator,
-      onChildOperatorChange: @handleChildObservableChange, recursionLevel: @props.recursionLevel
-    ))
+
+    args = {
+      operator: @props.operator
+      onChildOperatorChange: @handleChildObservableChange
+      recursionLevel: @props.recursionLevel
+      onChange: @onChange
+    }
+    opEl = React.createElement(OperatorClasses[@props.operator.type], args)
 
     <div className={@props.operator.type} id={@props.operator.id} style={width: '100%'}>
       {".#{@props.operator.type}("} {opEl} {')'}

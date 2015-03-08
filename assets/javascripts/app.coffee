@@ -59,7 +59,7 @@ $(document).ready ->
 
   Rx.Observable.fromEvent($("#save"), 'click')
     .withLatestFrom(observableFromUI, R.nthArg(1))
-    .subscribe R.compose(V.persistency.save, V.evaluateInput)
+    .subscribe R.compose(V.persistency.save)
 
   Rx.Observable.fromEvent($("#clear"), 'click').subscribe V.persistency.clear
 

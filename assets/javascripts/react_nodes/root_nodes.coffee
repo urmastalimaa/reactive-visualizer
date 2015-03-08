@@ -56,9 +56,10 @@ SelectRoot = React.createClass
 
 V.ObservableRoot = React.createClass
   handleRootTypeChange: (type) ->
-    if argsInput = @refs.argsInput
-      argsInput.getDOMNode().value = N.Roots[type].getDefaultArgs?()
-    @props.handleChange(type: type, id: @props.id)
+    @props.handleChange(type: type, args: N.Roots[type].getDefaultArgs?())
+
+  onArgsChange: (args) ->
+    @props.handleChange(type: @props.root.type, id: @props.root.id, args: args)
 
   render: ->
     {root} = @props
@@ -68,7 +69,7 @@ V.ObservableRoot = React.createClass
         <SelectRoot id={root.id} selected={root.type} onChange={@handleRootTypeChange}/>
         {'('}
         { if root.args?
-          <N.Helpers.InputArea defaultValue={root.args} ref="argsInput"/>
+          <N.Helpers.InputArea value={root.args} ref="argsInput" onChange={@onArgsChange}/>
         }
         {')'}
         {@props.children}

@@ -20,6 +20,12 @@ V.Observable = React.createClass
     operator.observable = observable
     @props.onChange @props.observable
 
+  handleOperatorChange: (operator) ->
+    # would be nicer to do without mutating
+    oldIndex = R.findIndex(R.propEq('id', operator.id), @props.observable.operators)
+    @props.observable.operators[oldIndex] = operator
+    @props.onChange @props.observable
+
   removeOperator: (operator) ->
     @props.onChange R.mixin @props.observable,
       operators: R.reject(R.eq(operator), @props.observable.operators)
@@ -33,7 +39,7 @@ V.Observable = React.createClass
     {root} = @props.observable
 
     operatorNodes = @props.observable.operators.map (operator, index) =>
-      <N.ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel}>
+      <N.ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel} onChange={@handleOperatorChange}>
         <AddOperator id={operator.id} onSelect={handleAddOperatorTo(operator)}/>
       </N.ObservableOperator>
 

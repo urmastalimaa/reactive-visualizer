@@ -24,16 +24,8 @@ createObservableString = (observable, wrap) ->
   {operators, root} = observable
   observableString = R.foldl( (previousString, description) ->
     if description.observable
-      wrapper = switch description.recursionType
-        when 'function'
-        then ((innerObservable) -> description.getCode(innerObservable))
-        when 'observable'
-        then ((innerObservable) -> description.getCode(innerObservable))
-        when 'observableWithSelector'
-        then ((innerObservable) -> description.getCode(innerObservable))
-
       previousString +
-        createObservableString(description.observable, wrapper) +
+        createObservableString(description.observable, description.getCode) +
         ".do(createMockObserver(scheduler, collector.collect, '#{description.id}'))"
     else
       createOperatorString(previousString, description.getCode()) +

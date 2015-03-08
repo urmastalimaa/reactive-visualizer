@@ -5,7 +5,7 @@ BuildArea = React.createClass
     observable: V.identifyStructure(@props.defaultObservable)
 
   handleChange: (observable) ->
-    identifiedObservable = V.identifyStructure(V.evaluateInput(observable))
+    identifiedObservable = V.identifyStructure(observable)
     @setState observable: identifiedObservable
     @props.onChange identifiedObservable
 
