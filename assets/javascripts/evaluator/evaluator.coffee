@@ -1,7 +1,7 @@
 V = Visualizer
 N = V.ReactNodes
 
-valFromTextArea = (id) ->
+inputVal = (id) ->
   $("##{id} textarea").val()
 
 rootEvaluators = R.mapObjIndexed( ({useScheduler}, key) ->
@@ -9,39 +9,32 @@ rootEvaluators = R.mapObjIndexed( ({useScheduler}, key) ->
     "Rx.Observable.#{key}(#{input}#{if useScheduler then ', scheduler' else ''})"
   )(N.Roots)
 
-operatorEvaluators =
-  map:            (input) -> ".map(#{input})"
-  filter:         (input) -> ".filter(#{input})"
-  delay:          (input) -> ".delay(#{input}, scheduler)"
-  take:           (input) -> ".take(#{input})"
-  bufferWithTime: (input) -> ".bufferWithTime(#{input}, scheduler)"
-  flatMap:        (input) -> ".flatMap(#{input}"
-  merge:          (input) -> ".merge("
+operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, hasInput}, key) ->
+  (input) ->
+    ".#{key}(" +
+      (if hasInput then input else '') +
+      (if recursive then '' else (if useScheduler then ', scheduler)' else ')'))
+  )(N.Operators)
 
-evalRoot = ({id, type}) ->
-  args = (valFromTextArea(id))
-  code: rootEvaluators[type](args)
-  args: args
-  id: id
-  type: type
 
-evalOperator = ({id, type, observable, recursionType}) ->
-  args = (valFromTextArea(id))
-  if observable
-    val = (valFromTextArea(id))
-    innerObs = Visualizer.evaluateInput(observable)
-
-    code: operatorEvaluators[type](args)
+evalRoot = (root) ->
+  args = inputVal(root.id)
+  R.mixin root,
     args: args
-    id: id
-    type: type
-    observable: innerObs
-    recursionType: recursionType
+    code: rootEvaluators[root.type](args)
+
+evalOperator = (operator) ->
+  args = inputVal(operator.id)
+  if operator.observable
+    innerObs = V.evaluateInput(operator.observable)
+    R.mixin operator,
+      args: args
+      code: operatorEvaluators[operator.type](args)
+      observable: innerObs
   else
-    code: operatorEvaluators[type](args)
-    args: args
-    type: type
-    id: id
+    R.mixin operator,
+      args: args
+      code: operatorEvaluators[operator.type](args)
 
 V.evaluateInput = ({root, operators}) ->
   root: evalRoot(root)
