@@ -64,7 +64,7 @@ AddOperator = React.createClass
     handleMouseLeave = =>
       @setState hidden: true
 
-    options = R.keys(N.Operators).map (op) ->
+    options = R.keys(N.OperatorClasses).map (op) ->
       <option value={op}>{op}</option>
 
     <span onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} ref="addOperatorSpan">
@@ -85,7 +85,7 @@ ObservableOperator = React.createClass
 
   render: ->
     {type, observable, args} = @props.operator
-    opEl = React.createElement(N.Operators[type], args: args, id: @props.id, observable: observable, onChildOperatorChange: @handleChildObservableChange, recursionLevel: @props.recursionLevel)
+    opEl = React.createElement(N.OperatorClasses[type], args: args, id: @props.id, observable: observable, onChildOperatorChange: @handleChildObservableChange, recursionLevel: @props.recursionLevel)
 
     <div className={type} id={@props.id} style={width: '100%'}>
       {".#{type}("} {opEl} {')'}

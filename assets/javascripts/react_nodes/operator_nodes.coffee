@@ -7,20 +7,38 @@ defaultFunc = (impl) ->
 simpleOperators =
   map:
     defaultArgs: defaultFunc("return value * value;")
+    hasInput: true
+    useScheduler: false
   take:
     defaultArgs: "4"
+    hasInput: true
+    useScheduler: true
   filter:
     defaultArgs: defaultFunc("return value < 20;")
+    hasInput: true
+    useScheduler: false
   delay:
     defaultArgs: "1000"
+    hasInput: true
+    useScheduler: true
   bufferWithTime:
     defaultArgs: "1000"
+    hasInput: true
+    useScheduler: true
 
 recursiveFunctionOperators =
-  flatMap: ''
+  flatMap:
+    hasInput: true
+    recursive: true
+
 
 recursiveOperators =
-  merge: ''
+  merge:
+    hasInput: false
+    recursive: true
+  amb:
+    hasInput: false
+    recursive: true
 
 createSimpleOperator = (defaultArgs) ->
   React.createClass
@@ -96,5 +114,10 @@ operatorClasses = [
   R.mapObj(createRecursiveOperator)(recursiveOperators)
 ]
 
-N.Operators = R.foldl(R.mixin, {}, operatorClasses)
+N.Operators = R.foldl(R.mixin, {}, [simpleOperators
+  recursiveOperators
+  recursiveFunctionOperators
+])
+
+N.OperatorClasses = R.foldl(R.mixin, {}, operatorClasses)
 
