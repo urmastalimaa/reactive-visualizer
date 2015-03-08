@@ -1,9 +1,13 @@
+V = Visualizer
+N = V.ReactNodes
+
 valFromTextArea = (id) ->
   $("##{id} textarea").val()
 
-rootEvaluators =
-  fromTime: (input) -> "Rx.Observable.fromTime(#{input}, scheduler)"
-  of:       (input) -> "Rx.Observable.of(#{input})"
+rootEvaluators = R.mapObjIndexed( ({useScheduler}, key) ->
+  (input) ->
+    "Rx.Observable.#{key}(#{input}#{if useScheduler then ', scheduler' else ''})"
+  )(N.Roots)
 
 operatorEvaluators =
   map:            (input) -> ".map(#{input})"
@@ -39,7 +43,7 @@ evalOperator = ({id, type, observable, recursionType}) ->
     type: type
     id: id
 
-Visualizer.evaluateInput = ({root, operators}) ->
+V.evaluateInput = ({root, operators}) ->
   root: evalRoot(root)
   operators: operators.map evalOperator
 

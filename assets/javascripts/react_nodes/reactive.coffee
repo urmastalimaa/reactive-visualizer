@@ -1,12 +1,6 @@
 V = Visualizer
 N = V.ReactNodes
 
-N.Roots =
-  of:
-    defaultArgs: "1,2,3"
-  fromTime:
-    defaultArgs: "{500: 1, 1000: 2, 3000: 3}"
-
 Observable = React.createClass
   handleAddOperator: (operator, type) ->
     return unless type
@@ -48,9 +42,9 @@ Observable = React.createClass
       </ObservableOperator>
 
     <div className="observable" style={paddingLeft: 'inherit'}>
-     <ObservableRoot type={root.type} id={@props.id} args={root.args} handleChange={@handleRootChange} >
+     <V.ObservableRoot type={root.type} id={@props.id} args={root.args} handleChange={@handleRootChange} >
       <AddOperator id={root.id} onSelect={handleAddOperatorTo(root)}/>
-     </ObservableRoot>
+     </V.ObservableRoot>
      {operatorNodes}
     </div>
 
@@ -81,38 +75,6 @@ AddOperator = React.createClass
       </select>
     </span>
 
-SelectRoot = React.createClass
-  handleChange: ->
-    select = @refs.selectRoot.getDOMNode()
-    val = select.options[select.selectedIndex].value
-    @props.onChange(val)
-
-  render: ->
-    options = R.keys(N.Roots).map (root) ->
-      <option value={root} >{root}</option>
-
-    <span>
-      <select id={@props.id}{'selectRoot'} classnName='selectRoot' onChange={@handleChange} ref="selectRoot" defaultValue={@props.selected}>
-        {options}
-      </select>
-    </span>
-
-ObservableRoot = React.createClass
-  handleRootTypeChange: (type) ->
-    @props.handleChange(type: type, id: @props.id)
-
-  render: ->
-    <div className="observableRoot">
-      <div className={@props.type} id={@props.id}>
-        {'Rx.Observable.'}
-        <SelectRoot id={@props.id} selected={@props.type} onChange={@handleRootTypeChange}/>
-        {'('}
-        <N.Helpers.InputArea defaultValue={@props.args || N.Roots[@props.type].defaultArgs} />
-        {')'}
-        {@props.children}
-        <N.SimulationArea />
-      </div>
-    </div>
 
 ObservableOperator = React.createClass
   handleRemove: ->
