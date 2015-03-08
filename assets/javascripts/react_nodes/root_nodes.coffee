@@ -4,9 +4,11 @@ N = V.ReactNodes
 N.Roots =
   of:
     defaultArgs: "1,2,3"
+    hasInput: true
     useScheduler: false
   fromTime:
     defaultArgs: "{500: 1, 1000: 2, 3000: 3}"
+    hasInput: true
     useScheduler: true
 
 SelectRoot = React.createClass

@@ -4,9 +4,11 @@ N = V.ReactNodes
 inputVal = (id) ->
   $("##{id} textarea").val()
 
-rootEvaluators = R.mapObjIndexed( ({useScheduler}, key) ->
+rootEvaluators = R.mapObjIndexed( ({useScheduler, hasInput}, key) ->
   (input) ->
-    "Rx.Observable.#{key}(#{input}#{if useScheduler then ', scheduler' else ''})"
+    "Rx.Observable.#{key}(" +
+      (if hasInput then input else '') +
+      (if useScheduler then ', scheduler)' else ')')
   )(N.Roots)
 
 operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, hasInput}, key) ->
