@@ -26,17 +26,19 @@ createObservableString = (observable, wrap) ->
     if description.observable
       wrapper = switch description.recursionType
         when 'function'
-        then ((innerObservable) -> description.code + innerObservable + " })")
+        then ((innerObservable) -> description.getCode(innerObservable))
         when 'observable'
-        then ((innerObservable) -> description.code + innerObservable + ")")
+        then ((innerObservable) -> description.getCode(innerObservable))
+        when 'observableWithSelector'
+        then ((innerObservable) -> description.getCode(innerObservable))
 
       previousString +
         createObservableString(description.observable, wrapper) +
         ".do(createMockObserver(scheduler, collector.collect, '#{description.id}'))"
     else
-      createOperatorString(previousString, description.code) +
+      createOperatorString(previousString, description.getCode()) +
       ".do(createMockObserver(scheduler, collector.collect, '#{description.id}'))"
-  )(root.code + ".do(createMockObserver(scheduler, collector.collect, '#{root.id}'))")(operators)
+  )(root.getCode() + ".do(createMockObserver(scheduler, collector.collect, '#{root.id}'))")(operators)
 
   wrap(observableString)
 

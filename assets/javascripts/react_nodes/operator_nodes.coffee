@@ -58,20 +58,21 @@ SimpleOperator = React.createClass
 
 RecursiveOperator = React.createClass
   render: ->
-    root = <V.Observable id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
     <span className="recursiveContainer" style={paddingLeft: '50px'} >
-      {@props.children}
-      {root}
-      {'}'}
+      <V.Observable id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
     </span>
 
 RecursionFunctionOperator = React.createClass
   render: ->
-    <RecursiveOperator id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange}>
+    <span className="recusiveFunctionOperator">
       <span className="functionDeclaration" id={@props.id}>
         <N.Helpers.InputArea defaultValue={@props.args} />
       </span>
-    </RecursiveOperator>
+      <RecursiveOperator id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange}>
+      </RecursiveOperator>
+      {'}'}
+    </span>
+
 
 operatorClasses = [
   R.mapObj(R.always(SimpleOperator))(simpleOperators)

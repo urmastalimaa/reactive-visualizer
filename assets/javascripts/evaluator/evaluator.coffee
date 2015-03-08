@@ -11,18 +11,23 @@ rootEvaluators = R.mapObjIndexed( ({useScheduler, getDefaultArgs}, key) ->
       (if useScheduler then (if getDefaultArgs then ', scheduler)' else 'scheduler)') else ')')
   )(N.Roots)
 
-operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, getDefaultArgs}, key) ->
+operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, getDefaultArgs, recursionType}, key) ->
   (input) ->
-    ".#{key}(" +
-      (if getDefaultArgs then input else '') +
-      (if recursive then '' else (if useScheduler then ', scheduler)' else ')'))
+    if recursive
+      (innerObservable) ->
+        switch recursionType
+          when "function" then ".#{key}(#{input}#{innerObservable}})"
+          when "observable" then ".#{key}(#{innerObservable})"
+          when "observableWithSelector" then ".#{key}(#{innerObservable}, #{input})"
+    else
+      ".#{key}(#{input || ''}#{useScheduler && ', scheduler' || ''})"
   )(N.Operators)
 
 evalRoot = (root) ->
   args = inputVal(root.id)
   R.mixin root,
     args: args
-    code: rootEvaluators[root.type](args)
+    getCode: R.always(rootEvaluators[root.type](args))
 
 evalOperator = (operator) ->
   args = inputVal(operator.id)
@@ -30,12 +35,12 @@ evalOperator = (operator) ->
     innerObs = V.evaluateInput(operator.observable)
     R.mixin operator,
       args: args
-      code: operatorEvaluators[operator.type](args)
+      getCode: operatorEvaluators[operator.type](args)
       observable: innerObs
   else
     R.mixin operator,
       args: args
-      code: operatorEvaluators[operator.type](args)
+      getCode: R.always(operatorEvaluators[operator.type](args))
 
 V.evaluateInput = ({root, operators}) ->
   root: evalRoot(root)
