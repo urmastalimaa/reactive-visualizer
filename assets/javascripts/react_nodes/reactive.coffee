@@ -63,7 +63,7 @@ AddOperator = React.createClass
     handleMouseLeave = =>
       @setState hidden: true
 
-    options = R.keys(N.OperatorClasses).map (op) ->
+    options = R.keys(N.Operators).map (op) ->
       <option value={op}>{op}</option>
 
     <span onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} ref="addOperatorSpan">

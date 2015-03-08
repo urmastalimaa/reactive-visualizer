@@ -58,54 +58,40 @@ createSimpleOperator = (defaultArgs) ->
     render: ->
       <N.Helpers.InputArea defaultValue={@props.args || defaultArgs}/>
 
+RecursiveOperator = React.createClass
+  handleChange: (observable) ->
+    @setState observable: observable
+    @props.onChildOperatorChange(observable)
+
+  getInitialState: ->
+    observable: @props.observable
+
+  render: ->
+    root = <Observable id={@props.id} observable={@state.observable} recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
+    <span className="recursiveContainer" style={paddingLeft: '50px'} >
+      {@props.children}
+      {root}
+      {'}'}
+    </span>
+
 createRecursiveFunctionOperator = ->
   React.createClass
-    handleChange: (observable) ->
-      @setState observable: observable
-      @props.onChildOperatorChange(observable)
-
-    getInitialState: ->
-      observable: @props.observable
-
     render: ->
       definition = @props.args || "function(#{getClosedOverArgName(@props.recursionLevel)}) { return "
-      root = <Observable id={@props.id} observable={@state.observable} ref="observable", recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
-      <span className="recursiveContainer" style={paddingLeft: '50px'} >
+      <RecursiveOperator id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange}>
         <span className="functionDeclaration" id={@props.id}>
           <N.Helpers.InputArea defaultValue={definition} />
         </span>
-        {root}
-        {'}'}
-      </span>
-
-createRecursiveOperator = ->
-  React.createClass
-    handleChange: (observable) ->
-      @setState observable: observable
-      @props.onChildOperatorChange(observable)
-
-    getInitialState: ->
-      observable: @props.observable
-
-    render: ->
-      root = <Observable id={@props.id} observable={@state.observable} ref="observable", recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
-      <span className="recursiveContainer" style={paddingLeft: '50px'} >
-        {root}
-        {'}'}
-      </span>
+      </RecursiveOperator>
 
 operatorClasses = [
   R.mapObj(R.compose(createSimpleOperator, R.get('defaultArgs')))(simpleOperators)
   R.mapObj(createRecursiveFunctionOperator)(recursiveFunctionOperators)
-  R.mapObj(createRecursiveOperator)(recursiveOperators)
+  R.mapObj(R.always(RecursiveOperator))(recursiveOperators)
 ]
 
-N.Operators = R.foldl(R.mixin, {}, [simpleOperators
-  recursiveOperators
-  recursiveFunctionOperators
-])
 
-N.OperatorClasses = R.foldl(R.mixin, {}, operatorClasses)
+OperatorClasses = R.foldl(R.mixin, {}, operatorClasses)
 
 N.ObservableOperator = React.createClass
   handleRemove: ->
@@ -120,7 +106,7 @@ N.ObservableOperator = React.createClass
     if !operator.obsevable && N.Operators[operator.type].getDefaultObservable
       operator.observable = N.Operators[operator.type].getDefaultObservable(@props.recursionLevel)
 
-    opEl = React.createElement(N.OperatorClasses[operator.type], R.mixin(@props.operator,
+    opEl = React.createElement(OperatorClasses[operator.type], R.mixin(@props.operator,
       onChildOperatorChange: @handleChildObservableChange, recursionLevel: @props.recursionLevel
     ))
 
@@ -137,3 +123,7 @@ RemoveOperator = React.createClass
   render: ->
     <button className='remove' onClick={@handleClick}>-</button>
 
+N.Operators = R.foldl(R.mixin, {}, [simpleOperators
+  recursiveOperators
+  recursiveFunctionOperators
+])
