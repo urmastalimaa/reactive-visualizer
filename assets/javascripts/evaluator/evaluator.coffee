@@ -4,17 +4,17 @@ N = V.ReactNodes
 inputVal = (id) ->
   $("##{id} > textarea").val()
 
-rootEvaluators = R.mapObjIndexed( ({useScheduler, defaultArgs}, key) ->
+rootEvaluators = R.mapObjIndexed( ({useScheduler, getDefaultArgs}, key) ->
   (input) ->
     "Rx.Observable.#{key}(" +
-      (if defaultArgs then input else '') +
-      (if useScheduler then (if defaultArgs then ', scheduler)' else 'scheduler)') else ')')
+      (if getDefaultArgs then input else '') +
+      (if useScheduler then (if getDefaultArgs then ', scheduler)' else 'scheduler)') else ')')
   )(N.Roots)
 
-operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, defaultArgs}, key) ->
+operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, getDefaultArgs}, key) ->
   (input) ->
     ".#{key}(" +
-      (if defaultArgs then input else '') +
+      (if getDefaultArgs then input else '') +
       (if recursive then '' else (if useScheduler then ', scheduler)' else ')'))
   )(N.Operators)
 

@@ -3,38 +3,38 @@ N = V.ReactNodes
 
 N.Roots =
   of:
-    defaultArgs: "1,2,3"
+    getDefaultArgs: R.always("1,2,3")
     useScheduler: false
   just:
-    defaultArgs: "5"
+    getDefaultArgs: R.always("5")
     useScheduler: true
   fromTime:
-    defaultArgs: "{500: 1, 1000: 2, 3000: 3}"
+    getDefaultArgs: R.always("{500: 1, 1000: 2, 3000: 3}")
     useScheduler: true
   interval:
-    defaultArgs: "1000"
+    getDefaultArgs: R.always("1000")
     useScheduler: true
   timer:
-    defaultArgs: "500, 2000"
+    getDefaultArgs: R.always("500, 2000")
     useScheduler: true
   repeat:
-    defaultArgs: "42, 3"
+    getDefaultArgs: R.always("42, 3")
     useScheduler: true
   generate:
-    defaultArgs: "0, function(x){ return x < 3;}, function(x) { return x + 1;}, function(x) { return x; }"
+    getDefaultArgs: R.always("0, function(x){ return x < 3;}, function(x) { return x + 1;}, function(x) { return x; }")
     useScheduler: true
   generateWithRelativeTime:
-    defaultArgs: "1, function(x) { return x < 4;}, function(x) { return x + 1;}, function(x) { return x; }, function(x) { return 500 * x; }"
+    getDefaultArgs: R.always("1, function(x) { return x < 4;}, function(x) { return x + 1;}, function(x) { return x; }, function(x) { return 500 * x; }")
     useScheduler: true
   never:
     useScheduler: false
   empty:
     useScheduler: true
   range:
-    defaultArgs: "1, 5"
+    getDefaultArgs: R.always("1, 5")
     useScheduler: true
   pairs:
-    defaultArgs: "{foo: 42, bar: 56, baz: 78}"
+    getDefaultArgs: R.always("{foo: 42, bar: 56, baz: 78}")
     useScheduler: true
 
 SelectRoot = React.createClass
@@ -57,11 +57,8 @@ SelectRoot = React.createClass
 V.ObservableRoot = React.createClass
   handleRootTypeChange: (type) ->
     if argsInput = @refs.argsInput
-      argsInput.getDOMNode().value = @getDefaultArgs(type)
+      argsInput.getDOMNode().value = N.Roots[type].getDefaultArgs?()
     @props.handleChange(type: type, id: @props.id)
-
-  getDefaultArgs: (type) ->
-    N.Roots[type].defaultArgs
 
   render: ->
     {root} = @props
@@ -70,8 +67,8 @@ V.ObservableRoot = React.createClass
         {'Rx.Observable.'}
         <SelectRoot id={root.id} selected={root.type} onChange={@handleRootTypeChange}/>
         {'('}
-        { if defaultArgs = @getDefaultArgs(root.type)
-          <N.Helpers.InputArea defaultValue={root.args || defaultArgs} ref="argsInput"/>
+        { if root.args?
+          <N.Helpers.InputArea defaultValue={root.args} ref="argsInput"/>
         }
         {')'}
         {@props.children}

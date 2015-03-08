@@ -4,23 +4,6 @@ N = Visualizer.ReactNodes
 defaultFunc = (impl) ->
   "function(value) { #{impl} }"
 
-simpleOperators =
-  map:
-    defaultArgs: defaultFunc("return value * value;")
-    useScheduler: false
-  take:
-    defaultArgs: "4"
-    useScheduler: true
-  filter:
-    defaultArgs: defaultFunc("return value < 20;")
-    useScheduler: false
-  delay:
-    defaultArgs: "1000"
-    useScheduler: true
-  bufferWithTime:
-    defaultArgs: "1000"
-    useScheduler: true
-
 createSimpleObservable = R.curryN 2, (rootType, rootArgs) ->
   root:
     type: rootType
@@ -30,11 +13,28 @@ createSimpleObservable = R.curryN 2, (rootType, rootArgs) ->
 getClosedOverArgName = (recursionLevel) ->
   'outerValue' + (recursionLevel && recursionLevel + 1 || '')
 
+simpleOperators =
+  map:
+    getDefaultArgs: R.always(defaultFunc("return value * value;"))
+    useScheduler: false
+  take:
+    getDefaultArgs: R.always("4")
+    useScheduler: true
+  filter:
+    getDefaultArgs: R.always(defaultFunc("return value < 20;"))
+    useScheduler: false
+  delay:
+    getDefaultArgs: R.always("1000")
+    useScheduler: true
+  bufferWithTime:
+    getDefaultArgs: R.always("1000")
+    useScheduler: true
+
 recursiveFunctionOperators =
   flatMap:
     recursive: true
     recursionType: 'function'
-    defaultArgs: "function(outerValue) {"
+    getDefaultArgs: R.always("function(outerValue) {")
     getDefaultObservable: R.compose(createSimpleObservable('just'), getClosedOverArgName)
 
 recursiveOperators =
@@ -52,43 +52,32 @@ recursiveOperators =
         { type: 'delay', args: '1000' }
       ]
 
-createSimpleOperator = (defaultArgs) ->
-  React.createClass
-    render: ->
-      <N.Helpers.InputArea defaultValue={@props.args || defaultArgs}/>
+SimpleOperator = React.createClass
+  render: ->
+    <N.Helpers.InputArea defaultValue={@props.args}/>
 
 RecursiveOperator = React.createClass
-  handleChange: (observable) ->
-    @setState observable: observable
-    @props.onChildOperatorChange(observable)
-
-  getInitialState: ->
-    observable: @props.observable
-
   render: ->
-    root = <V.Observable id={@props.id} observable={@state.observable} recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
+    root = <V.Observable id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
     <span className="recursiveContainer" style={paddingLeft: '50px'} >
       {@props.children}
       {root}
       {'}'}
     </span>
 
-createRecursiveFunctionOperator = ->
-  React.createClass
-    render: ->
-      definition = @props.args || "function(#{getClosedOverArgName(@props.recursionLevel)}) { return "
-      <RecursiveOperator id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange}>
-        <span className="functionDeclaration" id={@props.id}>
-          <N.Helpers.InputArea defaultValue={definition} />
-        </span>
-      </RecursiveOperator>
+RecursionFunctionOperator = React.createClass
+  render: ->
+    <RecursiveOperator id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange}>
+      <span className="functionDeclaration" id={@props.id}>
+        <N.Helpers.InputArea defaultValue={@props.args} />
+      </span>
+    </RecursiveOperator>
 
 operatorClasses = [
-  R.mapObj(R.compose(createSimpleOperator, R.get('defaultArgs')))(simpleOperators)
-  R.mapObj(createRecursiveFunctionOperator)(recursiveFunctionOperators)
+  R.mapObj(R.always(SimpleOperator))(simpleOperators)
+  R.mapObj(R.always(RecursionFunctionOperator))(recursiveFunctionOperators)
   R.mapObj(R.always(RecursiveOperator))(recursiveOperators)
 ]
-
 
 OperatorClasses = R.foldl(R.mixin, {}, operatorClasses)
 
