@@ -21,16 +21,6 @@ defaultStructure = {
       id: 'ro'
       args: 'function(value) { return value * value; }'
     }
-    {
-      type: 'delay'
-      id: 'roo'
-      args: '1000'
-    }
-    {
-      type: 'take',
-      id: 'rooo'
-      args: '2'
-    }
   ]
 }
 
