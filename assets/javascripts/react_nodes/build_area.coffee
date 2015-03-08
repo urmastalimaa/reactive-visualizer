@@ -1,10 +1,13 @@
+V = Visualizer
+
 BuildArea = React.createClass
   getInitialState: ->
-    observable: @props.defaultObservable
+    observable: V.identifyStructure(@props.defaultObservable)
 
   handleChange: (observable) ->
-    @setState observable: observable
-    @props.onChange observable
+    identifiedObservable = V.identifyStructure(observable)
+    @setState observable: identifiedObservable
+    @props.onChange identifiedObservable
 
   render: ->
     <div className="buildArea">
@@ -17,4 +20,4 @@ BuildArea = React.createClass
       </div>
     </div>
 
-Visualizer.BuildArea = BuildArea
+V.BuildArea = BuildArea

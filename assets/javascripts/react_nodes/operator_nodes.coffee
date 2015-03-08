@@ -48,7 +48,6 @@ recursiveOperators =
     getDefaultObservable: R.always
       root:
         type: 'of'
-        args: '1,2,3'
       operators: [
         { type: 'delay', args: '1000' }
       ]
@@ -101,17 +100,12 @@ N.ObservableOperator = React.createClass
     @props.onChildOperatorChange(@props.operator, observable)
 
   render: ->
-    {operator} = @props
-    operator.recursionType = N.Operators[operator.type].recursionType
-    if !operator.obsevable && N.Operators[operator.type].getDefaultObservable
-      operator.observable = N.Operators[operator.type].getDefaultObservable(@props.recursionLevel)
-
-    opEl = React.createElement(OperatorClasses[operator.type], R.mixin(@props.operator,
+    opEl = React.createElement(OperatorClasses[@props.operator.type], R.mixin(@props.operator,
       onChildOperatorChange: @handleChildObservableChange, recursionLevel: @props.recursionLevel
     ))
 
-    <div className={operator.type} id={operator.id} style={width: '100%'}>
-      {".#{operator.type}("} {opEl} {')'}
+    <div className={@props.operator.type} id={@props.operator.id} style={width: '100%'}>
+      {".#{@props.operator.type}("} {opEl} {')'}
       {@props.children}
       <RemoveOperator onRemove={@handleRemove}/>
       <N.SimulationArea />

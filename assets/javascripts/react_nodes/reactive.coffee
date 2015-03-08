@@ -30,12 +30,8 @@ Observable = React.createClass
   render: ->
     handleAddOperatorTo = R.curryN 2, @handleAddOperator
     {root, operators} = @props.observable
-    root.id = @props.id + 'r'
-
-    newId = root.id + Array(operators.length + 2).join("o")
 
     operatorNodes = operators.map (operator, index) =>
-      operator.id = root.id + Array(index + 2).join("o")
       <N.ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel}>
         <AddOperator id={operator.id} onSelect={handleAddOperatorTo(operator)}/>
       </N.ObservableOperator>

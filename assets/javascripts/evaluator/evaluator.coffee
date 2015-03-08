@@ -18,7 +18,6 @@ operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, defaultArgs}, k
       (if recursive then '' else (if useScheduler then ', scheduler)' else ')'))
   )(N.Operators)
 
-
 evalRoot = (root) ->
   args = inputVal(root.id)
   R.mixin root,
