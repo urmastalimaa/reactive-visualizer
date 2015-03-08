@@ -1,7 +1,7 @@
 V = Visualizer
 N = V.ReactNodes
 
-Observable = React.createClass
+V.Observable = React.createClass
   handleAddOperator: (operator, type) ->
     return unless type
 
@@ -70,4 +70,3 @@ AddOperator = React.createClass
       </select>
     </span>
 
-window.Observable = Observable

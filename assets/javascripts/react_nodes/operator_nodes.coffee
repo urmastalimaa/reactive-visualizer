@@ -66,7 +66,7 @@ RecursiveOperator = React.createClass
     observable: @props.observable
 
   render: ->
-    root = <Observable id={@props.id} observable={@state.observable} recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
+    root = <V.Observable id={@props.id} observable={@state.observable} recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
     <span className="recursiveContainer" style={paddingLeft: '50px'} >
       {@props.children}
       {root}
