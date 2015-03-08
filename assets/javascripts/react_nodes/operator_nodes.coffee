@@ -15,6 +15,9 @@ getClosedOverArgName = (recursionLevel) ->
 
 simpleCombinerFunction = 'function(first, second){ return {first: first, second: second}; }'
 
+getFunctionDeclaration = (args) ->
+  "function(#{args}) {"
+
 simpleOperators =
   map:
     getDefaultArgs: R.always(defaultFunc("return value * value;"))
@@ -36,7 +39,7 @@ recursiveFunctionOperators =
   flatMap:
     recursive: true
     recursionType: 'function'
-    getDefaultArgs: R.always("function(outerValue) {")
+    getDefaultArgs: R.compose(getFunctionDeclaration, getClosedOverArgName)
     getDefaultObservable: R.compose(createSimpleObservable('just'), getClosedOverArgName)
 
 recursiveOperators =
