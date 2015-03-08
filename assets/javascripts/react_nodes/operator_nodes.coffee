@@ -67,7 +67,7 @@ createRecursiveFunctionOperator = ->
       definition = @props.args || "function(#{@getClosedOverArgName()}) { return "
       root = <Observable id={@props.id + "r"} observable={@state.observable} ref="observable", recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
       <span className="recursiveContainer" style={paddingLeft: '50px'} >
-        <span className="functionDeclaration">
+        <span className="functionDeclaration" id={@props.id}>
           <N.Helpers.InputArea defaultValue={definition} />
         </span>
         {root}

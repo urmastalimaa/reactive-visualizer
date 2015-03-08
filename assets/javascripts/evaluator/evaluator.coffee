@@ -2,7 +2,7 @@ V = Visualizer
 N = V.ReactNodes
 
 inputVal = (id) ->
-  $("##{id} textarea").val()
+  $("##{id} > textarea").val()
 
 rootEvaluators = R.mapObjIndexed( ({useScheduler, defaultArgs}, key) ->
   (input) ->
