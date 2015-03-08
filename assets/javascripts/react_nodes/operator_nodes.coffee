@@ -13,6 +13,8 @@ createSimpleObservable = R.curryN 2, (rootType, rootArgs) ->
 getClosedOverArgName = (recursionLevel) ->
   'outerValue' + (recursionLevel && recursionLevel + 1 || '')
 
+simpleCombinerFunction = 'function(first, second){ return {first: first, second: second}; }'
+
 simpleOperators =
   map:
     getDefaultArgs: R.always(defaultFunc("return value * value;"))
@@ -52,6 +54,14 @@ recursiveOperators =
         { type: 'delay', args: '1000' }
       ]
 
+recursiveOperatorsWithTrailingArgs =
+  combineLatest:
+    recursive: true
+    recursionType: 'observableWithSelector'
+    getDefaultObservable: R.always(createSimpleObservable('just')('1,2'))
+    getDefaultArgs: R.always(simpleCombinerFunction)
+
+
 SimpleOperator = React.createClass
   render: ->
     <N.Helpers.InputArea defaultValue={@props.args}/>
@@ -73,11 +83,22 @@ RecursionFunctionOperator = React.createClass
       {'}'}
     </span>
 
+RecursiveOperatorWithTrailingArgs = React.createClass
+  render: ->
+    <span>
+      <RecursiveOperator id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange}/>
+      ,
+      <span className="recursiveOperatorTrailingArg" id={@props.id}>
+        <N.Helpers.InputArea defaultValue={@props.args} />
+      </span>
+    </span>
+
 
 operatorClasses = [
   R.mapObj(R.always(SimpleOperator))(simpleOperators)
   R.mapObj(R.always(RecursionFunctionOperator))(recursiveFunctionOperators)
   R.mapObj(R.always(RecursiveOperator))(recursiveOperators)
+  R.mapObj(R.always(RecursiveOperatorWithTrailingArgs))(recursiveOperatorsWithTrailingArgs)
 ]
 
 OperatorClasses = R.foldl(R.mixin, {}, operatorClasses)
@@ -110,4 +131,5 @@ RemoveOperator = React.createClass
 N.Operators = R.foldl(R.mixin, {}, [simpleOperators
   recursiveOperators
   recursiveFunctionOperators
+  recursiveOperatorsWithTrailingArgs
 ])
