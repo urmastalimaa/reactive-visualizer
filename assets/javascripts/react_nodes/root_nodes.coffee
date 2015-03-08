@@ -64,13 +64,14 @@ V.ObservableRoot = React.createClass
     N.Roots[type].defaultArgs
 
   render: ->
+    {root} = @props
     <div className="observableRoot">
-      <div className={@props.type} id={@props.id}>
+      <div className={root.type} id={root.id}>
         {'Rx.Observable.'}
-        <SelectRoot id={@props.id} selected={@props.type} onChange={@handleRootTypeChange}/>
+        <SelectRoot id={root.id} selected={root.type} onChange={@handleRootTypeChange}/>
         {'('}
-        { if defaultArgs = @getDefaultArgs(@props.type)
-          <N.Helpers.InputArea defaultValue={@props.args || defaultArgs} ref="argsInput"/>
+        { if defaultArgs = @getDefaultArgs(root.type)
+          <N.Helpers.InputArea defaultValue={root.args || defaultArgs} ref="argsInput"/>
         }
         {')'}
         {@props.children}

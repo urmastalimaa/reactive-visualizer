@@ -31,18 +31,18 @@ Observable = React.createClass
   render: ->
     handleAddOperatorTo = R.curryN 2, @handleAddOperator
     {root, operators} = @props.observable
+    root.id = @props.id + 'r'
 
-    newId = @props.id + Array(operators.length + 2).join("o")
+    newId = root.id + Array(operators.length + 2).join("o")
 
     operatorNodes = operators.map (operator, index) =>
-      id = @props.id + Array(index + 2).join("o")
-      operator.id = id
-      <ObservableOperator id={id} operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel}>
-        <AddOperator id={id} onSelect={handleAddOperatorTo(operator)}/>
-      </ObservableOperator>
+      operator.id = root.id + Array(index + 2).join("o")
+      <N.ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel}>
+        <AddOperator id={operator.id} onSelect={handleAddOperatorTo(operator)}/>
+      </N.ObservableOperator>
 
     <div className="observable" style={paddingLeft: 'inherit'}>
-     <V.ObservableRoot type={root.type} id={@props.id} args={root.args} handleChange={@handleRootChange} >
+     <V.ObservableRoot root={root} handleChange={@handleRootChange} >
       <AddOperator id={root.id} onSelect={handleAddOperatorTo(root)}/>
      </V.ObservableRoot>
      {operatorNodes}
@@ -74,30 +74,5 @@ AddOperator = React.createClass
         {options}
       </select>
     </span>
-
-
-ObservableOperator = React.createClass
-  handleRemove: ->
-    @props.onRemove(@props.operator)
-
-  handleChildObservableChange: (observable, recursionType) ->
-    @props.onChildOperatorChange(@props.operator, observable, recursionType)
-
-  render: ->
-    {type, observable, args} = @props.operator
-    opEl = React.createElement(N.OperatorClasses[type], args: args, id: @props.id, observable: observable, onChildOperatorChange: @handleChildObservableChange, recursionLevel: @props.recursionLevel)
-
-    <div className={type} id={@props.id} style={width: '100%'}>
-      {".#{type}("} {opEl} {')'}
-      {@props.children}
-      <RemoveOperator onRemove={@handleRemove}/>
-      <N.SimulationArea />
-    </div>
-
-RemoveOperator = React.createClass
-  handleClick: ->
-    @props.onRemove()
-  render: ->
-    <button className='remove' onClick={@handleClick}>-</button>
 
 window.Observable = Observable

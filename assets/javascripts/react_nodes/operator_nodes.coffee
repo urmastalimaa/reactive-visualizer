@@ -44,10 +44,7 @@ createRecursiveFunctionOperator = ->
       @props.onChildOperatorChange(observable, 'function')
 
     getClosedOverArgName: ->
-      if @props.recursionLevel == 0
-        'outerValue'
-      else
-        'outerValue' + (@props.recursionLevel + 1)
+      'outerValue' + (@props.recursionLevel && @props.recursionLevel + 1 || '')
 
     getInitialState: ->
       defaultObservable =
@@ -65,7 +62,7 @@ createRecursiveFunctionOperator = ->
           @handleChange(@state.observable)
 
       definition = @props.args || "function(#{@getClosedOverArgName()}) { return "
-      root = <Observable id={@props.id + "r"} observable={@state.observable} ref="observable", recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
+      root = <Observable id={@props.id} observable={@state.observable} ref="observable", recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
       <span className="recursiveContainer" style={paddingLeft: '50px'} >
         <span className="functionDeclaration" id={@props.id}>
           <N.Helpers.InputArea defaultValue={definition} />
@@ -94,7 +91,7 @@ createRecursiveOperator = ->
         setTimeout =>
           @handleChange(@state.observable)
 
-      root = <Observable id={@props.id + "r"} observable={@state.observable} ref="observable", recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
+      root = <Observable id={@props.id} observable={@state.observable} ref="observable", recursionLevel={@props.recursionLevel + 1} onChange={@handleChange} />
       <span className="recursiveContainer" style={paddingLeft: '50px'} >
         {root}
         {'}'}
@@ -112,4 +109,30 @@ N.Operators = R.foldl(R.mixin, {}, [simpleOperators
 ])
 
 N.OperatorClasses = R.foldl(R.mixin, {}, operatorClasses)
+
+N.ObservableOperator = React.createClass
+  handleRemove: ->
+    @props.onRemove(@props.operator)
+
+  handleChildObservableChange: (observable, recursionType) ->
+    @props.onChildOperatorChange(@props.operator, observable, recursionType)
+
+  render: ->
+    {operator} = @props
+    opEl = React.createElement(N.OperatorClasses[operator.type], R.mixin(@props.operator,
+      onChildOperatorChange: @handleChildObservableChange, recursionLevel: @props.recursionLevel
+    ))
+
+    <div className={operator.type} id={operator.id} style={width: '100%'}>
+      {".#{operator.type}("} {opEl} {')'}
+      {@props.children}
+      <RemoveOperator onRemove={@handleRemove}/>
+      <N.SimulationArea />
+    </div>
+
+RemoveOperator = React.createClass
+  handleClick: ->
+    @props.onRemove()
+  render: ->
+    <button className='remove' onClick={@handleClick}>-</button>
 
