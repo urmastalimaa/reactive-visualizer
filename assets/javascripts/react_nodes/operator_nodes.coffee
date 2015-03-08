@@ -7,37 +7,29 @@ defaultFunc = (impl) ->
 simpleOperators =
   map:
     defaultArgs: defaultFunc("return value * value;")
-    hasInput: true
     useScheduler: false
   take:
     defaultArgs: "4"
-    hasInput: true
     useScheduler: true
   filter:
     defaultArgs: defaultFunc("return value < 20;")
-    hasInput: true
     useScheduler: false
   delay:
     defaultArgs: "1000"
-    hasInput: true
     useScheduler: true
   bufferWithTime:
     defaultArgs: "1000"
-    hasInput: true
     useScheduler: true
 
 recursiveFunctionOperators =
   flatMap:
-    hasInput: true
+    defaultArgs: "function(outerValue) {"
     recursive: true
-
 
 recursiveOperators =
   merge:
-    hasInput: false
     recursive: true
   amb:
-    hasInput: false
     recursive: true
 
 createSimpleOperator = (defaultArgs) ->

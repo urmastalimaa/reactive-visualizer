@@ -5,7 +5,6 @@ messageDisplayer = ->
   getTargetArea: (key, resultType) ->
     $("##{key} > .simulationArea .#{resultType}")
 
-
   append: (key, resultType, value) ->
     @getTargetArea(key, resultType)
       .append("<span>#{JSON.stringify(value)} </span>")

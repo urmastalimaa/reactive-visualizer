@@ -40,7 +40,6 @@ createObservableString = (observable, wrap) ->
 
   wrap(observableString)
 
-
 buildObservables = (observable) ->
   observableString = createObservableString(observable, R.I)
 

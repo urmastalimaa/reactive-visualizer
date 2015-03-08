@@ -4,11 +4,9 @@ N = V.ReactNodes
 N.Roots =
   of:
     defaultArgs: "1,2,3"
-    hasInput: true
     useScheduler: false
   fromTime:
     defaultArgs: "{500: 1, 1000: 2, 3000: 3}"
-    hasInput: true
     useScheduler: true
 
 SelectRoot = React.createClass
@@ -30,7 +28,8 @@ SelectRoot = React.createClass
 
 V.ObservableRoot = React.createClass
   handleRootTypeChange: (type) ->
-    @refs.argsInput.getDOMNode().value = @getDefaultArgs(type)
+    if argsInput = @refs.argsInput
+      argsInput.getDOMNode().value = @getDefaultArgs(type)
     @props.handleChange(type: type, id: @props.id)
 
   getDefaultArgs: (type) ->
@@ -42,7 +41,9 @@ V.ObservableRoot = React.createClass
         {'Rx.Observable.'}
         <SelectRoot id={@props.id} selected={@props.type} onChange={@handleRootTypeChange}/>
         {'('}
-        <N.Helpers.InputArea defaultValue={@props.args || @getDefaultArgs(@props.type)} ref="argsInput"/>
+        { if defaultArgs = @getDefaultArgs(@props.type)
+          <N.Helpers.InputArea defaultValue={@props.args || defaultArgs} ref="argsInput"/>
+        }
         {')'}
         {@props.children}
         <N.SimulationArea />
