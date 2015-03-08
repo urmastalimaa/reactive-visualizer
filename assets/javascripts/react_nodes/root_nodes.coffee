@@ -5,8 +5,36 @@ N.Roots =
   of:
     defaultArgs: "1,2,3"
     useScheduler: false
+  just:
+    defaultArgs: "5"
+    useScheduler: true
   fromTime:
     defaultArgs: "{500: 1, 1000: 2, 3000: 3}"
+    useScheduler: true
+  interval:
+    defaultArgs: "1000"
+    useScheduler: true
+  timer:
+    defaultArgs: "500, 2000"
+    useScheduler: true
+  repeat:
+    defaultArgs: "42, 3"
+    useScheduler: true
+  generate:
+    defaultArgs: "0, function(x){ return x < 3;}, function(x) { return x + 1;}, function(x) { return x; }"
+    useScheduler: true
+  generateWithRelativeTime:
+    defaultArgs: "1, function(x) { return x < 4;}, function(x) { return x + 1;}, function(x) { return x; }, function(x) { return 500 * x; }"
+    useScheduler: true
+  never:
+    useScheduler: false
+  empty:
+    useScheduler: true
+  range:
+    defaultArgs: "1, 5"
+    useScheduler: true
+  pairs:
+    defaultArgs: "{foo: 42, bar: 56, baz: 78}"
     useScheduler: true
 
 SelectRoot = React.createClass
