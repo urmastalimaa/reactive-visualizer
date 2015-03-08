@@ -9,7 +9,7 @@ identifyObservable = R.curryN 2, (baseId, observable) ->
 
 identifyOperator = R.curryN 2, (rootId, operator, index) ->
   operatorId = rootId + Array(index + 2).join("o")
-  recursionLevel = (rootId.match(/r/g) || []).length
+  recursionLevel = (rootId.match(/r/g) || []).length - 1
 
   newOperator = R.assoc('id', operatorId, R.pick(['type', 'args'], operator))
 
