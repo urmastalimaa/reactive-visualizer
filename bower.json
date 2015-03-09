@@ -13,6 +13,9 @@
     "jquery": "~ 2.1",
     "bourbon": "~ 4.1",
     "ramda": "~ 0.10",
-    "rxjs": "https://github.com/urmastalimaa/RxJS.git"
+    "rxjs": "https://github.com/urmastalimaa/RxJS.git",
+    "bootstrap": "~ 3.3",
+    "react-bootstrap": "~ 0.16",
+    "bootstrap-slider": "latest"
   }
 }

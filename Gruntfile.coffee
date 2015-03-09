@@ -29,14 +29,18 @@ module.exports = (grunt) ->
           'bower_components/rxjs/dist/rx.all.js'
           'bower_components/rxjs/dist/rx.testing.js'
           'bower_components/jquery/dist/jquery.js'
-          'node_modules/ramda/dist/ramda.js'
           'node_modules/react/dist/react.js'
+          'bower_components/react-bootstrap/react-bootstrap.js'
+          'bower_components/bootstrap-slider/bootstrap-slider.js'
+          'node_modules/ramda/dist/ramda.js'
           'public/assets/analyzer.js'
         ]
         dest: 'public/assets/application.js'
       css:
         src: [
           'public/assets/visualizer.css'
+          'bower_components/bootstrap/dist/css/bootstrap.css'
+          'bower_components/bootstrap-slider/slider.css'
         ]
         dest: 'public/assets/application.css'
     slim:
