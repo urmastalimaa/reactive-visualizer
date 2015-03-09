@@ -8,7 +8,7 @@ module.exports = (grunt) ->
         ]
       dist:
         files:
-          'public/assets/application.css': 'assets/stylesheets/application.sass'
+          'public/assets/visualizer.css': 'assets/stylesheets/visualizer.sass'
     cjsx:
       compile:
         files:
@@ -24,7 +24,7 @@ module.exports = (grunt) ->
           ]
 
     concat:
-      dist:
+      javascripts:
         src: [
           'bower_components/rxjs/dist/rx.all.js'
           'bower_components/rxjs/dist/rx.testing.js'
@@ -34,6 +34,11 @@ module.exports = (grunt) ->
           'public/assets/analyzer.js'
         ]
         dest: 'public/assets/application.js'
+      css:
+        src: [
+          'public/assets/visualizer.css'
+        ]
+        dest: 'public/assets/application.css'
     slim:
       dist:
         files: [
