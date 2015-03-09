@@ -1,6 +1,6 @@
 V = Visualizer
 
-V.Roots =
+roots =
   of:
     getDefaultArgs: R.always("1,2,3")
     useScheduler: false
@@ -36,3 +36,5 @@ V.Roots =
     getDefaultArgs: R.always("{foo: 42, bar: 56, baz: 78}")
     useScheduler: true
 
+sortByKeys = R.compose(R.fromPairs, R.sortBy(R.nthArg(0)), R.toPairs)
+V.Roots = sortByKeys(roots)

@@ -204,8 +204,9 @@ recursiveOperatorsWithTrailingArgs = R.mapObj(R.mixin(recursiveOperatorsWithTrai
   zip: {}
 )
 
-Visualizer.Operators = R.foldl(R.mixin, {}, [simpleOperators
+sortByKeys = R.compose(R.fromPairs, R.sortBy(R.nthArg(0)), R.toPairs)
+Visualizer.Operators = sortByKeys(R.foldl(R.mixin, {}, [simpleOperators
   recursiveOperators
   recursiveFunctionOperators
   recursiveOperatorsWithTrailingArgs
-])
+]))
