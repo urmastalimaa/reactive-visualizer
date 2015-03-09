@@ -18,7 +18,7 @@ simpleCombinerFunction = 'function(first, second){ return {first: first, second:
 getReturningFunctionDeclaration = (args) ->
   "function(#{args}) { return "
 
-simpleOperatorsDefaults = useScheduler: false
+simpleOperatorsDefaults = useScheduler: false, recursionType: 'none'
 simpleOperators = R.mapObj(R.mixin(simpleOperatorsDefaults))(
   average:
     getDefaultArgs: R.always("function(x) { return x; }")
@@ -250,14 +250,19 @@ RecursiveOperatorWithTrailingArgs = React.createClass
     </span>
 
 
-operatorClasses = [
-  R.mapObj(R.always(SimpleOperator))(simpleOperators)
-  R.mapObj(R.always(RecursionFunctionOperator))(recursiveFunctionOperators)
-  R.mapObj(R.always(RecursiveOperator))(recursiveOperators)
-  R.mapObj(R.always(RecursiveOperatorWithTrailingArgs))(recursiveOperatorsWithTrailingArgs)
-]
+N.Operators = R.foldl(R.mixin, {}, [simpleOperators
+  recursiveOperators
+  recursiveFunctionOperators
+  recursiveOperatorsWithTrailingArgs
+])
 
-OperatorClasses = R.foldl(R.mixin, {}, operatorClasses)
+OperatorClasses = R.mapObject( ({recursionType}) ->
+  switch recursionType
+  when 'none' then SimpleOperator
+  when 'function' then RecursionFunctionOperator
+  when 'observable' then RecursiveOperator
+  when 'observableWithSelector' then RecursiveOperatorWithTrailingArgs
+)
 
 N.ObservableOperator = React.createClass
   handleRemove: ->
@@ -292,8 +297,3 @@ RemoveOperator = React.createClass
   render: ->
     <button className='remove' onClick={@handleClick}>-</button>
 
-N.Operators = R.foldl(R.mixin, {}, [simpleOperators
-  recursiveOperators
-  recursiveFunctionOperators
-  recursiveOperatorsWithTrailingArgs
-])
