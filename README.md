@@ -18,3 +18,15 @@ For simulating the observable there are two possibilities:
 2. Use real time
   * the good: Can use real asynchronous calls e.g query a server.
   * the bad: Can only display values as they arrive, no time travelling
+
+To Do
+
+1. Pause, rewind, step by step during displaying.
+2. Enhance the simulation area, show previous values.
+3. Style the UI
+4. Live simulation using a timeout scheduler, allowing real requests.
+5. Capture live simulation, playback similar to virtual time 
+6. Try and parse user provided javascript snippet to create the observable.
+7. Allow operators with arbitrary parameters using structured view for observables.
+8. Query and parse operator descriptions from TypeScript definitions during building.
+
