@@ -1,133 +1,181 @@
 require '../test_helper'
 require '../../assets/javascripts/factory/factory'
+require '../../assets/javascripts/factory/factory'
 
 onNext = Rx.ReactiveTest.onNext
 onCompleted = Rx.ReactiveTest.onCompleted
+V = Visualizer
 
 describe 'evalObservable', ->
-  uiValuator = textArea: (id) -> uiValues()[id]
+  describe 'observable', ->
+    subject = ->
+      scheduler = new Rx.TestScheduler
+      [observableFactory, collector] = V.evalObservable(structure())
 
-  subject = ->
-    scheduler = new Rx.TestScheduler
-    observableFactory = Visualizer.evalObservable(uiValuator, {})(structure())
+      results = scheduler.startWithCreate R.always(observableFactory(scheduler))
+      results.messages
 
-    observable = observableFactory[targetId()](scheduler)
-    results = scheduler.startWithCreate R.always(observable)
-    results.messages
+    structure = memo().is ->
 
-  uiValues = memo().is ->
-  structure = memo().is ->
-  targetId = memo().is ->
-
-  context 'just of', ->
-    structure.is ->
-      root:
-        type: 'of', id: 'rootId'
-      operators: []
-
-    uiValues.is -> rootId: '1'
-
-    targetId.is -> 'rootId'
-
-    it 'has correct values', ->
-      expect(subject()).toEqual [
-        onNext(200, 1)
-        onCompleted(200)
-      ]
-
-  context 'single operator', ->
-    rootType = memo().is -> 'of'
-    root = memo().is -> type: rootType(), id: 'rootId'
-
-    structure.is ->
-      root: root()
-      operators: [type: type(), id: 'opId']
-
-    targetId.is -> 'opId'
-    uiValues.is ->
-      rootId: rootValue()
-      opId: opValue()
-
-    type = memo().is ->
-    rootValue = memo().is ->
-    opValue = memo().is ->
-
-    context 'map', ->
-      type.is -> 'map'
-      rootValue.is -> '1,2,3'
-      opValue.is -> 'function(value) { return value * value }'
+    context 'just a root', ->
+      structure.is ->
+        root:
+          id: 'r', getCode: R.always('Rx.Observable.of(1)')
+        operators: []
 
       it 'has correct values', ->
         expect(subject()).toEqual [
           onNext(200, 1)
-          onNext(200, 4)
-          onNext(200, 9)
           onCompleted(200)
         ]
 
-    context 'filter', ->
-      type.is -> 'filter'
-      rootValue.is -> '2,5,9,10'
-      opValue.is -> 'function(value) { return value % 2 == 0 }'
+    context 'single, non-recursive operator', ->
+      operator = memo().is ->
+      structure.is ->
+        root: id: 'r', getCode: R.always('Rx.Observable.of(1, 2)')
+        operators: [operator()]
+
+      context 'without arguments', ->
+        operator.is -> id: 'ro', getCode: R.always('.count()')
+
+        it 'has correct values', ->
+          expect(subject()).toEqual [
+            onNext(200, 2)
+            onCompleted(200)
+          ]
+
+      context 'with argument, without scheduler', ->
+        operator.is -> id: 'ro', getCode: R.always('.map(function(x) { return x * 2 })')
+
+        it 'has correct values', ->
+          expect(subject()).toEqual [
+            onNext(200, 2)
+            onNext(200, 4)
+            onCompleted(200)
+          ]
+
+      context 'with argument and scheduler', ->
+        operator.is -> id: 'ro', getCode: R.always('.delay(500, scheduler)')
+
+        it 'has correct values', ->
+          expect(subject()).toEqual [
+            onNext(700, 1)
+            onNext(700, 2)
+            onCompleted(700)
+          ]
+
+    context 'with single recursive operator', ->
+      structure.is ->
+        root: id: 'r', getCode: R.always('Rx.Observable.of(1, 2)')
+        operators: [operator()]
+
+      operator = memo().is ->
+        id: 'ro'
+        getCode: (innerObservable) -> ".flatMap(function(x) { return #{innerObservable} })"
+        observable: innerObservable()
+
+      innerObservable = memo().is ->
+        root: id: 'ro', getCode: R.always('Rx.Observable.of(x, x * x)')
+        operators: []
+
 
       it 'has correct values', ->
         expect(subject()).toEqual [
+          onNext(200, 1)
+          onNext(200, 1)
           onNext(200, 2)
-          onNext(200, 10)
+          onNext(200, 4)
           onCompleted(200)
         ]
 
-    context 'delay', ->
-      type.is -> 'delay'
-      rootValue.is -> '1,2'
-      opValue.is -> '100'
+    context 'with complex observable', ->
+      structure.is ->
+        root: id: 'r', getCode: R.always('Rx.Observable.of(1, 2)')
+        operators: [
+          {
+            id: 'ro'
+            getCode: (innerObservable) ->
+              ".flatMap(function(outerValue) { return #{innerObservable} })"
+            observable:
+              root: id: 'ror', getCode: R.always('Rx.Observable.of(outerValue, outerValue * outerValue)')
+              operators: [
+                id: 'roro', getCode: R.always('.delayWithSelector(function(x){ return Rx.Observable.timer(x * 100, scheduler) })')
+              ]
+          }
+          {
+            id: 'roo'
+            getCode: R.always('.skip(1)')
+          }
+        ]
 
       it 'has correct values', ->
         expect(subject()).toEqual [
           onNext(300, 1)
-          onNext(300, 2)
-          onCompleted(300, 100)
+          onNext(400, 2)
+          onNext(600, 4)
+          onCompleted(600)
         ]
 
-    context 'bufferWithTime', ->
-      type.is -> "bufferWithTime"
-      rootType.is -> 'fromTime'
-      rootValue.is -> '{50: 1, 90: 2, 100: 3, 201: 4, 205: 5}'
-      opValue.is -> '100'
+  describe 'collector', ->
+    subject = ->
+      scheduler = new Rx.TestScheduler
+      [observableFactory, collector] = V.evalObservable(structure())
 
-      it 'has correct values', ->
-        expect(subject()).toEqual [
-          onNext(300, [1,2])
-          onNext(400, [3])
-          onNext(405, [4,5])
-          onCompleted(405)
-        ]
+      scheduler.startWithCreate R.always(observableFactory(scheduler))
+      collector.results()
 
-    context.only 'flatMap', ->
+    structure = memo().is ->
+
+    context 'with complex observable', ->
       structure.is ->
-        root:
-          type: 'of', id: 'rootId'
+        root: id: 'r', getCode: R.always('Rx.Observable.ofWithScheduler(scheduler, 1, 2)')
         operators: [
           {
-            type: 'flatMap'
-            id: 'flatMapId'
+            id: 'ro'
+            getCode: (innerObservable) ->
+              ".flatMap(function(outerValue) { return #{innerObservable} })"
             observable:
-              root:
-                type: 'of', id: 'secondRootId'
+              root: id: 'ror', getCode: R.always('Rx.Observable.ofWithScheduler(scheduler, outerValue, outerValue * outerValue)')
               operators: [
-                { type: 'map', id: 'mapId' }
-              ]
+                 id: 'roro', getCode: R.always('.delayWithSelector(function(x){ return Rx.Observable.timer(x * 100, scheduler) })')
+               ]
           }
         ]
 
-      uiValues.is ->
-        rootId: '1,2,3'
-        flatMapId: 'function(topValue)'
-        secondRootId: "parseInt('1' + topValue)"
-        mapId: 'function(value) { return value * value }'
+      it 'stores results per id', ->
+        # Weirdness in the time and order of messages is caused by the
+        # virtual time scheduler
 
-      targetId.is -> 'mapId'
-
-      it 'has correct values', ->
-        console.log subject()
-
+        expect(subject()).toEqual
+          r:
+            messages: [
+              onNext(201, 1)
+              onNext(202, 2)
+              onCompleted(203)
+            ]
+          ro:
+            messages: [
+              onNext(302, 1)
+              onNext(303, 1)
+              onNext(403, 2)
+              onNext(604, 4)
+              onCompleted(604)
+            ]
+          ror:
+            messages: [
+              onNext(202, 1)
+              onNext(203, 1)
+              onNext(203, 2)
+              onCompleted(204)
+              onNext(204, 4)
+              onCompleted(205)
+            ]
+          roro:
+            messages: [
+              onNext(302, 1)
+              onNext(303, 1)
+              onCompleted(303)
+              onNext(403, 2)
+              onNext(604, 4)
+              onCompleted(604)
+            ]
