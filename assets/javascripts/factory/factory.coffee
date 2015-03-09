@@ -17,34 +17,30 @@ createCollector = ->
     resultMap[id].messages.push notification
   results: -> resultMap
 
-createOperatorString = (previous, observableString) ->
-  previous + observableString
+createDoOperator = (id) ->
+  ".do(createMockObserver(scheduler, collector.collect, '#{id}'))"
 
-createObservableString = (observable, wrap) ->
-  {operators, root} = observable
-  observableString = R.foldl( (previousString, description) ->
-    if description.observable
-      previousString +
-        createObservableString(description.observable, description.getCode) +
-        ".do(createMockObserver(scheduler, collector.collect, '#{description.id}'))"
+buildOperator = (previousCode, {id, observable, getCode}) ->
+  previousCode + (
+    if observable
+      buildObservable(observable, getCode)
     else
-      createOperatorString(previousString, description.getCode()) +
-      ".do(createMockObserver(scheduler, collector.collect, '#{description.id}'))"
-  )(root.getCode() + ".do(createMockObserver(scheduler, collector.collect, '#{root.id}'))")(operators)
+      getCode()
+  ) + createDoOperator(id)
 
-  wrap(observableString)
+buildRoot = ({id, getCode}) ->
+  getCode() + createDoOperator(id)
 
-buildObservables = (observable) ->
-  observableString = createObservableString(observable, R.I)
+buildObservable = ({operators, root}, wrap) ->
+  wrap(R.foldl(buildOperator, buildRoot(root))(operators))
 
+evalFactory = R.curryN 3, (observable, collector, scheduler) ->
+  try
+    eval(buildObservable(observable, R.I))
+  catch err
+    console.error "Error during evaluation", err
+    Rx.Observable.empty()
+
+Visualizer.evalObservable = (observable) ->
   collector = createCollector()
-  factory = R.curryN 2, (collector, scheduler) ->
-    try
-      eval(observableString)
-    catch err
-      console.error "Error during evaluation", err
-      Rx.Observable.empty()
-
-  [factory(collector), collector]
-
-Visualizer.buildObservable = buildObservables
+  [evalFactory(observable, collector), collector]

@@ -1,5 +1,6 @@
 V = Visualizer
 P = V.persistency = {}
+
 P.save = (observable) ->
   localStorage.savedObservable = JSON.stringify(observable)
 

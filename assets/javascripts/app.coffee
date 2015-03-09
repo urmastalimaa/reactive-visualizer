@@ -14,14 +14,8 @@ Nodes.Roots = {}
 
 defaultStructure = {
   root:
-    type: 'fromTime', id: 'r', args: "{1000: 1, 3000: 2, 5000: 3}"
-  operators: [
-    {
-      type: 'map'
-      id: 'ro'
-      args: 'function(value) { return value * value; }'
-    }
-  ]
+    type: 'fromTime', args: "{1000: 1, 3000: 2, 5000: 3}"
+  operators: [ { type: 'map' } ]
 }
 
 renderBuildArea = ->
@@ -52,7 +46,7 @@ $(document).ready ->
 
   Rx.Observable.fromEvent($("#start"), 'click')
     .withLatestFrom(observableFromUI, R.nthArg(1))
-    .subscribe R.compose(V.displayResults, V.simulateObservable, V.buildObservable, V.evaluateInput)
+    .subscribe R.compose(V.displayResults, V.collectResults, V.evalObservable, V.buildCode)
 
   Rx.Observable.fromEvent($("#save"), 'click')
     .withLatestFrom(observableFromUI, R.nthArg(1))

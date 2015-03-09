@@ -1,4 +1,4 @@
-runObservables = ([observableFactory, collector]) ->
+collectResults = ([observableFactory, collector]) ->
   scheduler = new Rx.TestScheduler
   results = scheduler.startWithTiming ->
     observableFactory(scheduler)
@@ -6,4 +6,4 @@ runObservables = ([observableFactory, collector]) ->
 
   collector.results()
 
-Visualizer.simulateObservable = runObservables
+Visualizer.collectResults = collectResults

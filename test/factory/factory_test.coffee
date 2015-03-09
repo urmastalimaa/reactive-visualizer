@@ -4,12 +4,12 @@ require '../../assets/javascripts/factory/factory'
 onNext = Rx.ReactiveTest.onNext
 onCompleted = Rx.ReactiveTest.onCompleted
 
-describe 'buildObservable', ->
+describe 'evalObservable', ->
   uiValuator = textArea: (id) -> uiValues()[id]
 
   subject = ->
     scheduler = new Rx.TestScheduler
-    observableFactory = Visualizer.buildObservable(uiValuator, {})(structure())
+    observableFactory = Visualizer.evalObservable(uiValuator, {})(structure())
 
     observable = observableFactory[targetId()](scheduler)
     results = scheduler.startWithCreate R.always(observable)

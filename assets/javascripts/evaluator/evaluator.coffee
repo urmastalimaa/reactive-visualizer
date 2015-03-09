@@ -41,9 +41,8 @@ evalRoot = ({id, type, args}) ->
 evalOperator = ({id, type, args, observable}) ->
   id: id
   getCode: operatorEvaluators[type](args)
-  observable: observable && V.evaluateInput(observable)
+  observable: observable && V.buildCode(observable)
 
-V.evaluateInput = ({root, operators}) ->
+V.buildCode = ({root, operators}) ->
   root: evalRoot(root)
   operators: operators.map evalOperator
-
