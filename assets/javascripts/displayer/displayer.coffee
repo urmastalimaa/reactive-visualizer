@@ -1,6 +1,6 @@
 messageDisplayer = ->
   onTime = (time, cb) ->
-    setTimeout cb, 200 + time
+    setTimeout cb, time
 
   getTargetArea: (key, resultType) ->
     $("##{key} > .simulationArea .#{resultType}")
@@ -40,23 +40,12 @@ resultDisplayer = (messageDisplayer) ->
   sortResults: R.compose(R.sortBy(R.length), R.keys)
   display: (results) ->
     @clear()
-    for key in @sortResults(results)
-      result = results[key]
-      for message, index in result.messages
-        switch message.value.kind
-          when "N" then messageDisplayer.value(key, message.time, message.value.value)
-          when "E" then messageDisplayer.error(key, message.time, message.value.exception || message.value.error)
-          when "C" then messageDisplayer.complete(key, message.time)
-
-        nextMessages = result.messages.slice(index + 1).filter (nextMessage) ->
-          nextMessage.value.kind == message.value.kind
-
-        unless nextMessages.length == 0
-          type = switch message.value.kind
-            when "N" then "value"
-            when "E" then "error"
-            when "C" then "complete"
-          messageDisplayer.fadeOut(key, type, message.time, nextMessages[0].time)
+    for time, messages of results
+      for {key, kind, value, exception} in messages
+        switch kind
+          when "N" then messageDisplayer.value(key, time, value)
+          when "E" then messageDisplayer.error(key, time, exception || value.error)
+          when "C" then messageDisplayer.complete(key, time)
 
   clear: ->
     $(".simulationArea .error").html("")

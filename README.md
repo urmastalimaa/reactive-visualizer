@@ -21,7 +21,6 @@ For simulating the observable there are two possibilities:
 
 To Do
 
-1. Sort operators and factories by name
 1. Pause, rewind, step by step during displaying.
 1. Enhance the simulation area, show previous values.
 1. Allow setting end of time
