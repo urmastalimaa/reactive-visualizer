@@ -20,7 +20,7 @@ module.exports = (grunt) ->
             'assets/javascripts/persistency/*.coffee'
             'assets/javascripts/factory/*.coffee'
             'assets/javascripts/simulator/*.coffee'
-            'assets/javascripts/result_displayer/*.coffee'
+            'assets/javascripts/displayer/*.coffee'
           ]
 
     concat:
