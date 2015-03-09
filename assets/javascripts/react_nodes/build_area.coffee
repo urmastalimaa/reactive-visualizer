@@ -1,4 +1,5 @@
 V = Visualizer
+N = V.ReactNodes
 
 BuildArea = React.createClass
   getInitialState: ->
@@ -11,7 +12,7 @@ BuildArea = React.createClass
 
   render: ->
     <div className="buildArea">
-      <V.Observable observable={@state.observable} id='' ref="observable" recursionLevel=0 onChange={@handleChange}/>
+      <N.Observable observable={@state.observable} id='' ref="observable" recursionLevel=0 onChange={@handleChange}/>
       <button className="start" id="start">Start</button>
       <div>
         <button className="persistency" id="save">Save</button>
@@ -20,4 +21,4 @@ BuildArea = React.createClass
       </div>
     </div>
 
-V.BuildArea = BuildArea
+N.BuildArea = BuildArea

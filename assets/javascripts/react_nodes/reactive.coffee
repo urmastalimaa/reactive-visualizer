@@ -1,7 +1,7 @@
 V = Visualizer
 N = V.ReactNodes
 
-V.Observable = React.createClass
+N.Observable = React.createClass
   handleAddOperator: (operator, type) ->
     return unless type
 
@@ -44,9 +44,9 @@ V.Observable = React.createClass
       </N.ObservableOperator>
 
     <div className="observable" style={paddingLeft: 'inherit'}>
-     <V.ObservableRoot root={root} handleChange={@handleRootChange} >
+     <N.ObservableRoot root={root} handleChange={@handleRootChange} >
       <AddOperator id={root.id} onSelect={handleAddOperatorTo(root)}/>
-     </V.ObservableRoot>
+     </N.ObservableRoot>
      {operatorNodes}
     </div>
 
@@ -66,7 +66,7 @@ AddOperator = React.createClass
     handleMouseLeave = =>
       @setState hidden: true
 
-    options = R.keys(N.Operators).map (op) ->
+    options = R.keys(V.Operators).map (op) ->
       <option value={op}>{op}</option>
 
     <span onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} ref="addOperatorSpan">

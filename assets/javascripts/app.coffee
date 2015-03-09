@@ -8,9 +8,7 @@ Rx.Observable.fromTime = (timesAndValues, scheduler) ->
 
   Rx.Observable.merge(timers)
 
-V.ReactNodes = Nodes = {}
-Nodes.Operators = {}
-Nodes.Roots = {}
+V.ReactNodes = N = {}
 
 defaultStructure = {
   root:
@@ -23,7 +21,7 @@ renderBuildArea = ->
 
   startingStructure = V.persistency.load() || defaultStructure
 
-  buildArea = <V.BuildArea defaultObservable={startingStructure}
+  buildArea = <N.BuildArea defaultObservable={startingStructure}
     onChange={observableSubject.onNext.bind(observableSubject)} />
   renderedBuildArea = React.render(buildArea, document.getElementById('content'))
 

@@ -18,7 +18,7 @@ rootEvaluators = R.mapObjIndexed( ({useScheduler, getDefaultArgs}, key) ->
       getArgsWithScheduler({input, useScheduler, getDefaultArgs}) +
       ")"
     )
-  )(N.Roots)
+  )(V.Roots)
 
 operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, getDefaultArgs, recursionType}, key) ->
   (input) ->
@@ -32,7 +32,7 @@ operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, getDefaultArgs,
       R.always(
         ".#{key}(#{getArgsWithScheduler({input, useScheduler, getDefaultArgs})})"
       )
-  )(N.Operators)
+  )(V.Operators)
 
 evalRoot = ({id, type, args}) ->
   getCode: rootEvaluators[type](args)
