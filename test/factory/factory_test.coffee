@@ -1,6 +1,5 @@
 require '../test_helper'
 require '../../assets/javascripts/factory/factory'
-require '../../assets/javascripts/factory/factory'
 
 onNext = Rx.ReactiveTest.onNext
 onCompleted = Rx.ReactiveTest.onCompleted
