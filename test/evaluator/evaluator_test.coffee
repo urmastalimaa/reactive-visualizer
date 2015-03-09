@@ -3,8 +3,6 @@ require '../../assets/javascripts/descriptors/roots'
 require '../../assets/javascripts/descriptors/operators'
 require '../../assets/javascripts/evaluator/evaluator'
 
-onNext = Rx.ReactiveTest.onNext
-onCompleted = Rx.ReactiveTest.onCompleted
 V = Visualizer
 
 describe 'buildCode', ->
