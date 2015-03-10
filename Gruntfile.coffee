@@ -15,6 +15,8 @@ module.exports = (grunt) ->
           'public/assets/analyzer.js': [
             'assets/javascripts/app.coffee'
             'assets/javascripts/descriptors/*.coffee'
+            'assets/javascripts/react/dispatcher/*.coffee'
+            'assets/javascripts/react/stores/*.coffee'
             'assets/javascripts/react/components/*.coffee'
             'assets/javascripts/evaluator/*.coffee'
             'assets/javascripts/persistency/*.coffee'
@@ -28,8 +30,10 @@ module.exports = (grunt) ->
         src: [
           'bower_components/rxjs/dist/rx.all.js'
           'bower_components/rxjs/dist/rx.testing.js'
+          'bower_components/EventEmitter.js/EventEmitter.js'
           'bower_components/jquery/dist/jquery.js'
-          'node_modules/react/dist/react.js'
+          'bower_components/react/react.js'
+          'bower_components/flux/dist/Flux.js'
           'bower_components/react-bootstrap/react-bootstrap.js'
           'bower_components/bootstrap-slider/bootstrap-slider.js'
           'node_modules/ramda/dist/ramda.js'
