@@ -17,6 +17,7 @@ module.exports = (grunt) ->
             'assets/javascripts/descriptors/*.coffee'
             'assets/javascripts/react/dispatcher/*.coffee'
             'assets/javascripts/react/stores/*.coffee'
+            'assets/javascripts/react/actions/*.coffee'
             'assets/javascripts/react/components/*.coffee'
             'assets/javascripts/evaluator/*.coffee'
             'assets/javascripts/persistency/*.coffee'
