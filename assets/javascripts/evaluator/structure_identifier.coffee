@@ -1,5 +1,4 @@
 V = Visualizer
-N = V.ReactNodes
 
 identifyObservable = R.curryN 2, (baseId, observable) ->
   rootId = baseId + 'r'
