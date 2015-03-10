@@ -32,7 +32,7 @@ N.ObservableRoot = React.createClass
         <SelectRoot id={root.id} selected={root.type} onChange={@handleRootTypeChange}/>
         {'('}
         { if root.args?
-          <N.Helpers.InputArea value={root.args} ref="argsInput" onChange={@onArgsChange}/>
+          <N.Helpers.InputArea value={root.args} onChange={@onArgsChange}/>
         }
         {')'}
         {@props.children}

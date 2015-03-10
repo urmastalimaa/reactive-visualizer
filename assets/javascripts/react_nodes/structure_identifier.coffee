@@ -11,17 +11,17 @@ identifyObservable = R.curryN 2, (baseId, observable) ->
   operators: R.mapIndexed(identifyOperator(rootId)(recursionLevel), observable.operators)
 
 identifyOperator = R.curryN 4, (rootId, recursionLevel, operator, index) ->
-  operatorId = rootId + Array(index + 2).join("o")
+  id = rootId + Array(index + 2).join("o")
+  definition = V.Operators[operator.type]
 
-  operator.args ?= V.Operators[operator.type].getDefaultArgs?(recursionLevel)
+  args = operator.args?  && operator.args || definition.getDefaultArgs?(recursionLevel)
 
-  newOperator = R.mixin(R.pick(['type', 'args'], operator), id: operatorId)
+  newOperator = R.mixin(R.pick(['type'], operator), id: id, args: args, recursionType: definition.recursionType)
 
   if V.Operators[operator.type].getDefaultObservable
-    observable = operator.observable || V.Operators[operator.type].getDefaultObservable(recursionLevel)
+    observable = operator.observable || definition.getDefaultObservable(recursionLevel)
     R.mixin newOperator,
-      recursionType: V.Operators[operator.type].recursionType
-      observable: identifyObservable(operatorId)(observable)
+      observable: identifyObservable(id)(observable)
   else
     newOperator
 
