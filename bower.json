@@ -15,10 +15,10 @@
     "flux": "~2.0",
     "react": "~0.12",
     "rxjs": "~2.4",
-    "EventEmitter.js": "~0.1.0",
+    "EventEmitter.js": "4.2",
     "bootstrap": "~ 3.3",
     "react-bootstrap": "~ 0.16",
-    "bootstrap-slider": "latest",
+    "seiyria-bootstrap-slider": "4.5",
     "bourbon": "~ 4.1"
   }
 }

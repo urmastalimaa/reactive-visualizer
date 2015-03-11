@@ -36,7 +36,7 @@ module.exports = (grunt) ->
           'bower_components/react/react.js'
           'bower_components/flux/dist/Flux.js'
           'bower_components/react-bootstrap/react-bootstrap.js'
-          'bower_components/bootstrap-slider/bootstrap-slider.js'
+          'bower_components/seiyria-bootstrap-slider/js/bootstrap-slider.js'
           'node_modules/ramda/dist/ramda.js'
           'public/assets/analyzer.js'
         ]
