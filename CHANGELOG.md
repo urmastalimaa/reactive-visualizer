@@ -4,3 +4,5 @@
   * Implemented showing the results using setTimeout
 *  9.03.2015 
   * Reworked showing results to use and maintain virtual time
+*  10.03.2015
+  * Added time travelling proof of concept
