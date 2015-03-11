@@ -24,20 +24,6 @@ class NotificationStore extends V.BaseStore
       R.values
     )
 
-  timeCounts = R.compose(
-    R.foldl((acc, countedTimes) ->
-      res = R.clone(acc)
-      for key, val of countedTimes
-        res[key] =
-          if res[key]?
-            res[key] = Math.max(res[key], val)
-          else
-            val
-      res
-    )({})
-    R.map(R.countBy(R.get('time'))),
-    R.values
-  )
 
 
   createFiller = (time) ->
@@ -62,8 +48,23 @@ class NotificationStore extends V.BaseStore
       R.mapObjIndexed(fillOnTime(notificationsByTime))
     )
 
-  fillAllNotifications: (notifications) ->
-    countedTimes = timeCounts(notifications)
+  countTimes: R.compose(
+    R.foldl((acc, countedTimes) ->
+      res = R.clone(acc)
+      for key, val of countedTimes
+        res[key] =
+          if res[key]?
+            res[key] = Math.max(res[key], val)
+          else
+            val
+      res
+    )({})
+    R.map(R.countBy(R.get('time'))),
+    R.values
+  )
+
+
+  fillAllNotifications: R.curryN 2, (countedTimes, notifications) ->
     R.mapObj((notificationsByKey) ->
       byTime = R.groupBy(R.get('time'))(notificationsByKey)
       fillNotificationOnTime(byTime)(countedTimes)
@@ -82,8 +83,9 @@ class NotificationStore extends V.BaseStore
 
   init: (notifications, currentTime) ->
     _notifications = notifications
-    _filledNotifications = @fillAllNotifications(notifications)
-    _relevantNotifications = @filterRelevant(currentTime)(_filledNotifications)
+    _timeCounts = @countTimes(notifications)
+    filledNotifications = @fillAllNotifications(_timeCounts)(notifications)
+    _relevantNotifications = @filterRelevant(currentTime)(filledNotifications)
     @emitChange()
 
   startTimer: (notifications, currentTime) ->

@@ -7,6 +7,7 @@ require '../../assets/javascripts/react/dispatcher/dispatcher.coffee'
 require '../../assets/javascripts/react/stores/base_store.coffee'
 require '../../assets/javascripts/react/stores/notification_store.coffee'
 V = Visualizer
+store = V.notificationStore
 
 onNext = Rx.ReactiveTest.onNext
 onCompleted = Rx.ReactiveTest.onNext
@@ -20,7 +21,9 @@ describe 'NotificationStore', ->
   describe 'mapInRelevantTimes', ->
     beforeEach ->
       @subject = ->
-        V.notificationStore.fillAllNotifications(notifications())
+        store.fillAllNotifications(
+          store.countTimes(notifications())
+        )(notifications())
 
     context 'when all have values at the same time', ->
       notifications.is ->
@@ -59,7 +62,10 @@ describe 'NotificationStore', ->
 
     beforeEach ->
       @subject = ->
-        V.notificationStore.filterRelevant(currentTime())(V.notificationStore.fillAllNotifications(notifications()))
+        filledNotifications = store.fillAllNotifications(
+          store.countTimes(notifications())
+        )(notifications())
+        store.filterRelevant(currentTime())(filledNotifications)
 
     notifications.is ->
       a: [onNext(200), onNext(250)]
