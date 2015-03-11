@@ -16,7 +16,7 @@ BuildArea = React.createClass
   render: ->
     <div className="buildArea" style={@props.style}>
       <N.Observable observable={@state.observable} id='' ref="observable" recursionLevel=0 onChange={@handleChange} rowLength={@props.rowLength}/>
-      <button className="analyze" id="analyze">Start</button>
+      <button className="start" id="start">Start</button>
       <div>
         <button className="persistency" id="save">Save</button>
         <button className="persistency" id="load">Load</button>
