@@ -5,20 +5,7 @@ ActionTypes =
   RECEIVE_NOTIFICATIONS: 'receive_notifications'
   RECEIVE_VIRTUAL_TIME: 'receive_virtual_time'
 
-class StoreEmitter extends EventEmitter
-  CHANGE_EVENT = 'change'
-
-  emitChange: ->
-    @emit(CHANGE_EVENT)
-
-  addChangeListener: (callback) ->
-    @on(CHANGE_EVENT, callback)
-
-  removeChangeListener: (callback) ->
-    @removeListener(CHANGE_EVENT, callback)
-
-
-class NotificationStore extends StoreEmitter
+class NotificationStore extends V.BaseStore
 
   MAX_NR_OF_RELEVANT_TIMES = 6
 
@@ -61,7 +48,7 @@ class NotificationStore extends StoreEmitter
 
   startTimer: (notifications, startTimes) ->
     _disposable = new Rx.SerialDisposable
-    startTime = R.last(startTimes)
+    startTime = R.last(startTimes) || 0
     earliestTime = earliestTimeAfter(startTime)(notifications)
     if (earliestTime != Infinity)
       _disposable.setDisposable(
@@ -72,25 +59,19 @@ class NotificationStore extends StoreEmitter
       )
 
   setVirtualTime: (time, notifications) ->
+    _disposable.dispose()
     startTimes = R.uniq(R.map(R.get('time'),  R.flatten(R.values(notifications))))
     relTimes = R.filter(R.gte(time))(startTimes)
     @init(notifications, relTimes)
-    _disposable.dispose()
+    @startTimer(notifications, relTimes)
 
-  getNotifications: (id) ->
-    _relevantNotifications[id]
-
-  getAllNotifications: ->
-    _notifications
-
+  getCurrentNotifications: (id) ->
+    _relevantNotifications[id] || []
 
 V.notificationStore = new NotificationStore
 
 V.notificationStore.dispatchToken = Dispatcher.register (action) ->
   switch action.type
-    when ActionTypes.RECEIVE_NOTIFICATIONS
-      V.notificationStore.init(action.notifications, [0])
-      V.notificationStore.startTimer(action.notifications, [0])
     when ActionTypes.RECEIVE_VIRTUAL_TIME
       V.notificationStore.setVirtualTime(action.time, action.notifications)
 

@@ -9,7 +9,7 @@ N.SimulationArea = React.createClass
     notifications: []
 
   onNotificationsChange: ->
-    @setState(notifications: notificationStore.getNotifications(@props.id))
+    @setState(notifications: notificationStore.getCurrentNotifications(@props.id))
 
   componentDidMount: ->
     notificationStore.addChangeListener(@onNotificationsChange)

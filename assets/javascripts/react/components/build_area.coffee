@@ -22,7 +22,7 @@ BuildArea = React.createClass
         <button className="persistency" id="load">Load</button>
         <button className="persistency" id="clear">Clear</button>
       </div>
-      <N.Slider id="ja" min=0 max=1000 step=1 value=300 style={width: "100%"} onSlide={@handleSliderChange}/>
+      <N.TimeSlider initialTime={0} initialMin={0} initialMax={3000} initialValue={0}/>
     </div width='inherit'>
 
 N.BuildArea = BuildArea
