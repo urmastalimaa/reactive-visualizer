@@ -18,7 +18,7 @@ N.SimulationArea = React.createClass
 
   render: ->
     <span className="simulationArea" style={float: 'right'} >
-      <SimulationValueArea value={@state.notifications}/>
+      <SimulationValueArea values={@state.notifications}/>
     </span>
 
 SimulationValueArea = React.createClass
@@ -26,12 +26,4 @@ SimulationValueArea = React.createClass
   joinValues: R.compose(R.join(', '), R.pluck('value'), R.pluck('value'))
 
   render: ->
-    values = @props.value
-    if values.length == 0
-      <span>{'No value yet'}</span>
-    else if values.length == 1
-      <span>
-        {'Value:'}<span className="value">{values[0].value.value}</span>
-      </span>
-    else
-      <span>{'Values!'}{@joinValues(values)}</span>
+    <span> {@joinValues(@props.values)} </span>
