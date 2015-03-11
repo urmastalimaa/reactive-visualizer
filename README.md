@@ -23,8 +23,7 @@ To Do
 
 1. Pause, rewind, step by step during displaying.
 1. Create examples which can be loaded
-1. modularize system
-1. Enhance the simulation area, show previous values.
+1. Modularize system
 1. Allow setting end of time
 1. Style the UI
 1. Live simulation using a timeout scheduler, allowing real requests.
