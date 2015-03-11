@@ -112,6 +112,6 @@ V.notificationStore.dispatchToken = Dispatcher.register (action) ->
     when ActionTypes.RECEIVE_VIRTUAL_TIME
       V.notificationStore.setVirtualTime(action.time, action.notifications)
     when ActionTypes.PLAY_VIRTUAL_TIME
-      V.notificationStore.setVirtualTime(action.time, action.notifications)
-      V.notificationStore.startTimer(action.notifications, action.time)
+      V.notificationStore.setVirtualTime(0, action.notifications)
+      V.notificationStore.startTimer(action.notifications, 0)
 

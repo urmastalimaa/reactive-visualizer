@@ -51,6 +51,10 @@ $(document).ready ->
 
   collectedResults.subscribe V.setNotifications
 
+  Rx.Observable.fromEvent($("#play"), 'click')
+    .withLatestFrom(collectedResults, R.nthArg(1))
+    .subscribe V.playVirtualTime
+
   Rx.Observable.fromEvent($("#save"), 'click')
     .withLatestFrom(observableFromUI, R.nthArg(1))
     .subscribe R.compose(V.persistency.save)
