@@ -60,10 +60,10 @@ module.exports = (grunt) ->
     watch:
       sass:
         files: ['assets/stylesheets/**/*.sass']
-        tasks: ['sass']
+        tasks: ['sass', 'concat:css']
       coffee:
         files: ['assets/javascripts/**/*.coffee']
-        tasks: ['cjsx', 'concat']
+        tasks: ['cjsx', 'concat:javascripts']
       slim:
         files: ['templates/**/*.slim']
         tasks: ['slim']
