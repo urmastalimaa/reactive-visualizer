@@ -19,27 +19,27 @@ N.SimulationArea = React.createClass
 
   render: ->
     <span className="simulationArea" style={float: 'right'} >
-      <SimulationValueArea values={@state.notifications}/>
+      <SimulationValueArea values={@state.notifications} id={@props.id}/>
     </span>
 
 SimulationValueArea = React.createClass
-  completeColumn: ({time, value}) ->
-    <Rs.Col xs={1} className='simulation-complete' key={time + value}>
+  completeColumn: ({time, value}, index) ->
+    <Rs.Col xs={1} className='simulation-complete' key={@props.id + index}>
       {'C'}
     </Rs.Col>
 
   valueColumn: ({time, value}, index, arr) ->
-    <Rs.Col xs={1} className='simulation-value' key={time + value} style={opacity: (1 / arr.length) * (index + 1)}>
+    <Rs.Col xs={1} className='simulation-value' key={@props.id + index} style={opacity: (1 / arr.length) * (index + 1)}>
       {value.value}
     </Rs.Col>
 
-  errorColumn: ({time, value}) ->
-    <Rs.Col xs={1} className='simulation-error'>
+  errorColumn: ({time, value}, index) ->
+    <Rs.Col xs={1} className='simulation-error' key={@props.id + index}>
       {value.exception || 'Error'}
     </Rs.Col>
 
-  emptyColumn: ({time, value}) ->
-    <Rs.Col xs={1} className='simulation-filler' key={time + value} />
+  emptyColumn: ({time, value}, index) ->
+    <Rs.Col xs={1} className='simulation-filler' key={@props.id + index} />
 
   mapNotification: (notification, index, list) ->
     switch notification.value.kind

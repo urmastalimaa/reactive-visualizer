@@ -12,3 +12,8 @@ V.setVirtualTime = (time, notifications) ->
     time: time
     notifications: notifications
 
+V.playVirtualTime = (time, notifications) ->
+  Dispatcher.dispatch
+    type: 'play_virtual_time'
+    time: time
+    notifications: notifications

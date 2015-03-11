@@ -21,7 +21,6 @@ For simulating the observable there are two possibilities:
 
 To Do
 
-1. Pause, rewind, step by step during displaying.
 1. Create examples which can be loaded
 1. Modularize system
 1. Allow setting end of time

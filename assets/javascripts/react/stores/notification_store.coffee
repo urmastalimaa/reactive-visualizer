@@ -4,6 +4,7 @@ Dispatcher = V.Dispatcher
 ActionTypes =
   RECEIVE_NOTIFICATIONS: 'receive_notifications'
   RECEIVE_VIRTUAL_TIME: 'receive_virtual_time'
+  PLAY_VIRTUAL_TIME: 'play_virtual_time'
 
 class NotificationStore extends V.BaseStore
 
@@ -23,47 +24,83 @@ class NotificationStore extends V.BaseStore
       R.values
     )
 
-  fillNotifications = R.curryN 2, (times, notifications) ->
-    R.flatten(R.map((time) ->
-      onTime = R.filter(R.propEq('time', time))(notifications)
-      if onTime.length == 0
-        [{ time: time, value: {kind: 'filler'} }]
-      else
-        onTime
-    )(times))
+  timeCounts = R.compose(
+    R.foldl((acc, countedTimes) ->
+      res = R.clone(acc)
+      for key, val of countedTimes
+        res[key] =
+          if res[key]?
+            res[key] = Math.max(res[key], val)
+          else
+            val
+      res
+    )({})
+    R.map(R.countBy(R.get('time'))),
+    R.values
+  )
 
-  mapInRelevantTimes = (times) ->
-    R.mapObj(fillNotifications(times))
 
-  relevantTimes = (times) ->
-    end = times.length
+  createFiller = (time) ->
+    time: time
+    value: {kind: 'filler'}
+
+  takeLast = R.curryN 2, (count, vals) ->
+    end = R.length(vals)
     start = Math.max(0, end - MAX_NR_OF_RELEVANT_TIMES)
-    R.slice(start, end, times)
+    R.slice(start, end)(vals)
 
-  init: (notifications, startTimes) ->
+  fillOnTime = R.curryN 3, (notificationsByTime, maxCount, time) ->
+    notsByTime = notificationsByTime[time] || []
+    repeated = R.repeat(createFiller(time), maxCount - notsByTime.length)
+    R.concat(repeated, notsByTime)
+
+
+  fillNotificationOnTime = R.curryN 1, (notificationsByTime) ->
+    R.compose(
+      R.flatten
+      R.values
+      R.mapObjIndexed(fillOnTime(notificationsByTime))
+    )
+
+  fillAllNotifications: (notifications) ->
+    countedTimes = timeCounts(notifications)
+    R.mapObj((notificationsByKey) ->
+      byTime = R.groupBy(R.get('time'))(notificationsByKey)
+      fillNotificationOnTime(byTime)(countedTimes)
+    )(notifications)
+
+  filterRelevant: R.curryN 1, (currentTime) ->
+    R.mapObj(R.compose(
+      takeLast(6)
+      R.filter(
+        R.compose(
+          R.gte(currentTime)
+          R.get('time')
+        )
+      )
+    ))
+
+  init: (notifications, currentTime) ->
     _notifications = notifications
-    _relevantNotifications = mapInRelevantTimes(relevantTimes(startTimes))(notifications)
-
+    _filledNotifications = @fillAllNotifications(notifications)
+    _relevantNotifications = @filterRelevant(currentTime)(_filledNotifications)
     @emitChange()
 
-  startTimer: (notifications, startTimes) ->
+  startTimer: (notifications, currentTime) ->
+    _disposable.dispose()
     _disposable = new Rx.SerialDisposable
-    startTime = R.last(startTimes) || 0
-    earliestTime = earliestTimeAfter(startTime)(notifications)
-    if (earliestTime != Infinity)
+    startTime = currentTime || 0
+    nextTime = earliestTimeAfter(startTime)(notifications)
+    if (nextTime != Infinity)
       _disposable.setDisposable(
-        Rx.Observable.timer(earliestTime - startTime)
+        Rx.Observable.timer(nextTime - startTime)
           .subscribe =>
-            @init(notifications, R.append(earliestTime, startTimes))
-            @startTimer(notifications, R.append(earliestTime, startTimes))
-      )
+            @init(notifications, nextTime)
+            @startTimer(notifications, nextTime))
 
   setVirtualTime: (time, notifications) ->
     _disposable.dispose()
-    startTimes = R.uniq(R.map(R.get('time'),  R.flatten(R.values(notifications))))
-    relTimes = R.filter(R.gte(time))(startTimes)
-    @init(notifications, relTimes)
-    @startTimer(notifications, relTimes)
+    @init(notifications, time)
 
   getCurrentNotifications: (id) ->
     _relevantNotifications[id] || []
@@ -74,4 +111,7 @@ V.notificationStore.dispatchToken = Dispatcher.register (action) ->
   switch action.type
     when ActionTypes.RECEIVE_VIRTUAL_TIME
       V.notificationStore.setVirtualTime(action.time, action.notifications)
+    when ActionTypes.PLAY_VIRTUAL_TIME
+      V.notificationStore.setVirtualTime(action.time, action.notifications)
+      V.notificationStore.startTimer(action.notifications, action.time)
 

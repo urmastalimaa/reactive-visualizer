@@ -26,6 +26,7 @@
     "grunt-http-server": "> 0.0",
     "grunt-slim": "urmastalimaa/grunt-slim",
     "http-server": "> 0.0",
+    "memo-is": "0.0.2",
     "mocha": "2.1.0",
     "expect": "~ 1.5"
   },
