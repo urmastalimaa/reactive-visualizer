@@ -75,7 +75,7 @@ N.ObservableOperator = React.createClass
       {".#{@props.operator.type}("} {opEl} {')'}
       {@props.children}
       <RemoveOperator onRemove={@handleRemove}/>
-      <N.SimulationArea />
+      <N.SimulationArea id={@props.operator.id} />
     </div>
 
 RemoveOperator = React.createClass

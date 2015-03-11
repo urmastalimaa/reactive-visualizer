@@ -1,28 +1,37 @@
 V = Visualizer
 N = V.ReactNodes
+notificationStore = V.notificationStore
 
 N.SimulationArea = React.createClass
+
+  getInitialState: ->
+    notifications: []
+
+  onNotificationsChange: ->
+    @setState(notifications: notificationStore.getNotifications(@props.id))
+
+  componentDidMount: ->
+    notificationStore.addChangeListener(@onNotificationsChange)
+
+  componentWillUnmount: ->
+    notificationStore.removeChangeListener(@onNotificationsChange)
+
   render: ->
     <span className="simulationArea" style={float: 'right'} >
-      <SimulationValueArea />
-      <SimulationErrorArea />
-      <SimulationCompleteArea />
+      <SimulationValueArea value={@state.notifications}/>
     </span>
 
 SimulationValueArea = React.createClass
-  render: ->
-    <span>
-      {'Value:'}<span className="value" />
-    </span>
 
-SimulationErrorArea = React.createClass
-  render: ->
-    <span>
-      {'Error:'}<span className="error" />
-    </span>
+  joinValues: R.compose(R.join(', '), R.pluck('value'), R.pluck('value'))
 
-SimulationCompleteArea = React.createClass
   render: ->
-    <span>
-      {'Complete:'}<span className="complete" />
-    </span>
+    values = @props.value
+    if values.length == 0
+      <span>{'No value yet'}</span>
+    else if values.length == 1
+      <span>
+        {'Value:'}<span className="value">{values[0].value.value}</span>
+      </span>
+    else
+      <span>{'Values!'}{@joinValues(values)}</span>

@@ -44,7 +44,7 @@ $(document).ready ->
 
   Rx.Observable.fromEvent($("#start"), 'click')
     .withLatestFrom(observableFromUI, R.nthArg(1))
-    .subscribe R.compose(V.displayResults, V.collectResults, V.evalObservable, V.buildCode)
+    .subscribe R.compose(V.setNotifications, V.collectResults, V.evalObservable, V.buildCode)
 
   Rx.Observable.fromEvent($("#save"), 'click')
     .withLatestFrom(observableFromUI, R.nthArg(1))

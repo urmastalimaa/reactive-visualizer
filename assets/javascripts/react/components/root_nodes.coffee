@@ -36,6 +36,6 @@ N.ObservableRoot = React.createClass
         }
         {')'}
         {@props.children}
-        <N.SimulationArea />
+        <N.SimulationArea id={root.id} />
       </div>
     </div>

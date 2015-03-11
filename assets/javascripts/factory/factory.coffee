@@ -12,9 +12,8 @@ createCollector = ->
   resultMap = {}
 
   collect: (id, notification) ->
-    resultMap[id] ?= {}
-    resultMap[id].messages ?= []
-    resultMap[id].messages.push notification
+    resultMap[id] ?= []
+    resultMap[id].push notification
   results: -> resultMap
 
 createDoOperator = (id) ->
