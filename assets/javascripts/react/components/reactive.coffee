@@ -39,7 +39,7 @@ N.Observable = React.createClass
     {root} = @props.observable
 
     operatorNodes = @props.observable.operators.map (operator, index) =>
-      <N.ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel} onChange={@handleOperatorChange}>
+      <N.ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel} onChange={@handleOperatorChange} key={operator.id}>
         <AddOperator id={operator.id} onSelect={handleAddOperatorTo(operator)}/>
       </N.ObservableOperator>
 
@@ -67,7 +67,7 @@ AddOperator = React.createClass
       @setState hidden: true
 
     options = R.keys(V.Operators).map (op) ->
-      <option value={op}>{op}</option>
+      <option value={op} key={op}>{op}</option>
 
     <span onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} ref="addOperatorSpan">
       {'+'}

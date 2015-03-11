@@ -9,7 +9,7 @@ SelectRoot = React.createClass
 
   render: ->
     options = R.keys(V.Roots).map (root) ->
-      <option value={root} >{root}</option>
+      <option value={root} key={root}>{root}</option>
 
     <span>
       <select id={@props.id}{'selectRoot'} className='selectRoot' onChange={@handleChange} ref="selectRoot" defaultValue={@props.selected}>
