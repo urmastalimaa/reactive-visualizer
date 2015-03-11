@@ -19,9 +19,9 @@ class StoreEmitter extends EventEmitter
 
 class NotificationStore extends StoreEmitter
 
-  TOO_OLD_THRESHOLD = 5 * 1000
+  MAX_NR_OF_RELEVANT_TIMES = 6
 
-  _relevantNotifications = []
+  _relevantNotifications = {}
 
   _disposable = new Rx.SerialDisposable
 
@@ -34,23 +34,33 @@ class NotificationStore extends StoreEmitter
       R.values
     )
 
-  between = R.useWith(R.and, R.lte, R.gte)
+  fillNotifications = R.curryN 2, (times, notifications) ->
+    R.flatten(R.map((time) ->
+      onTime = R.filter(R.propEq('time', time))(notifications)
+      if onTime.length == 0
+        [{ time: time, value: {kind: 'filler'} }]
+      else
+        onTime
+    )(times))
 
-  inRelevantTimerange = (startTime) ->
-    between(startTime - TOO_OLD_THRESHOLD, startTime)
+  mapInRelevantTimes = (times) ->
+    R.mapObj(fillNotifications(times))
 
-  mapInRelevantTime = (time) ->
-    R.mapObj R.filter(R.compose(inRelevantTimerange(time), R.get('time')))
+  relevantTimes = (times) ->
+    end = times.length
+    start = Math.max(0, end - MAX_NR_OF_RELEVANT_TIMES)
+    R.slice(start, end, times)
 
-  init: (notifications, startTime) ->
-    _relevantNotifications = mapInRelevantTime(startTime)(notifications)
+  init: (notifications, startTimes) ->
+    startTime = R.last(startTimes)
+    _relevantNotifications = mapInRelevantTimes(relevantTimes(startTimes))(notifications)
 
     earliestTime = earliestTimeAfter(startTime)(notifications)
     if (earliestTime != Infinity)
       _disposable.setDisposable(
         Rx.Observable.timer(earliestTime - startTime)
           .subscribe =>
-            @init(notifications, earliestTime)
+            @init(notifications, R.append(earliestTime, startTimes))
       )
 
     @emitChange()
@@ -58,9 +68,10 @@ class NotificationStore extends StoreEmitter
   getNotifications: (id) ->
     _relevantNotifications[id]
 
+
 V.notificationStore = new NotificationStore
 
 V.notificationStore.dispatchToken = Dispatcher.register (action) ->
   switch action.type
     when ActionTypes.RECEIVE_NOTIFICATIONS
-      V.notificationStore.init(action.notifications, 0)
+      V.notificationStore.init(action.notifications, [0])
