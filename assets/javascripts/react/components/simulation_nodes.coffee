@@ -23,36 +23,46 @@ N.SimulationArea = React.createClass
     </span>
 
 SimulationValueArea = React.createClass
-  completeColumn: ({time, value}, index) ->
-    <Rs.Col xs={1} className='simulation-complete' key={@props.id + index}>
+  completeColumn: ({time, value}, id) ->
+    <div key={id} className="simulationValue">
       {'C'}
-    </Rs.Col>
+    </div>
 
-  valueColumn: ({time, value}, index, arr) ->
-    <Rs.Col xs={1} className='simulation-value' key={@props.id + index} style={opacity: (1 / arr.length) * (index + 1)}>
-      {value.value}
-    </Rs.Col>
+  valueColumn: ({time, value}, id) ->
+    <div key={id} className="simulationValue">
+      {JSON.stringify(value.value)}
+    </div>
 
-  errorColumn: ({time, value}, index) ->
-    <Rs.Col xs={1} className='simulation-error' key={@props.id + index}>
+  errorColumn: ({time, value}, id) ->
+    <div key={id} className="simulationValue">
       {value.exception || 'Error'}
-    </Rs.Col>
+    </div>
 
-  emptyColumn: ({time, value}, index) ->
-    <Rs.Col xs={1} className='simulation-filler' key={@props.id + index} />
-
-  mapNotification: (notification, index, list) ->
+  childColumn: (notification, id) ->
     switch notification.value.kind
       when 'N'
-        @valueColumn(notification, index, list)
+        @valueColumn(notification, id)
       when 'E'
-        @errorColumn(notification, index, list)
+        @errorColumn(notification, id)
       when 'C'
-        @completeColumn(notification, index, list)
-      when 'filler'
-        @emptyColumn(notification, index, list)
+        @completeColumn(notification, id)
+
+  timeColumn: ({values, count}, time, obj) ->
+    id = @props.id
+    childCols = R.mapIndexed( (notification, index) =>
+        @childColumn(notification, id + index)
+    )(values)
+    keys = R.keys(obj)
+    index = R.indexOf(time)(keys)
+    opacity = ( 1 / keys.length) * (index + 1)
+
+    width = "#{count * 84}px"
+
+    <div className="simulationTimeWrapper" style={opacity: opacity, minWidth:width, width: width} key={id } >
+      {childCols}
+    </div>
 
   render: ->
-    <Rs.Row style={width: 300}>
-      {R.mapIndexed(@mapNotification, @props.values)}
-    </Rs.Row>
+    <div key={@props.id}>
+      {R.mapObjIndexed(@timeColumn, @props.values)}
+    </div>

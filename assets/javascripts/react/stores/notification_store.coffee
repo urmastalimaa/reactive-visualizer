@@ -8,10 +8,10 @@ ActionTypes =
 
 class NotificationStore extends V.BaseStore
 
-  MAX_NR_OF_RELEVANT_TIMES = 6
+  MAX_NR_OF_RELEVANT_TIMES = 5
 
   _relevantNotifications = {}
-  _notifications = {}
+  _relevantCounts = {}
 
   _disposable = new Rx.SerialDisposable
 
@@ -24,29 +24,23 @@ class NotificationStore extends V.BaseStore
       R.values
     )
 
+  takeFitting = R.curryN 2, (timeKeys, timeCounts) ->
+    sums = R.scanl((acc, key) ->
+      acc + timeCounts[key]
+    )(0)(R.reverse(timeKeys))
 
+    maxCount = R.compose(
+      R.flip(R.indexOf)(sums)
+      R.max
+      R.filter(R.gte(MAX_NR_OF_RELEVANT_TIMES))
+    )(sums)
 
-  createFiller = (time) ->
-    time: time
-    value: {kind: 'filler'}
+    takeLast(maxCount, timeKeys)
 
-  takeLast = R.curryN 2, (count, vals) ->
+  takeLast = (count, vals) ->
     end = R.length(vals)
-    start = Math.max(0, end - MAX_NR_OF_RELEVANT_TIMES)
+    start = Math.max(0, end - count)
     R.slice(start, end)(vals)
-
-  fillOnTime = R.curryN 3, (notificationsByTime, maxCount, time) ->
-    notsByTime = notificationsByTime[time] || []
-    repeated = R.repeat(createFiller(time), maxCount - notsByTime.length)
-    R.concat(repeated, notsByTime)
-
-
-  fillNotificationOnTime = R.curryN 1, (notificationsByTime) ->
-    R.compose(
-      R.flatten
-      R.values
-      R.mapObjIndexed(fillOnTime(notificationsByTime))
-    )
 
   countTimes: R.compose(
     R.foldl((acc, countedTimes) ->
@@ -63,29 +57,22 @@ class NotificationStore extends V.BaseStore
     R.values
   )
 
-
-  fillAllNotifications: R.curryN 2, (countedTimes, notifications) ->
-    R.mapObj((notificationsByKey) ->
-      byTime = R.groupBy(R.get('time'))(notificationsByKey)
-      fillNotificationOnTime(byTime)(countedTimes)
-    )(notifications)
-
-  filterRelevant: R.curryN 1, (currentTime) ->
-    R.mapObj(R.compose(
-      takeLast(6)
-      R.filter(
-        R.compose(
-          R.gte(currentTime)
-          R.get('time')
-        )
-      )
-    ))
+  filterRelevant: R.curryN 1, (relevantCounts) ->
+    R.mapObj( (notificationsByKey) ->
+      R.mapObjIndexed( (count, time) ->
+        values:
+          R.filter(R.propEq('time', parseInt(time)))(notificationsByKey)
+        count:
+          count
+      )(relevantCounts)
+    )
 
   init: (notifications, currentTime) ->
-    _notifications = notifications
-    _timeCounts = @countTimes(notifications)
-    filledNotifications = @fillAllNotifications(_timeCounts)(notifications)
-    _relevantNotifications = @filterRelevant(currentTime)(filledNotifications)
+    timeCounts = @countTimes(notifications)
+    relevantTimes = R.filter(R.gte(currentTime))(R.keys(timeCounts))
+    fittingTimes = takeFitting(relevantTimes, timeCounts)
+    _relevantCounts = R.pick(fittingTimes, timeCounts)
+    _relevantNotifications = @filterRelevant(_relevantCounts)(notifications)
     @emitChange()
 
   startTimer: (notifications, currentTime) ->
@@ -106,6 +93,9 @@ class NotificationStore extends V.BaseStore
 
   getCurrentNotifications: (id) ->
     _relevantNotifications[id] || []
+
+  getCurrentTimeCounts: ->
+    _relevantCounts
 
 V.notificationStore = new NotificationStore
 

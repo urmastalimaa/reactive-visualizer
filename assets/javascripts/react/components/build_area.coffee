@@ -15,6 +15,7 @@ BuildArea = React.createClass
 
   render: ->
     <div className="buildArea" style={@props.style}>
+      <N.SimulationHeader />
       <N.Observable observable={@state.observable} id='' ref="observable" recursionLevel=0 onChange={@handleChange} rowLength={@props.rowLength}/>
       <button className="analyze" id="analyze">Analyze</button>
       <button className="play" id="play">Play</button>
