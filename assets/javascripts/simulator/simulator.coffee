@@ -1,3 +1,5 @@
+Rx = require 'rx'
+
 collectResults = ([observableFactory, collector]) ->
   scheduler = new Rx.TestScheduler
   results = scheduler.startWithTiming ->
@@ -6,4 +8,4 @@ collectResults = ([observableFactory, collector]) ->
 
   collector.results()
 
-Visualizer.collectResults = collectResults
+module.exports = collectResults

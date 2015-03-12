@@ -1,5 +1,6 @@
-V = Visualizer
-N = V.ReactNodes
+R = require 'ramda'
+Operators = require '../descriptors/operators'
+Roots = require '../descriptors/roots'
 
 getArgsWithScheduler = ({input, getDefaultArgs, useScheduler}) ->
   if getDefaultArgs && useScheduler
@@ -18,7 +19,7 @@ rootEvaluators = R.mapObjIndexed( ({useScheduler, getDefaultArgs}, key) ->
       getArgsWithScheduler({input, useScheduler, getDefaultArgs}) +
       ")"
     )
-  )(V.Roots)
+  )(Roots)
 
 operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, getDefaultArgs, recursionType}, key) ->
   (input) ->
@@ -32,7 +33,7 @@ operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, getDefaultArgs,
       R.always(
         ".#{key}(#{getArgsWithScheduler({input, useScheduler, getDefaultArgs})})"
       )
-  )(V.Operators)
+  )(Operators)
 
 evalRoot = ({id, type, args}) ->
   getCode: rootEvaluators[type](args)
@@ -41,8 +42,10 @@ evalRoot = ({id, type, args}) ->
 evalOperator = ({id, type, args, observable}) ->
   id: id
   getCode: operatorEvaluators[type](args)
-  observable: observable && V.buildCode(observable)
+  observable: observable && buildCode(observable)
 
-V.buildCode = ({root, operators}) ->
+buildCode = ({root, operators}) ->
   root: evalRoot(root)
   operators: operators.map evalOperator
+
+module.exports = buildCode

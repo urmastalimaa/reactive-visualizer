@@ -1,3 +1,5 @@
+R = require 'ramda'
+
 defaultFunc = (impl) ->
   "function(value) { #{impl} }"
 
@@ -16,7 +18,7 @@ getReturningFunctionDeclaration = (args) ->
   "function(#{args}) { return "
 
 simpleOperatorsDefaults = useScheduler: false, recursionType: 'none'
-simpleOperators = R.mapObj(R.mixin(simpleOperatorsDefaults))(
+simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
   average:
     getDefaultArgs: R.always("function(x) { return x; }")
   bufferWithCount:
@@ -153,7 +155,7 @@ recursiveFunctionOperatorsDefaults =
   recursionType: 'function'
   getDefaultArgs: getReturningFunctionWithClosedOver
   getDefaultObservable: R.compose(createSimpleObservable('just'), getClosedOverArgName)
-recursiveFunctionOperators = R.mapObj(R.mixin(recursiveFunctionOperatorsDefaults))(
+recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults))(
   flatMap: {}
   flatMapLatest: {}
   buffer:
@@ -173,7 +175,7 @@ recursiveFunctionOperators = R.mapObj(R.mixin(recursiveFunctionOperatorsDefaults
 recursiveOperatorDefaults =
   recursive: true
   recursionType: 'observable'
-recursiveOperators = R.mapObj(R.mixin(recursiveOperatorDefaults))(
+recursiveOperators = R.mapObj(R.merge(recursiveOperatorDefaults))(
   merge:
     getDefaultObservable: R.always(createSimpleObservable('just')('1,2'))
   amb:
@@ -198,14 +200,15 @@ recursiveOperatorsWithTrailingArgsDefaults =
   recursionType: 'observableWithSelector'
   getDefaultObservable: R.always(createSimpleObservable('just')('1,2'))
   getDefaultArgs: R.always(simpleCombinerFunction)
-recursiveOperatorsWithTrailingArgs = R.mapObj(R.mixin(recursiveOperatorsWithTrailingArgsDefaults))(
+recursiveOperatorsWithTrailingArgs = R.mapObj(R.merge(recursiveOperatorsWithTrailingArgsDefaults))(
   combineLatest: {}
   withLatestFrom: {}
   zip: {}
 )
 
 sortByKeys = R.compose(R.fromPairs, R.sortBy(R.nthArg(0)), R.toPairs)
-Visualizer.Operators = sortByKeys(R.foldl(R.mixin, {}, [simpleOperators
+
+module.exports = sortByKeys(R.reduce(R.merge, {}, [simpleOperators
   recursiveOperators
   recursiveFunctionOperators
   recursiveOperatorsWithTrailingArgs

@@ -1,19 +1,19 @@
-V = Visualizer
-N = V.ReactNodes
-Rs = ReactBootstrap
-notificationStore = V.notificationStore
+R = require 'ramda'
+Rs = require 'react-bootstrap'
+React = require 'react'
+NotificationStore = require '../stores/notification_store'
 
-N.SimulationHeader = React.createClass
+module.exports = React.createClass
   getInitialState: ->
     timeCounts: []
   onNotificationsChange: ->
-    @setState(timeCounts: notificationStore.getCurrentTimeCounts())
+    @setState(timeCounts: NotificationStore.getCurrentTimeCounts())
 
   componentDidMount: ->
-    notificationStore.addChangeListener(@onNotificationsChange)
+    NotificationStore.addChangeListener(@onNotificationsChange)
 
   componentWillUnmount: ->
-    notificationStore.removeChangeListener(@onNotificationsChange)
+    NotificationStore.removeChangeListener(@onNotificationsChange)
 
   render: ->
     timeCols = R.mapObjIndexed( (count, time) ->

@@ -1,9 +1,8 @@
-V = Visualizer
-N = V.ReactNodes
-
-
-setVirtualTime = V.setVirtualTime
-capturedNotificationStore = V.capturedNotificationStore
+R = require 'ramda'
+React = require 'react'
+NotificationActions = require '../actions/notification_actions'
+CapturedNotificationStore = require '../stores/captured_notifications_store'
+Slider = require '../components/bootstrap_slider'
 
 TimeSlider = React.createClass(
 
@@ -11,21 +10,22 @@ TimeSlider = React.createClass(
     notifications: {}
 
   handleSliderChange: (sliderValue) ->
-    setVirtualTime(sliderValue, @state.notifications)
+    NotificationActions
+      .setVirtualTime(sliderValue, @state.notifications)
 
   getUniqueTimes: (notifications) ->
     R.compose(R.uniq, R.map(R.get('time')), R.flatten, R.values)(notifications)
 
   handleNotifications: ->
-    notifications = capturedNotificationStore.getNotifications()
+    notifications = CapturedNotificationStore.getNotifications()
 
     @setState notifications: notifications
 
   componentDidMount: ->
-    capturedNotificationStore.addChangeListener @handleNotifications
+    CapturedNotificationStore.addChangeListener @handleNotifications
 
   componentWillUnmount: ->
-    capturedNotificationStore.removeChangeListener @handleNotifications
+    CapturedNotificationStore.removeChangeListener @handleNotifications
 
   render: ->
     uniqueTimes = @getUniqueTimes(@state.notifications)
@@ -37,7 +37,7 @@ TimeSlider = React.createClass(
       when -Infinity then @props.initialMax
       else tryMax
 
-    <N.Slider id="time_slider"
+    <Slider id="time_slider"
       min={min}
       max={max}
       step=1
@@ -47,4 +47,4 @@ TimeSlider = React.createClass(
     />
 )
 
-Visualizer.ReactNodes.TimeSlider = TimeSlider
+module.exports = TimeSlider

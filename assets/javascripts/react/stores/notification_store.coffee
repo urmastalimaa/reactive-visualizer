@@ -1,12 +1,14 @@
-V = Visualizer
-Dispatcher = V.Dispatcher
+R = require 'ramda'
+Rx = require 'rx'
+Dispatcher = require '../dispatcher/dispatcher'
+BaseStore = require './base_store'
 
 ActionTypes =
   RECEIVE_NOTIFICATIONS: 'receive_notifications'
   RECEIVE_VIRTUAL_TIME: 'receive_virtual_time'
   PLAY_VIRTUAL_TIME: 'play_virtual_time'
 
-class NotificationStore extends V.BaseStore
+class NotificationStore extends BaseStore
 
   MAX_NR_OF_RELEVANT_TIMES = 5
 
@@ -25,7 +27,7 @@ class NotificationStore extends V.BaseStore
     )
 
   takeFitting = R.curryN 2, (timeKeys, timeCounts) ->
-    sums = R.scanl((acc, key) ->
+    sums = R.scan((acc, key) ->
       acc + timeCounts[key]
     )(0)(R.reverse(timeKeys))
 
@@ -43,7 +45,7 @@ class NotificationStore extends V.BaseStore
     R.slice(start, end)(vals)
 
   countTimes: R.compose(
-    R.foldl((acc, countedTimes) ->
+    R.reduce((acc, countedTimes) ->
       res = R.clone(acc)
       for key, val of countedTimes
         res[key] =
@@ -97,13 +99,14 @@ class NotificationStore extends V.BaseStore
   getCurrentTimeCounts: ->
     _relevantCounts
 
-V.notificationStore = new NotificationStore
+notificationStore = new NotificationStore
 
-V.notificationStore.dispatchToken = Dispatcher.register (action) ->
+notificationStore.dispatchToken = Dispatcher.register (action) ->
   switch action.type
     when ActionTypes.RECEIVE_VIRTUAL_TIME
-      V.notificationStore.setVirtualTime(action.time, action.notifications)
+      notificationStore.setVirtualTime(action.time, action.notifications)
     when ActionTypes.PLAY_VIRTUAL_TIME
-      V.notificationStore.setVirtualTime(0, action.notifications)
-      V.notificationStore.startTimer(action.notifications, 0)
+      notificationStore.setVirtualTime(0, action.notifications)
+      notificationStore.startTimer(action.notifications, 0)
 
+module.exports = notificationStore

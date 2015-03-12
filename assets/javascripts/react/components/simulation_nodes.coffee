@@ -1,21 +1,20 @@
-V = Visualizer
-N = V.ReactNodes
-notificationStore = V.notificationStore
-Rs = ReactBootstrap
+R = require 'ramda'
+React = require 'react'
+NotificationStore = require '../stores/notification_store'
 
-N.SimulationArea = React.createClass
+module.exports = React.createClass
 
   getInitialState: ->
     notifications: []
 
   onNotificationsChange: ->
-    @setState(notifications: notificationStore.getCurrentNotifications(@props.id))
+    @setState(notifications: NotificationStore.getCurrentNotifications(@props.id))
 
   componentDidMount: ->
-    notificationStore.addChangeListener(@onNotificationsChange)
+    NotificationStore.addChangeListener(@onNotificationsChange)
 
   componentWillUnmount: ->
-    notificationStore.removeChangeListener(@onNotificationsChange)
+    NotificationStore.removeChangeListener(@onNotificationsChange)
 
   render: ->
     <span className="simulationArea" style={float: 'right'} >

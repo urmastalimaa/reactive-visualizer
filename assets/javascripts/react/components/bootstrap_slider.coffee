@@ -1,4 +1,5 @@
-V = Visualizer
+React = require 'react'
+BoostrapSlider = require 'bootstrap-slider'
 
 Slider = React.createClass(
   getDefaultProps: ->
@@ -11,22 +12,21 @@ Slider = React.createClass(
       onChange: ->
     }
 
-  handleChange: (event) ->
-    {oldValue, newValue} = event.value
+  handleChange: ({oldValue, newValue}) ->
     @props.onChange(newValue)
 
   componentWillUpdate: (nextProps, nextState) ->
     nextState.slider
-      .slider('setValue', nextProps.value)
-      .slider('setAttribute', 'min', Math.max(0, nextProps.min - 100))
-      .slider('setAttribute', 'max', nextProps.max + 100)
+      .setValue nextProps.value
+      .setAttribute 'min', Math.max(0, nextProps.min - 100)
+      .setAttribute 'max', nextProps.max + 100
 
   componentWillUnmount: ->
     @state.slider.off 'change', @handleChange
 
   componentDidMount: ->
     toolTip = if @props.toolTip then 'show' else 'hide'
-    slider = $(@getDOMNode()).slider
+    slider = new BoostrapSlider @getDOMNode(),
       id: @props.id
       min: @props.min
       max: @props.max
@@ -41,4 +41,4 @@ Slider = React.createClass(
     <div style={@props.style}/>
 )
 
-Visualizer.ReactNodes.Slider = Slider
+module.exports = Slider

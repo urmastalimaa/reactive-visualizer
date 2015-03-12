@@ -1,22 +1,22 @@
-V = Visualizer
-N = V.ReactNodes
+React = require 'react'
+identifyStructure = require '../../builder/structure_identifier'
+SimulationHeader = require './simulation_header'
+Observable = require './observable'
+TimeSlider = require './time_slider'
 
 BuildArea = React.createClass
   getInitialState: ->
-    observable: V.identifyStructure(@props.defaultObservable)
+    observable: identifyStructure(@props.defaultObservable)
 
   handleChange: (observable) ->
-    identifiedObservable = V.identifyStructure(observable)
+    identifiedObservable = identifyStructure(observable)
     @setState observable: identifiedObservable
     @props.onChange identifiedObservable
 
-  handleSliderChange: (sliderValue) ->
-    console.log "slider value", sliderValue
-
   render: ->
     <div className="buildArea" style={@props.style}>
-      <N.SimulationHeader />
-      <N.Observable observable={@state.observable} id='' ref="observable" recursionLevel=0 onChange={@handleChange} rowLength={@props.rowLength}/>
+      <SimulationHeader />
+      <Observable observable={@state.observable} id='' ref="observable" recursionLevel=0 onChange={@handleChange} rowLength={@props.rowLength}/>
       <button className="analyze" id="analyze">Analyze</button>
       <button className="play" id="play">Play</button>
       <div>
@@ -24,7 +24,7 @@ BuildArea = React.createClass
         <button className="persistency" id="load">Load</button>
         <button className="persistency" id="clear">Clear</button>
       </div>
-      <N.TimeSlider initialTime={0} initialMin={0} initialMax={3000} initialValue={0}/>
+      <TimeSlider initialTime={0} initialMin={0} initialMax={3000} initialValue={0}/>
     </div width='inherit'>
 
-N.BuildArea = BuildArea
+module.exports = BuildArea

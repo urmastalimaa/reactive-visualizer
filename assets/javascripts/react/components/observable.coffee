@@ -1,7 +1,11 @@
-V = Visualizer
-N = V.ReactNodes
+React = require 'react'
+R = require 'ramda'
+Operators = require '../../descriptors/operators'
 
-N.Observable = React.createClass
+ObservableOperator = require './operator_nodes'
+ObservableRoot = require './root_nodes'
+
+Observable = React.createClass
   handleAddOperator: (operator, type) ->
     return unless type
 
@@ -12,7 +16,7 @@ N.Observable = React.createClass
 
     newList = R.concat(R.concat(previous, [{type}]), after)
 
-    @props.onChange R.mixin @props.observable,
+    @props.onChange R.merge @props.observable,
       operators: newList
 
   handleChildObservableChange: (operator, observable) ->
@@ -27,11 +31,11 @@ N.Observable = React.createClass
     @props.onChange @props.observable
 
   removeOperator: (operator) ->
-    @props.onChange R.mixin @props.observable,
+    @props.onChange R.merge @props.observable,
       operators: R.reject(R.eq(operator), @props.observable.operators)
 
   handleRootChange: (root) ->
-    @props.onChange R.mixin @props.observable,
+    @props.onChange R.merge @props.observable,
       root: root
 
   render: ->
@@ -39,14 +43,14 @@ N.Observable = React.createClass
     {root} = @props.observable
 
     operatorNodes = @props.observable.operators.map (operator, index) =>
-      <N.ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel} onChange={@handleOperatorChange} key={operator.id}>
+      <ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel} onChange={@handleOperatorChange} key={operator.id}>
         <AddOperator id={operator.id} onSelect={handleAddOperatorTo(operator)}/>
-      </N.ObservableOperator>
+      </ObservableOperator>
 
     <div className="observable" style={paddingLeft: 'inherit'}>
-     <N.ObservableRoot root={root} handleChange={@handleRootChange} >
+     <ObservableRoot root={root} handleChange={@handleRootChange} >
       <AddOperator id={root.id} onSelect={handleAddOperatorTo(root)}/>
-     </N.ObservableRoot>
+     </ObservableRoot>
      {operatorNodes}
     </div>
 
@@ -66,7 +70,7 @@ AddOperator = React.createClass
     handleMouseLeave = =>
       @setState hidden: true
 
-    options = R.keys(V.Operators).map (op) ->
+    options = R.keys(Operators).map (op) ->
       <option value={op} key={op}>{op}</option>
 
     <span onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} ref="addOperatorSpan">
@@ -77,3 +81,4 @@ AddOperator = React.createClass
       </select>
     </span>
 
+module.exports = Observable

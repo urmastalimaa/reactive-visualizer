@@ -1,10 +1,10 @@
-V = Visualizer
-Dispatcher = V.Dispatcher
+Dispatcher = require '../dispatcher/dispatcher'
+BaseStore = require './base_store'
 
 ActionTypes =
   RECEIVE_NOTIFICATIONS: 'receive_notifications'
 
-class CapturedNotificationStore extends V.BaseStore
+class CapturedNotificationStore extends BaseStore
 
   _notifications = null
 
@@ -18,9 +18,11 @@ class CapturedNotificationStore extends V.BaseStore
     else
       _notifications
 
-V.capturedNotificationStore = new CapturedNotificationStore
+capturedNotificationStore = new CapturedNotificationStore
 
-V.capturedNotificationStore.dispatchToken = Dispatcher.register (action) ->
+capturedNotificationStore.dispatchToken = Dispatcher.register (action) ->
   switch action.type
     when ActionTypes.RECEIVE_NOTIFICATIONS
-      V.capturedNotificationStore.init(action.notifications)
+      capturedNotificationStore.init(action.notifications)
+
+module.exports = capturedNotificationStore

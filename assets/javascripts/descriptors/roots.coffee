@@ -1,4 +1,4 @@
-V = Visualizer
+R = require 'ramda'
 
 roots =
   of:
@@ -37,4 +37,5 @@ roots =
     useScheduler: true
 
 sortByKeys = R.compose(R.fromPairs, R.sortBy(R.nthArg(0)), R.toPairs)
-V.Roots = sortByKeys(roots)
+
+module.exports = sortByKeys(roots)

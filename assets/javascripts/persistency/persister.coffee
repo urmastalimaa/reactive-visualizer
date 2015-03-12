@@ -1,14 +1,12 @@
-V = Visualizer
-P = V.persistency = {}
+module.exports =
+  save: (observable) ->
+    localStorage.savedObservable = JSON.stringify(observable)
 
-P.save = (observable) ->
-  localStorage.savedObservable = JSON.stringify(observable)
+  load: ->
+    try
+      JSON.parse(localStorage.savedObservable)
+    catch error
+      null
 
-P.load = ->
-  try
-    JSON.parse(localStorage.savedObservable)
-  catch error
-    null
-
-P.clear = ->
-  delete localStorage['savedObservable']
+  clear:->
+    delete localStorage['savedObservable']

@@ -1,20 +1,24 @@
-V = Visualizer
-N = Visualizer.ReactNodes
+R = require 'ramda'
+React = require 'react'
+Operators = require '../../descriptors/operators'
+Observable = require './observable'
+InputArea = require './input_area'
+SimulationArea = require './simulation_nodes'
 
 SimpleOperator = React.createClass
   onArgsChange: (args) ->
     @props.onChange(R.assoc('args', args, @props.operator))
 
   render: ->
-    if V.Operators[@props.operator.type].getDefaultArgs
-      <N.Helpers.InputArea value={@props.operator.args} id={@props.operator.id} onChange={@onArgsChange} />
+    if Operators[@props.operator.type].getDefaultArgs
+      <InputArea value={@props.operator.args} id={@props.operator.id} onChange={@onArgsChange} />
     else
       false
 
 RecursiveOperator = React.createClass
   render: ->
     <span className="recursiveContainer" style={paddingLeft: '50px'} >
-      <N.Observable id={@props.operator.id} observable={@props.operator.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
+      <Observable id={@props.operator.id} observable={@props.operator.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
     </span>
 
 RecursionFunctionOperator = React.createClass
@@ -24,7 +28,7 @@ RecursionFunctionOperator = React.createClass
   render: ->
     <span className="recusiveFunctionOperator">
       <span className="functionDeclaration" id={@props.operator.id}>
-        <N.Helpers.InputArea value={@props.operator.args} onChange={@onArgsChange}/>
+        <InputArea value={@props.operator.args} onChange={@onArgsChange}/>
       </span>
       <RecursiveOperator operator={@props.operator} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange} onChange={@props.onChange}/>
       {'}'}
@@ -39,7 +43,7 @@ RecursiveOperatorWithTrailingArgs = React.createClass
       <RecursiveOperator operator={@props.operator} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange} onChange={@props.onChange}/>
       ,
       <span className="recursiveOperatorTrailingArg" id={@props.operator.id}>
-        <N.Helpers.InputArea value={@props.operator.args} onChange={@onArgsChange} />
+        <InputArea value={@props.operator.args} onChange={@onArgsChange} />
       </span>
     </span>
 
@@ -51,7 +55,7 @@ getOperatorClass = ({recursionType}) ->
     when 'observable' then RecursiveOperator
     when 'observableWithSelector' then RecursiveOperatorWithTrailingArgs
 
-N.ObservableOperator = React.createClass
+module.exports = React.createClass
   handleRemove: ->
     @props.onRemove(@props.operator)
 
@@ -62,7 +66,6 @@ N.ObservableOperator = React.createClass
     @props.onChange(operator)
 
   render: ->
-
     args = {
       operator: @props.operator
       onChildOperatorChange: @handleChildObservableChange
@@ -75,7 +78,7 @@ N.ObservableOperator = React.createClass
       {".#{@props.operator.type}("} {opEl} {')'}
       {@props.children}
       <RemoveOperator onRemove={@handleRemove}/>
-      <N.SimulationArea id={@props.operator.id} />
+      <SimulationArea id={@props.operator.id} />
     </div>
 
 RemoveOperator = React.createClass

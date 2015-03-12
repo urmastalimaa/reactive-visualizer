@@ -9,38 +9,7 @@ module.exports = (grunt) ->
       dist:
         files:
           'public/assets/visualizer.css': 'assets/stylesheets/visualizer.sass'
-    cjsx:
-      compile:
-        files:
-          'public/assets/analyzer.js': [
-            'assets/javascripts/app.coffee'
-            'assets/javascripts/descriptors/*.coffee'
-            'assets/javascripts/react/dispatcher/*.coffee'
-            'assets/javascripts/react/stores/*.coffee'
-            'assets/javascripts/react/actions/*.coffee'
-            'assets/javascripts/react/components/*.coffee'
-            'assets/javascripts/evaluator/*.coffee'
-            'assets/javascripts/persistency/*.coffee'
-            'assets/javascripts/factory/*.coffee'
-            'assets/javascripts/simulator/*.coffee'
-            'assets/javascripts/displayer/*.coffee'
-          ]
-
     concat:
-      javascripts:
-        src: [
-          'bower_components/rxjs/dist/rx.all.js'
-          'bower_components/rxjs/dist/rx.testing.js'
-          'bower_components/EventEmitter.js/EventEmitter.js'
-          'bower_components/jquery/dist/jquery.js'
-          'bower_components/react/react.js'
-          'bower_components/flux/dist/Flux.js'
-          'bower_components/react-bootstrap/react-bootstrap.js'
-          'bower_components/seiyria-bootstrap-slider/js/bootstrap-slider.js'
-          'node_modules/ramda/dist/ramda.js'
-          'public/assets/analyzer.js'
-        ]
-        dest: 'public/assets/application.js'
       css:
         src: [
           'public/assets/visualizer.css'
@@ -48,29 +17,56 @@ module.exports = (grunt) ->
           'bower_components/bootstrap-slider/slider.css'
         ]
         dest: 'public/assets/application.css'
+    browserify:
+      dist:
+        files:
+          'public/assets/application.js': [
+            'assets/javascripts/**/*.cjsx'
+            'assets/javascripts/**/*.coffee'
+          ]
+        options:
+          transform: ['coffee-reactify']
+          browserifyOptions:
+            extensions: ['.coffee']
+      dev_watch:
+        files:
+          'public/assets/application.js': [
+            'assets/javascripts/**/*.cjsx'
+            'assets/javascripts/**/*.coffee'
+          ]
+        options:
+          transform: ['coffee-reactify']
+          browserifyOptions:
+            extensions: ['.coffee']
+          watchifyOptions:
+            livereload: true
+          watch: true
+          keepAlive: true
     slim:
       dist:
-        files: [
-          expand: true
-          cwd: 'templates'
-          src: ['{,*/}*.slim']
-          dest: 'public'
-          ext: '.html'
-        ]
+        files:
+          'public/index.html': 'templates/index.slim'
+      dev:
+        files:
+          'public/index.html': 'templates/index_dev.slim'
+    concurrent:
+      options:
+        logConcurrentOutput: true
+      dev:
+        tasks: ["watch", "browserify:dev_watch"]
+
     watch:
       sass:
         files: ['assets/stylesheets/**/*.sass']
         tasks: ['sass', 'concat:css']
-      coffee:
-        files: ['assets/javascripts/**/*.coffee']
-        tasks: ['cjsx', 'concat:javascripts']
       slim:
         files: ['templates/**/*.slim']
-        tasks: ['slim']
-      deps:
-        files: ['bower_components/rxjs/dist/rx.all.js']
-        tasks: ['concat']
-
+        tasks: ['slim:dev']
+      app:
+        files: ['public/assets/application.js', 'public/index.html', 'public/assets/application.css']
+        tasks: []
+        options:
+          livereload: true
     'http-server':
       dev:
         root: 'public'
@@ -78,13 +74,15 @@ module.exports = (grunt) ->
         cache: -1
         runInBackground: true
 
+  grunt.loadNpmTasks 'grunt-concurrent'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-sass'
-  grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-slim'
   grunt.loadNpmTasks 'grunt-http-server'
   grunt.loadNpmTasks 'grunt-coffee-react'
+  grunt.loadNpmTasks 'grunt-browserify'
 
-  grunt.registerTask 'default', ['sass', 'cjsx', 'slim', 'concat']
-  grunt.registerTask 'run', ['default', 'http-server:dev', 'watch']
+
+  grunt.registerTask 'default', ['sass', 'slim:dist', 'concat', 'browserify:dist']
+  grunt.registerTask 'run', ['sass', 'slim:dev', 'concat', 'http-server:dev', 'concurrent:dev']

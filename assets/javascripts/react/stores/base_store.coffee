@@ -1,4 +1,4 @@
-V = Visualizer
+EventEmitter = require('events').EventEmitter
 
 class StoreEmitter extends EventEmitter
   CHANGE_EVENT = 'change'
@@ -12,4 +12,4 @@ class StoreEmitter extends EventEmitter
   removeChangeListener: (callback) ->
     @removeListener(CHANGE_EVENT, callback)
 
-V.BaseStore = StoreEmitter
+module.exports = StoreEmitter

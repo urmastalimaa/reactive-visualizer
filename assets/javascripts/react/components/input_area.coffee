@@ -1,8 +1,6 @@
-V = Visualizer
-N = V.ReactNodes
-H = N.Helpers = {}
+React = require 'react'
 
-H.InputArea = React.createClass
+module.exports = React.createClass
   onChange: ->
     @props.onChange(@refs.textarea.getDOMNode().value)
   render: ->

@@ -1,18 +1,19 @@
-V = Visualizer
-Dispatcher = V.Dispatcher
+Dispatcher = require '../dispatcher/dispatcher'
 
-V.setNotifications = (notifications) ->
+module.exports =
+
+setNotifications: (notifications) ->
   Dispatcher.dispatch
     type: 'receive_notifications'
     notifications: notifications
 
-V.setVirtualTime = (time, notifications) ->
+setVirtualTime: (time, notifications) ->
   Dispatcher.dispatch
     type: 'receive_virtual_time'
     time: time
     notifications: notifications
 
-V.playVirtualTime = (notifications) ->
+playVirtualTime: (notifications) ->
   Dispatcher.dispatch
     type: 'play_virtual_time'
     notifications: notifications

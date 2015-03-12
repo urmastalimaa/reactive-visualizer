@@ -1,3 +1,7 @@
+Flux = require 'flux'
+
 Dispatcher = Flux.Dispatcher
 
-Visualizer.Dispatcher = new Dispatcher()
+dispatcher = new Dispatcher()
+
+module.exports = dispatcher

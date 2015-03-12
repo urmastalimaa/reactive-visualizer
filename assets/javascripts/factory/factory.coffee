@@ -1,3 +1,6 @@
+Rx = require 'rx'
+R = require 'ramda'
+
 createMockObserver = (scheduler, collect, id) ->
   Rx.Observer.create(
     (value) -> collect(id,
@@ -31,7 +34,7 @@ buildRoot = ({id, getCode}) ->
   getCode() + createDoOperator(id)
 
 buildObservable = ({operators, root}, wrap) ->
-  wrap(R.foldl(buildOperator, buildRoot(root))(operators))
+  wrap(R.reduce(buildOperator, buildRoot(root))(operators))
 
 evalFactory = R.curryN 3, (observable, collector, scheduler) ->
   try
@@ -40,6 +43,6 @@ evalFactory = R.curryN 3, (observable, collector, scheduler) ->
     console.error "Error during evaluation", err
     Rx.Observable.empty()
 
-Visualizer.evalObservable = (observable) ->
+module.exports = (observable) ->
   collector = createCollector()
   [evalFactory(observable, collector), collector]

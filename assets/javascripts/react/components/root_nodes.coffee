@@ -1,5 +1,8 @@
-V = Visualizer
-N = V.ReactNodes
+R = require 'ramda'
+React = require 'react'
+Roots = require '../../descriptors/roots'
+InputArea = require './input_area'
+SimulationArea = require './simulation_nodes'
 
 SelectRoot = React.createClass
   handleChange: ->
@@ -8,7 +11,7 @@ SelectRoot = React.createClass
     @props.onChange(val)
 
   render: ->
-    options = R.keys(V.Roots).map (root) ->
+    options = R.keys(Roots).map (root) ->
       <option value={root} key={root}>{root}</option>
 
     <span>
@@ -17,9 +20,9 @@ SelectRoot = React.createClass
       </select>
     </span>
 
-N.ObservableRoot = React.createClass
+module.exports = React.createClass
   handleRootTypeChange: (type) ->
-    @props.handleChange(type: type, args: V.Roots[type].getDefaultArgs?())
+    @props.handleChange(type: type, args: Roots[type].getDefaultArgs?())
 
   onArgsChange: (args) ->
     @props.handleChange(type: @props.root.type, id: @props.root.id, args: args)
@@ -32,10 +35,10 @@ N.ObservableRoot = React.createClass
         <SelectRoot id={root.id} selected={root.type} onChange={@handleRootTypeChange}/>
         {'('}
         { if root.args?
-          <N.Helpers.InputArea value={root.args} onChange={@onArgsChange}/>
+          <InputArea value={root.args} onChange={@onArgsChange}/>
         }
         {')'}
         {@props.children}
-        <N.SimulationArea id={root.id} />
+        <SimulationArea id={root.id} />
       </div>
     </div>

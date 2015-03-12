@@ -1,4 +1,15 @@
-window.Visualizer = V = {}
+Rx = require 'rx'
+R = require 'ramda'
+React = require 'react'
+$ = require 'jquery'
+
+NotificationActions = require './react/actions/notification_actions'
+BuildArea = require './react/components/build_area'
+Persister = require './persistency/persister'
+
+buildObservable    = require './builder/builder'
+evaluateObservable = require './factory/factory'
+simulateObservable = require './simulator/simulator'
 
 Rx.Observable.fromTime = (timesAndValues, scheduler) ->
   timers = R.keys(timesAndValues)
@@ -7,8 +18,6 @@ Rx.Observable.fromTime = (timesAndValues, scheduler) ->
       Rx.Observable.timer(time, scheduler).map R.I(value)
 
   Rx.Observable.merge(timers)
-
-V.ReactNodes = N = {}
 
 defaultStructure = {
   root:
@@ -19,9 +28,9 @@ defaultStructure = {
 renderBuildArea = ->
   observableSubject = new Rx.Subject
 
-  startingStructure = V.persistency.load() || defaultStructure
+  startingStructure = Persister.load() || defaultStructure
 
-  buildArea = <N.BuildArea defaultObservable={startingStructure}
+  buildArea = <BuildArea defaultObservable={startingStructure}
     onChange={observableSubject.onNext.bind(observableSubject)} />
   renderedBuildArea = React.render(buildArea, document.getElementById('content'))
 
@@ -34,7 +43,7 @@ $(document).ready ->
   {observableFromUI, renderedBuildArea} = renderBuildArea()
 
   observableStructure = Rx.Observable.merge([
-    Rx.Observable.fromEvent($("#load"), 'click').map V.persistency.load
+    Rx.Observable.fromEvent($("#load"), 'click').map Persister.load
     Rx.Observable.fromEvent($("#clear"), 'click').map R.always(defaultStructure)
   ])
 
@@ -46,22 +55,20 @@ $(document).ready ->
     Rx.Observable.fromEvent($("#analyze"), 'click')
       .withLatestFrom(observableFromUI, R.nthArg(1))
       .map (obs) ->
-        R.compose(V.collectResults, V.evalObservable, V.buildCode)(obs)
+        R.compose(simulateObservable, evaluateObservable, buildObservable)(obs)
       .share()
 
-  collectedResults.subscribe V.setNotifications
+  collectedResults.subscribe NotificationActions.setNotifications
 
   Rx.Observable.fromEvent($("#play"), 'click')
     .withLatestFrom(collectedResults, R.nthArg(1))
-    .subscribe V.playVirtualTime
+    .subscribe NotificationActions.playVirtualTime
 
   Rx.Observable.fromEvent($("#save"), 'click')
     .withLatestFrom(observableFromUI, R.nthArg(1))
-    .subscribe R.compose(V.persistency.save)
+    .subscribe R.compose(Persister.save)
 
-  Rx.Observable.fromEvent($("#clear"), 'click').subscribe V.persistency.clear
+  Rx.Observable.fromEvent($("#clear"), 'click').subscribe Persister.clear
 
-  setTimeout ->
-    $("#analyze").click()
-  , 100
+  $("#analyze").click()
 
