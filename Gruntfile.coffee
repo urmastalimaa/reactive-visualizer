@@ -1,3 +1,28 @@
+generateBrowserifyConf = ({minify, map, watch} = {}) ->
+  options = {}
+  files =
+    'public/assets/application.js': [
+      'assets/javascripts/**/*.cjsx'
+      'assets/javascripts/**/*.coffee'
+    ]
+
+  options =
+    transform: ['coffee-reactify']
+    browserifyOptions:
+      extensions: ['.coffee']
+    preBundleCB: (b) ->
+      if map || minify
+        b.plugin('minifyify', map: map || false, minify: minify || false)
+      return b
+
+  if watch
+    options.watchifyOptions =
+      livereload: true
+    options.watch = true
+    options.keepAlive = true
+
+  {files, options}
+
 module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON('package.json')
@@ -18,30 +43,9 @@ module.exports = (grunt) ->
         ]
         dest: 'public/assets/application.css'
     browserify:
-      dist:
-        files:
-          'public/assets/application.js': [
-            'assets/javascripts/**/*.cjsx'
-            'assets/javascripts/**/*.coffee'
-          ]
-        options:
-          transform: ['coffee-reactify']
-          browserifyOptions:
-            extensions: ['.coffee']
-      dev_watch:
-        files:
-          'public/assets/application.js': [
-            'assets/javascripts/**/*.cjsx'
-            'assets/javascripts/**/*.coffee'
-          ]
-        options:
-          transform: ['coffee-reactify']
-          browserifyOptions:
-            extensions: ['.coffee']
-          watchifyOptions:
-            livereload: true
-          watch: true
-          keepAlive: true
+      dist: generateBrowserifyConf(minify: true, map: false)
+      dev: generateBrowserifyConf()
+      dev_watch: generateBrowserifyConf(watch: true)
     slim:
       dist:
         files:
@@ -80,9 +84,10 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-slim'
   grunt.loadNpmTasks 'grunt-http-server'
-  grunt.loadNpmTasks 'grunt-coffee-react'
   grunt.loadNpmTasks 'grunt-browserify'
 
 
-  grunt.registerTask 'default', ['sass', 'slim:dist', 'concat', 'browserify:dist']
+  grunt.registerTask 'dist', ['sass', 'slim:dist', 'concat', 'browserify:dist']
+  grunt.registerTask 'default', ['dist']
+  grunt.registerTask 'dev', ['sass', 'slim:dev', 'concat', 'browserify:dist']
   grunt.registerTask 'run', ['sass', 'slim:dev', 'concat', 'http-server:dev', 'concurrent:dev']
