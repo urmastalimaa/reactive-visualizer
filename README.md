@@ -22,7 +22,6 @@ For simulating the observable there are two possibilities:
 To Do
 
 1. Create examples which can be loaded
-1. Modularize system
 1. Allow setting end of time
 1. Style the UI
 1. Live simulation using a timeout scheduler, allowing real requests.
