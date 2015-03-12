@@ -22,7 +22,7 @@ Slider = React.createClass(
       .setAttribute 'max', nextProps.max + 100
 
   componentWillUnmount: ->
-    @state.slider.off 'change', @handleChange
+    @state.slider.destroy()
 
   componentDidMount: ->
     toolTip = if @props.toolTip then 'show' else 'hide'
