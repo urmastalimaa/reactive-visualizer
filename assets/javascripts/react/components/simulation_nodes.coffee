@@ -62,6 +62,6 @@ SimulationValueArea = React.createClass
     </div>
 
   render: ->
-    <div key={@props.id}>
+    <div key={@props.id} className="simulationArea">
       {R.mapObjIndexed(@timeColumn, @props.values)}
     </div>

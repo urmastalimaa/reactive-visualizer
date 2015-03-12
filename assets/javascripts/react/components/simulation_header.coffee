@@ -23,7 +23,7 @@ module.exports = React.createClass
         </div>
       </div>
     )(@state.timeCounts)
-    <div id="simulation-header" style={width: '100%', display: 'inline-block'}>
+    <div id="simulation-header" className="simulationHeader">
       <span style={float: 'right'}>
         {timeCols}
       </span>
