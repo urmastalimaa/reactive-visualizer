@@ -1,47 +1,33 @@
 R = require 'ramda'
 React = require 'react'
 NotificationActions = require '../actions/notification_actions'
-CapturedNotificationStore = require '../stores/captured_notifications_store'
 Slider = require '../components/bootstrap_slider'
+
+getUniqueTimes =  (notifications) ->
+  R.compose(R.uniq, R.map(R.get('time')), R.flatten, R.values)(notifications)
 
 TimeSlider = React.createClass(
 
-  getInitialState: ->
-    notifications: {}
-
   handleSliderChange: (sliderValue) ->
-    NotificationActions
-      .setVirtualTime(sliderValue, @state.notifications)
+    @props.handleChange(sliderValue)
 
-  getUniqueTimes: (notifications) ->
-    R.compose(R.uniq, R.map(R.get('time')), R.flatten, R.values)(notifications)
-
-  handleNotifications: ->
-    notifications = CapturedNotificationStore.getNotifications()
-
-    @setState notifications: notifications
-
-  componentDidMount: ->
-    CapturedNotificationStore.addChangeListener @handleNotifications
-
-  componentWillUnmount: ->
-    CapturedNotificationStore.removeChangeListener @handleNotifications
+  getMinAndMax: (times) ->
+    min = switch tryMin = R.min(times)
+      when Infinity then 0
+      else tryMin
+    max = switch tryMax = R.max(times)
+      when -Infinity then 1000
+      else tryMax
+    [min, max]
 
   render: ->
-    uniqueTimes = @getUniqueTimes(@state.notifications)
-
-    min = switch tryMin = R.min(uniqueTimes)
-      when Infinity then @props.initialMin
-      else tryMin
-    max = switch tryMax = R.max(uniqueTimes)
-      when -Infinity then @props.initialMax
-      else tryMax
+    [min, max] = @getMinAndMax(getUniqueTimes(@props.notifications))
 
     <Slider id="time_slider"
-      min={min}
-      max={max}
+      min={Math.max(min - 100, 0)}
+      max={max + 100}
       step=1
-      value={@props.initialValue}
+      value={@props.value}
       style={width: "100%"}
       onChange={@handleSliderChange}
     />

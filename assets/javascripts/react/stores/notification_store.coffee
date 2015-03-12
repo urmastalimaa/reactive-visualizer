@@ -4,7 +4,6 @@ Dispatcher = require '../dispatcher/dispatcher'
 BaseStore = require './base_store'
 
 ActionTypes =
-  RECEIVE_NOTIFICATIONS: 'receive_notifications'
   RECEIVE_VIRTUAL_TIME: 'receive_virtual_time'
   PLAY_VIRTUAL_TIME: 'play_virtual_time'
 

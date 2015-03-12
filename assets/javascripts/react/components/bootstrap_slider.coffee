@@ -18,8 +18,8 @@ Slider = React.createClass(
   componentWillUpdate: (nextProps, nextState) ->
     nextState.slider
       .setValue nextProps.value
-      .setAttribute 'min', Math.max(0, nextProps.min - 100)
-      .setAttribute 'max', nextProps.max + 100
+      .setAttribute 'min', nextProps.min
+      .setAttribute 'max', nextProps.max
 
   componentWillUnmount: ->
     @state.slider.destroy()

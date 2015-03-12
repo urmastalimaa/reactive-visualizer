@@ -2,11 +2,6 @@ Dispatcher = require '../dispatcher/dispatcher'
 
 module.exports =
 
-setNotifications: (notifications) ->
-  Dispatcher.dispatch
-    type: 'receive_notifications'
-    notifications: notifications
-
 setVirtualTime: (time, notifications) ->
   Dispatcher.dispatch
     type: 'receive_virtual_time'
