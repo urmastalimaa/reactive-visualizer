@@ -30,6 +30,7 @@ module.exports = (grunt) ->
       dist:
         files:
           'public/assets/visualizer.css': 'assets/stylesheets/visualizer.sass'
+
     concat:
       css:
         src: [
@@ -38,30 +39,37 @@ module.exports = (grunt) ->
           'node_modules/bootstrap-slider/dist/css/bootstrap-slider.css'
         ]
         dest: 'public/assets/application.css'
+      dist_html:
+        src: [
+          'assets/html/intro.html'
+          'assets/html/dist_head.html'
+          'assets/html/content_body.html'
+          'assets/html/outro.html'
+        ]
+        dest: 'public/index.html'
+      dev_html:
+        src: [
+          'assets/html/intro.html'
+          'assets/html/dev_head.html'
+          'assets/html/content_body.html'
+          'assets/html/outro.html'
+        ]
+        dest: 'public/index.html'
+
     browserify:
       dist: generateBrowserifyConf(minify: true, map: false)
       dev: generateBrowserifyConf()
       dev_watch: generateBrowserifyConf(watch: true)
-    slim:
-      dist:
-        files:
-          'public/index.html': 'templates/index.slim'
-      dev:
-        files:
-          'public/index.html': 'templates/index_dev.slim'
+
     concurrent:
       options:
         logConcurrentOutput: true
       dev:
         tasks: ["watch", "browserify:dev_watch"]
-
     watch:
       sass:
         files: ['assets/stylesheets/**/*.sass']
         tasks: ['sass', 'concat:css']
-      slim:
-        files: ['templates/**/*.slim']
-        tasks: ['slim:dev']
       app:
         files: ['public/assets/application.js', 'public/index.html', 'public/assets/application.css']
         tasks: []
@@ -83,7 +91,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-browserify'
 
 
-  grunt.registerTask 'dist', ['sass', 'slim:dist', 'concat', 'browserify:dist']
+  grunt.registerTask 'dist', ['sass', 'concat:dist_html', 'concat:css', 'browserify:dist']
+  grunt.registerTask 'dev', ['sass', 'concat:dev_html', 'concat:css', 'browserify:dev']
+  grunt.registerTask 'dev_watch', ['sass', 'concat:dev_html', 'concat:css', 'http-server:dev', 'concurrent:dev']
+
   grunt.registerTask 'default', ['dist']
-  grunt.registerTask 'dev', ['sass', 'slim:dev', 'concat', 'browserify:dist']
-  grunt.registerTask 'run', ['sass', 'slim:dev', 'concat', 'http-server:dev', 'concurrent:dev']
