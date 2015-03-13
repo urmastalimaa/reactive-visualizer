@@ -1,5 +1,6 @@
 React = require 'react'
 BoostrapSlider = require 'bootstrap-slider'
+R = require 'ramda'
 
 Slider = React.createClass(
   getDefaultProps: ->
@@ -26,13 +27,7 @@ Slider = React.createClass(
 
   componentDidMount: ->
     slider = new BoostrapSlider @getDOMNode(),
-      id: @props.id
-      min: @props.min
-      max: @props.max
-      step: @props.step
-      value: @props.value
-      tooltip: @props.toolTip
-
+      R.pick(['id', 'min', 'max', 'step', 'value', 'tooltip'])(@props)
     slider.on 'change', @handleChange
     @setState slider: slider
 
