@@ -8,7 +8,7 @@ Slider = React.createClass(
       max: 100
       step: 1
       value: 50
-      toolTip: false
+      toolTip: true
       onChange: ->
     }
 
@@ -25,14 +25,13 @@ Slider = React.createClass(
     @state.slider.destroy()
 
   componentDidMount: ->
-    toolTip = if @props.toolTip then 'show' else 'hide'
     slider = new BoostrapSlider @getDOMNode(),
       id: @props.id
       min: @props.min
       max: @props.max
       step: @props.step
       value: @props.value
-      tooltip: toolTip
+      tooltip: @props.toolTip
 
     slider.on 'change', @handleChange
     @setState slider: slider
