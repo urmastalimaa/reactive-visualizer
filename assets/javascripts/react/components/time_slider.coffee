@@ -23,8 +23,8 @@ TimeSlider = React.createClass(
     [min, max] = @getMinAndMax(getUniqueTimes(@props.notifications))
 
     <Slider id="time_slider"
-      min={Math.max(min - 100, 0)}
-      max={max + 100}
+      min={Math.round(min * 0.1)}
+      max={Math.round(max * 1.1)}
       step=1
       value={@props.value}
       style={width: "100%"}
