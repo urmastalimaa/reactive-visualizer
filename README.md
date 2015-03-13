@@ -1,32 +1,34 @@
-Considerations:
+## rx-visualize
 
-* an operator occurring later can have an effect on a previous operator e.g `take`
+### A tool for building an RxJS observable and inspecting it's state 
 
-This means that the observable must be evaluated fully to have the correct values for all the operators. 
-So to have values for each operator in the observable, `do` blocks must be used which save the results.
 
-Another thing to take into account is the difficulty of evaluating nested functions.
-All of them must have a properly initiated context and they must be able to close over all the outer functions.
+### How it works
 
-These considerations persuaded me to build the observable as a string containing javascript and evaluate it once.
+The user interfaces requests an observable from the user.
+The observable is created using a builder.
+The observable cannot at this time contain any *real* asynchronous calls.
+The observable will be evalued and run through virtual time scheduler and the 
+values from each operator will be collected.
+Overwriting any of the existing Rx functions is avoided.
 
-For simulating the observable there are two possibilities:
 
-1. Use virtual time
-  * the good: All the results are available immediately, can step trough, pause, rewind, change speed and so forth.
-  * the bad: Cannot use any real asynchronous calls inside the javascript
-2. Use real time
-  * the good: Can use real asynchronous calls e.g query a server.
-  * the bad: Can only display values as they arrive, no time travelling
+### Future
 
-To Do
+#### Allowing real world data
 
-1. Create examples which can be loaded
-1. Allow setting end of time
-1. Style the UI
-1. Live simulation using a timeout scheduler, allowing real requests.
-1. Capture live simulation, playback similar to virtual time 
-1. Try and parse user provided javascript snippet to create the observable.
-1. Allow operators with arbitrary parameters using structured view for observables.
-1. Query and parse operator descriptions from TypeScript definitions during building.
+The observable can be visualized in real time
+and the time scrolling can be enabled only to past values.
 
+#### Accepting an observable written in plain javascript.
+
+This would require some crazy `eval` magic or proxying Rx functions.
+Proxying is probably much easier.
+
+#### Add examples to the builder
+
+#### Make the UI easy on the eyes
+
+#### Allow operators with arbitrary parameters in the builder
+
+#### Create the builder based on the operators Typescript definitions
