@@ -14,6 +14,7 @@ generateBrowserifyConf = ({minify, map, watch} = {}) ->
       if map || minify
         b.plugin('minifyify', map: map || false, minify: minify || false)
       return b
+    exclude: ['jquery']
 
   if watch
     options.watchifyOptions =
@@ -86,7 +87,6 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-sass'
   grunt.loadNpmTasks 'grunt-contrib-concat'
-  grunt.loadNpmTasks 'grunt-slim'
   grunt.loadNpmTasks 'grunt-http-server'
   grunt.loadNpmTasks 'grunt-browserify'
 
