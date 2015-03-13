@@ -2,8 +2,8 @@ React = require 'react'
 R = require 'ramda'
 Operators = require '../../descriptors/operators'
 
-ObservableOperator = require './operator_nodes'
-ObservableRoot = require './root_nodes'
+ObservableOperator = require './operator_component'
+ObservableRoot = require './root_component'
 
 Observable = React.createClass
   handleAddOperator: (operator, type) ->
@@ -43,7 +43,8 @@ Observable = React.createClass
     {root} = @props.observable
 
     operatorNodes = @props.observable.operators.map (operator, index) =>
-      <ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel} onChange={@handleOperatorChange} key={operator.id}>
+      <ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel}
+        onChange={@handleOperatorChange} key={operator.id} ObservableComponent={Observable}>
         <AddOperator id={operator.id} onSelect={handleAddOperatorTo(operator)}/>
       </ObservableOperator>
 

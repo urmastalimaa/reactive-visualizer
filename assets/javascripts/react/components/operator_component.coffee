@@ -1,7 +1,7 @@
 R = require 'ramda'
 React = require 'react'
 Operators = require '../../descriptors/operators'
-Observable = require './observable'
+
 InputArea = require './input_area'
 SimulationArea = require './simulation_nodes'
 
@@ -18,7 +18,7 @@ SimpleOperator = React.createClass
 RecursiveOperator = React.createClass
   render: ->
     <span className="recursiveContainer" style={paddingLeft: '50px'} >
-      <Observable id={@props.operator.id} observable={@props.operator.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
+      <@props.ObservableComponent id={@props.operator.id} observable={@props.operator.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
     </span>
 
 RecursionFunctionOperator = React.createClass
@@ -30,7 +30,7 @@ RecursionFunctionOperator = React.createClass
       <span className="functionDeclaration" id={@props.operator.id}>
         <InputArea value={@props.operator.args} onChange={@onArgsChange}/>
       </span>
-      <RecursiveOperator operator={@props.operator} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange} onChange={@props.onChange}/>
+      <RecursiveOperator operator={@props.operator} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange} onChange={@props.onChange} ObservableComponent={@props.ObservableComponent}/>
       {'}'}
     </span>
 
@@ -40,7 +40,7 @@ RecursiveOperatorWithTrailingArgs = React.createClass
 
   render: ->
     <span>
-      <RecursiveOperator operator={@props.operator} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange} onChange={@props.onChange}/>
+      <RecursiveOperator operator={@props.operator} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange} onChange={@props.onChange} ObservableComponent={@props.ObservableComponent}/>
       ,
       <span className="recursiveOperatorTrailingArg" id={@props.operator.id}>
         <InputArea value={@props.operator.args} onChange={@onArgsChange} />
@@ -71,6 +71,7 @@ module.exports = React.createClass
       onChildOperatorChange: @handleChildObservableChange
       recursionLevel: @props.recursionLevel
       onChange: @onChange
+      ObservableComponent: @props.ObservableComponent
     }
     opEl = React.createElement(getOperatorClass(@props.operator), args)
 
