@@ -27,10 +27,6 @@ module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON('package.json')
     sass:
-      options:
-        loadPath: [
-          'bower_components/bourbon/dist/'
-        ]
       dist:
         files:
           'public/assets/visualizer.css': 'assets/stylesheets/visualizer.sass'
