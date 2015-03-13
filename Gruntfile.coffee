@@ -82,6 +82,11 @@ module.exports = (grunt) ->
         port: 3700
         cache: -1
         runInBackground: true
+      dist:
+        root: 'public'
+        port: 3700
+        cache: 60
+        runInBackground: false
 
   grunt.loadNpmTasks 'grunt-concurrent'
   grunt.loadNpmTasks 'grunt-contrib-watch'
@@ -95,4 +100,4 @@ module.exports = (grunt) ->
   grunt.registerTask 'dev', ['sass', 'concat:dev_html', 'concat:css', 'browserify:dev']
   grunt.registerTask 'dev_watch', ['sass', 'concat:dev_html', 'concat:css', 'http-server:dev', 'concurrent:dev']
 
-  grunt.registerTask 'default', ['dist']
+  grunt.registerTask 'default', ['dist', 'http-server:dist']

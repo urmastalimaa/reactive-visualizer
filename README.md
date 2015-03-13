@@ -2,6 +2,18 @@
 
 ### A tool for building an RxJS observable and inspecting it's state 
 
+### Running it
+
+* `npm install`
+* `grunt` or `grunt default`
+* Open `localhost:3700`
+
+### Developing
+* `grunt dev_watch`
+* make tests
+* implement stuff
+* enjoy live reload in browser
+
 
 ### How it works
 
