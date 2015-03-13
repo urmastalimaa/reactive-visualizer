@@ -34,8 +34,8 @@ module.exports = (grunt) ->
       css:
         src: [
           'public/assets/visualizer.css'
-          'bower_components/bootstrap/dist/css/bootstrap.css'
-          'bower_components/bootstrap-slider/slider.css'
+          'node_modules/bootstrap/dist/css/bootstrap.css'
+          'node_modules/bootstrap-slider/dist/css/bootstrap-slider.css'
         ]
         dest: 'public/assets/application.css'
     browserify:
