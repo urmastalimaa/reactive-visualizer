@@ -1,11 +1,6 @@
 R = require 'ramda'
 Rx = require 'rx'
-Dispatcher = require '../dispatcher/dispatcher'
 BaseStore = require './base_store'
-
-ActionTypes =
-  RECEIVE_VIRTUAL_TIME: 'receive_virtual_time'
-  PLAY_VIRTUAL_TIME: 'play_virtual_time'
 
 class NotificationStore extends BaseStore
 
@@ -14,7 +9,7 @@ class NotificationStore extends BaseStore
   _relevantNotifications = {}
   _relevantCounts = {}
 
-  _disposable = new Rx.SerialDisposable
+  _disposable = Rx.Disposable.empty
 
   earliestTimeAfter = (startTime) ->
     R.compose(
@@ -76,17 +71,29 @@ class NotificationStore extends BaseStore
     _relevantNotifications = @filterRelevant(_relevantCounts)(notifications)
     @emitChange()
 
-  startTimer: (notifications, currentTime) ->
+  play: (notifications, startTime = 0, callback) ->
     _disposable.dispose()
-    _disposable = new Rx.SerialDisposable
-    startTime = currentTime || 0
-    nextTime = earliestTimeAfter(startTime)(notifications)
-    if (nextTime != Infinity)
-      _disposable.setDisposable(
-        Rx.Observable.timer(nextTime - startTime)
-          .subscribe =>
-            @init(notifications, nextTime)
-            @startTimer(notifications, nextTime))
+
+    times = R.compose(
+      R.uniq
+      R.sortBy(R.I)
+      R.filter(R.lt(startTime))
+      R.pluck('time')
+      R.flatten
+      R.values
+    )(notifications)
+
+    bindedInit = R.curryN(2, @init)(notifications).bind(@)
+    subscriber = (time) ->
+      bindedInit(time)
+      callback?(time)
+
+    timeObservable = Rx.Observable.fromArray(times)
+      .flatMap((time) ->
+        Rx.Observable.timer(time - startTime).map(R.always(time))
+      )
+
+    _disposable = timeObservable.subscribe(subscriber)
 
   setVirtualTime: (time, notifications) ->
     _disposable.dispose()
@@ -98,14 +105,4 @@ class NotificationStore extends BaseStore
   getCurrentTimeCounts: ->
     _relevantCounts
 
-notificationStore = new NotificationStore
-
-notificationStore.dispatchToken = Dispatcher.register (action) ->
-  switch action.type
-    when ActionTypes.RECEIVE_VIRTUAL_TIME
-      notificationStore.setVirtualTime(action.time, action.notifications)
-    when ActionTypes.PLAY_VIRTUAL_TIME
-      notificationStore.setVirtualTime(0, action.notifications)
-      notificationStore.startTimer(action.notifications, 0)
-
-module.exports = notificationStore
+module.exports = new NotificationStore

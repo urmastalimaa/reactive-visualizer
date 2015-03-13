@@ -3,7 +3,7 @@ R = require 'ramda'
 
 TimeSlider = require './time_slider'
 
-NotificationActions = require '../actions/notification_actions'
+NotificationStore = require '../stores/notification_store'
 
 buildObservable    = require '../../builder/builder'
 evaluateObservable = require '../../factory/factory'
@@ -22,20 +22,25 @@ module.exports = React.createClass
     time: 0
 
   handleTimeChange: (time) ->
-    NotificationActions.setVirtualTime(time, @state.notifications)
-    @setState time: time
+    if @state.time != time
+      NotificationStore.setVirtualTime(time, @state.notifications)
+      @setState time: time
 
   analyze: ->
     notifications = getNotifications(@props.observable)
+    NotificationStore.setVirtualTime(0, notifications)
+
     @setState notifications: notifications
+    @setState time: 0
 
   componentWillReceiveProps: (nextProps) ->
     unless R.eq(@props.observable, nextProps.observable)
       @setState notifications: {}
 
   play: ->
-    @setState time: 0
-    NotificationActions.playVirtualTime(@state.notifications)
+    timeCallback = (time) =>
+      @setState time: time
+    NotificationStore.play @state.notifications, @state.time, timeCallback
 
   render: ->
     showReplayArea = R.keys(@state.notifications).length > 0

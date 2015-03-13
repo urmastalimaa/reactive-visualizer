@@ -8,3 +8,4 @@
   *  Added a time slider which allows inspecting obervable state throughout its lifetime.
 *  12.03.2015
   *  Modularized the system to use browserify
+  *  Removed dependency on flux dispatcher

@@ -1,6 +1,5 @@
 R = require 'ramda'
 React = require 'react'
-NotificationActions = require '../actions/notification_actions'
 Slider = require '../components/bootstrap_slider'
 
 getUniqueTimes =  (notifications) ->
