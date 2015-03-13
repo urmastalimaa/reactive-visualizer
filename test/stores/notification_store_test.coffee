@@ -1,16 +1,8 @@
 require '../test_helper'
-global.Flux = require 'flux'
-global.Rx = require 'rx'
-global.EventEmitter = require('events').EventEmitter
-memo = require 'memo-is'
-require '../../assets/javascripts/react/dispatcher/dispatcher.coffee'
-require '../../assets/javascripts/react/stores/base_store.coffee'
-require '../../assets/javascripts/react/stores/notification_store.coffee'
-V = Visualizer
-store = V.notificationStore
+Rx = require 'rx'
+store = (require '../../assets/javascripts/react/stores/notification_store')
 
-onNext = Rx.ReactiveTest.onNext
-onCompleted = Rx.ReactiveTest.onNext
+{ onNext, onCompleted } = Rx.ReactiveTest
 
 describe 'NotificationStore', ->
   notifications = memo().is -> {}

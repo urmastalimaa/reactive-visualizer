@@ -1,15 +1,15 @@
 require '../test_helper'
-require '../../assets/javascripts/factory/factory'
+Rx = require 'rx'
+evalObservable = require '../../assets/javascripts/factory/factory'
+R = require 'ramda'
 
-onNext = Rx.ReactiveTest.onNext
-onCompleted = Rx.ReactiveTest.onCompleted
-V = Visualizer
+{onNext, onCompleted} = Rx.ReactiveTest
 
 describe 'evalObservable', ->
   describe 'observable', ->
     subject = ->
       scheduler = new Rx.TestScheduler
-      [observableFactory, collector] = V.evalObservable(structure())
+      [observableFactory, collector] = evalObservable(structure())
 
       results = scheduler.startWithCreate R.always(observableFactory(scheduler))
       results.messages
@@ -118,7 +118,7 @@ describe 'evalObservable', ->
   describe 'collector', ->
     subject = ->
       scheduler = new Rx.TestScheduler
-      [observableFactory, collector] = V.evalObservable(structure())
+      [observableFactory, collector] = evalObservable(structure())
 
       scheduler.startWithCreate R.always(observableFactory(scheduler))
       collector.results()
@@ -146,35 +146,31 @@ describe 'evalObservable', ->
         # virtual time scheduler
 
         expect(subject()).toEqual
-          r:
-            messages: [
-              onNext(201, 1)
-              onNext(202, 2)
-              onCompleted(203)
-            ]
-          ro:
-            messages: [
-              onNext(302, 1)
-              onNext(303, 1)
-              onNext(403, 2)
-              onNext(604, 4)
-              onCompleted(604)
-            ]
-          ror:
-            messages: [
-              onNext(202, 1)
-              onNext(203, 1)
-              onNext(203, 2)
-              onCompleted(204)
-              onNext(204, 4)
-              onCompleted(205)
-            ]
-          roro:
-            messages: [
-              onNext(302, 1)
-              onNext(303, 1)
-              onCompleted(303)
-              onNext(403, 2)
-              onNext(604, 4)
-              onCompleted(604)
-            ]
+          r: [
+            onNext(201, 1)
+            onNext(202, 2)
+            onCompleted(203)
+          ]
+          ro: [
+            onNext(302, 1)
+            onNext(303, 1)
+            onNext(403, 2)
+            onNext(604, 4)
+            onCompleted(604)
+          ]
+          ror: [
+            onNext(202, 1)
+            onNext(203, 1)
+            onNext(203, 2)
+            onCompleted(204)
+            onNext(204, 4)
+            onCompleted(205)
+          ]
+          roro: [
+            onNext(302, 1)
+            onNext(303, 1)
+            onCompleted(303)
+            onNext(403, 2)
+            onNext(604, 4)
+            onCompleted(604)
+          ]

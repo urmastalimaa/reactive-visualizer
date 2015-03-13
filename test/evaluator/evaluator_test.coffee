@@ -1,15 +1,12 @@
 require '../test_helper'
-require '../../assets/javascripts/descriptors/roots'
-require '../../assets/javascripts/descriptors/operators'
-require '../../assets/javascripts/evaluator/evaluator'
 
-V = Visualizer
+buildCode = require '../../assets/javascripts/builder/builder'
 
 describe 'buildCode', ->
   structure = memo().is -> {}
 
   context 'only root', ->
-    subject = -> V.buildCode(structure()).root.getCode()
+    subject = -> buildCode(structure()).root.getCode()
     root = memo().is ->
     structure.is ->
       root: root()
@@ -27,7 +24,7 @@ describe 'buildCode', ->
         expect(subject()).toEqual 'Rx.Observable.timer(100, scheduler)'
 
   context 'non-recursive operator', ->
-    subject = -> V.buildCode(structure()).operators[0].getCode()
+    subject = -> buildCode(structure()).operators[0].getCode()
     structure.is ->
       root: type: 'interval', args: '100'
       operators: [operator()]
@@ -45,7 +42,7 @@ describe 'buildCode', ->
 
   context 'recursive function operator', ->
     subject = ->
-      V.buildCode(structure()).operators[0].getCode("Rx.Observable.just(x)")
+      buildCode(structure()).operators[0].getCode("Rx.Observable.just(x)")
 
     structure.is ->
       root: type: 'interval', args: '100'
@@ -64,7 +61,7 @@ describe 'buildCode', ->
 
   context 'recursive observable operator', ->
     subject = ->
-      V.buildCode(structure()).operators[0].getCode("Rx.Observable.just(5)")
+      buildCode(structure()).operators[0].getCode("Rx.Observable.just(5)")
 
     structure.is ->
       root: type: 'interval', args: '100'
@@ -83,7 +80,7 @@ describe 'buildCode', ->
 
   context 'recursive observable with selector operator', ->
     subject = ->
-      V.buildCode(structure()).operators[0].getCode("Rx.Observable.just(5)")
+      buildCode(structure()).operators[0].getCode("Rx.Observable.just(5)")
 
     structure.is ->
       root: type: 'interval', args: '100'
