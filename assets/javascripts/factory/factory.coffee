@@ -1,7 +1,7 @@
 R = require 'ramda'
 Rx = require 'rx'
-Rx = require '../custom_rx_operators'
-
+Rx = require 'rx/dist/rx.testing'
+require '../custom_rx_operators'
 
 createMockObserver = (scheduler, collect, id) ->
   Rx.Observer.create(
