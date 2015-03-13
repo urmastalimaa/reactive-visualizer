@@ -1,4 +1,5 @@
 Rx = require 'rx'
+Rx = require 'rx/dist/rx.testing'
 
 collectResults = ([observableFactory, collector]) ->
   scheduler = new Rx.TestScheduler

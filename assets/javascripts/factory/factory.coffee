@@ -1,14 +1,16 @@
-Rx = require 'rx'
 R = require 'ramda'
+Rx = require 'rx'
+Rx = require '../custom_rx_operators'
+
 
 createMockObserver = (scheduler, collect, id) ->
   Rx.Observer.create(
     (value) -> collect(id,
-      new Rx.Recorded(scheduler.clock, Rx.Notification.createOnNext(value)))
+      Rx.ReactiveTest.onNext(scheduler.clock, value))
     (error) -> collect(id,
-        new Rx.Recorded(scheduler.clock, Rx.Notification.createOnError(error)))
+        Rx.ReactiveTest.onError(scheduler.clock, error))
     -> collect(id,
-        new Rx.Recorded(scheduler.clock, Rx.Notification.createOnCompleted()))
+        Rx.ReactiveTest.onCompleted(scheduler.clock))
   )
 
 createCollector = ->

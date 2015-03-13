@@ -1,5 +1,4 @@
 Rx = require 'rx'
-R = require 'ramda'
 
 Rx.Observable.fromTime = (timesAndValues, scheduler) ->
   timers = R.keys(timesAndValues)
@@ -9,3 +8,4 @@ Rx.Observable.fromTime = (timesAndValues, scheduler) ->
 
   Rx.Observable.merge(timers)
 
+return Rx
