@@ -5,9 +5,9 @@ Slider = React.createClass(
   getDefaultProps: ->
     {
       min: 0
-      max: 100
+      max: 1000
       step: 1
-      value: 50
+      value: 500
       toolTip: true
       onChange: ->
     }
