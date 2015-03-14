@@ -33,7 +33,7 @@ module.exports =
     ]
 
   "fixedRaceCondition#1":
-    description: "Fix race condition #1 by mapping waiting for previous response before new request. The user get's the every requested page and has to wait"
+    description: "Fix race condition #1 by mapping waiting for previous response before new request. The user gets the every requested page and has to wait"
     root:
       type: 'fromTime', args: "{1000: 1, 2000: 2}"
     operators: [
@@ -49,7 +49,7 @@ module.exports =
       }
     ]
   "fixedRaceCondition#2":
-    description: "Fix race condition #1 by flat mapping the latest request. The user get's the latest requested page immediately"
+    description: "Fix race condition #1 by flat mapping the latest request. The user gets the latest requested page immediately"
     root:
       type: 'fromTime', args: "{1000: 1, 2000: 2}"
     operators: [
