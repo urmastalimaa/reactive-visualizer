@@ -24,7 +24,7 @@ TimeSlider = React.createClass(
 
     <Slider id="time_slider"
       min={Math.round(min * 0.1)}
-      max={Math.round(max * 1.1)}
+      max={Math.round(max * 1.00)}
       step=1
       value={@props.value}
       style={width: "100%"}
