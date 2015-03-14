@@ -17,9 +17,7 @@ module.exports = React.createClass
     NotificationStore.removeChangeListener(@onNotificationsChange)
 
   render: ->
-    <span className="simulationArea" style={float: 'right'} >
-      <SimulationValueArea values={@state.notifications} id={@props.id}/>
-    </span>
+    <SimulationValueArea values={@state.notifications} id={@props.id}/>
 
 SimulationValueArea = React.createClass
   completeColumn: ({time, value}, id) ->
