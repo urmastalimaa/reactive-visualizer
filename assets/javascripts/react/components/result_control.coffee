@@ -5,7 +5,7 @@ TimeSlider = require './time_slider'
 
 NotificationStore = require '../stores/notification_store'
 ReactBootstrap = require 'react-bootstrap'
-{Alert} = ReactBootstrap
+{Alert, Button, ButtonToolbar} = ReactBootstrap
 
 buildObservable    = require '../../builder/builder'
 evaluateObservable = require '../../factory/factory'
@@ -71,14 +71,15 @@ module.exports = React.createClass
   render: ->
     showReplayArea = R.keys(@state.notifications).length > 0 && !@state.notifications.error
 
-    replayArea =
-      <div id="replayArea">
-        <button className="play" id="play" onClick={@play}>Play</button>
-        <TimeSlider notifications={@state.notifications} handleChange={@handleTimeChange} value={@state.time} />
-      </div>
+    replayArea = [
+      <Button key="play" className="play" id="play" onClick={@play} bsStyle="success" style={marginBottom: '5px'}>Play</Button>
+      <TimeSlider key="slider" notifications={@state.notifications} handleChange={@handleTimeChange} value={@state.time} />
+    ]
 
-    <div>
-      <button className="analyze" id="analyze" onClick={@analyze}>Analyze</button>
-      <div id="analyzeError" ref="analyzeError" />
+    <ButtonToolbar>
+      <Button className="analyze" id="analyze" onClick={@analyze} bsStyle="success" style={marginBottom: '5px'}>
+      Analyze
+        <div id="analyzeError" ref="analyzeError" />
+      </Button>
       { if showReplayArea then replayArea }
-    </div>
+    </ButtonToolbar>

@@ -2,7 +2,7 @@ React = require 'react'
 R = require 'ramda'
 S = require('string')
 ReactBootstrap = require 'react-bootstrap'
-{Modal, Button} = ReactBootstrap
+{Modal, Button, ButtonToolbar} = ReactBootstrap
 
 module.exports = React.createClass
 
@@ -48,8 +48,8 @@ module.exports = React.createClass
     React.render(modalInstance, @refs.loadContainer.getDOMNode())
 
   render: ->
-    <div id="loadArea">
+    <Button bsStyle="primary" id="loadButton" onClick={@showModal}>
       <span id="loadContainer" ref="loadContainer"/>
-      <button id="loadButton" onClick={@showModal}>Load</button>
-    </div>
+      Load
+    </Button>
 

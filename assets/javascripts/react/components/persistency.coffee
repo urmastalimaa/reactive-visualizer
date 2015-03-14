@@ -3,6 +3,8 @@ R = require 'ramda'
 Persister = require '../../persistency/persister'
 examples = require '../../../../example_observables'
 Loader = require './load_selector'
+ReactBootstrap = require 'react-bootstrap'
+{Button, ButtonToolbar, ButtonGroup} = ReactBootstrap
 
 module.exports = React.createClass
   save: ->
@@ -22,10 +24,14 @@ module.exports = React.createClass
 
   render: ->
     exampleDescriptions = R.mapObj(R.get('description'))(examples)
-    <div>
-      <button id="save"  onClick={@save}  >Save</button>
-      <button id="save"  onClick={@load}  >Reset</button>
-      <button id="clear" onClick={@clear} >Clear</button>
-      <Loader onChange={@onLoad} options={exampleDescriptions}/>
-    </div>
+    <ButtonToolbar id="persistency">
+      <ButtonGroup>
+        <Button id="save" tooltip="funky" bsStyle="primary" onClick={@save}  >Save </Button>
+        <Button id="load"  bsStyle="primary" onClick={@load}  >Reset</Button>
+        <Button id="clear" bsStyle="primary" onClick={@clear} >Clear</Button>
+      </ButtonGroup>
+      <ButtonGroup>
+        <Loader onChange={@onLoad} options={exampleDescriptions}/>
+      </ButtonGroup>
+    </ButtonToolbar>
 
