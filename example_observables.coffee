@@ -80,3 +80,26 @@ module.exports =
           ]
       }
     ]
+  delayWithSelector:
+    description: "Every value takes progressively longer to process"
+    root:
+      type: 'interval', args: '500'
+    operators: [
+      {
+        type: 'delayWithSelector'
+        args: 'function(input) { return '
+        observable:
+          root:
+            type: 'timer', args: 'input * input * 500'
+          operators: [
+            {
+              type: 'timeout'
+              args: '3000'
+            }
+          ]
+      }
+      {
+        type: 'takeUntilWithTime'
+        args: '6000'
+      }
+    ]
