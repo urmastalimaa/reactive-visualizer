@@ -14,7 +14,7 @@ SelectRoot = React.createClass
     options = R.keys(Roots).map (root) ->
       <option value={root} key={root}>{root}</option>
 
-    <span>
+    <span className="rootSelect">
       <select id={@props.id}{'selectRoot'} className='selectRoot' onChange={@handleChange} ref="selectRoot" value={@props.selected}>
         {options}
       </select>
@@ -30,13 +30,13 @@ module.exports = React.createClass
   render: ->
     {root} = @props
     <div className="root" data-type={root.type} id={root.id}>
-      {'Rx.Observable.'}
+      <span className="immutableCode">{'Rx.Observable.'}</span>
       <SelectRoot id={root.id} selected={root.type} onChange={@handleRootTypeChange}/>
-      {'('}
+      <span className="immutableCode">{'('}</span>
       { if root.args?
         <InputArea value={root.args} onChange={@onArgsChange}/>
       }
-      {')'}
+      <span className="immutableCode">{')'}</span>
       {@props.children}
       <SimulationArea id={root.id} />
     </div>
