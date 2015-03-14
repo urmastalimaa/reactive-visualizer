@@ -7,7 +7,8 @@
 *  11.03.2015
   *  Added a time slider which allows inspecting obervable state throughout its lifetime.
 *  12.03.2015
-  *  Modularized the system to use browserify
-  *  Removed dependency on flux dispatcher
+  *  Modularized the system to use browserify.
+  *  Removed dependency on flux dispatcher.
 *  14.03.2015
-  *  Added loadable examples
+  *  Added loadable examples.
+  *  Show errors when the structure of the observable is invalid.
