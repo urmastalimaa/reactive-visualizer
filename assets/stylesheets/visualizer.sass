@@ -5,13 +5,21 @@
 .codeTextarea
   min-height: 30px
   display: inline
-  width: 50%
   font-size: 14px
+  width: 30%
+  padding-left: 3px
 
 .immutableCode
   font-size: 18px
 
+.rootDescriptionContainer > .immutableCode
+  display: table
+
+.rootDescriptionContainer > .codeTextarea
+  width: inherit
+
 .rootSelect
+  display: inherit
   font-size: 18px
 
 .root
@@ -21,7 +29,7 @@
   padding-bottom: 5px
 
 .rootDescriptionContainer
-  width: 60%
+  width: 50%
   display: inline-flex
   align-items: center
 
@@ -39,7 +47,7 @@
   min-height: 30px
 
 .simulationArea
-  max-width: 30%
+  max-width: 40%
   min-height: 30px
   float: right
   white-space: nowrap

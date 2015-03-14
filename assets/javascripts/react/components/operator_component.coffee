@@ -76,7 +76,9 @@ module.exports = React.createClass
     opEl = React.createElement(getOperatorClass(@props.operator), args)
 
     <div data-type={@props.operator.type} id={@props.operator.id} className='operator'>
-      <span className="immutableCode">{".#{@props.operator.type}("} {opEl} {')'} </span>
+      <span className="immutableCode">{".#{@props.operator.type}("}</span>
+      {opEl}
+      <span className="immutableCode">{')'}</span>
       {@props.children}
       <RemoveOperator onRemove={@handleRemove}/>
       <SimulationArea id={@props.operator.id} />
