@@ -30,13 +30,15 @@ module.exports = React.createClass
   render: ->
     {root} = @props
     <div className="root" data-type={root.type} id={root.id}>
-      <span className="immutableCode">{'Rx.Observable.'}</span>
-      <SelectRoot id={root.id} selected={root.type} onChange={@handleRootTypeChange}/>
-      <span className="immutableCode">{'('}</span>
-      { if root.args?
-        <InputArea value={root.args} onChange={@onArgsChange}/>
-      }
-      <span className="immutableCode">{')'}</span>
-      {@props.children}
+      <div className="rootDescriptionContainer">
+        <span className="immutableCode">{'Rx.Observable.'}</span>
+        <SelectRoot id={root.id} selected={root.type} onChange={@handleRootTypeChange}/>
+        <span className="immutableCode">{'('}</span>
+        { if root.args?
+          <InputArea value={root.args} onChange={@onArgsChange}/>
+        }
+        <span className="immutableCode">{')'}</span>
+        {@props.children}
+      </div>
       <SimulationArea id={root.id} />
     </div>
