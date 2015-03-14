@@ -9,3 +9,5 @@
 *  12.03.2015
   *  Modularized the system to use browserify
   *  Removed dependency on flux dispatcher
+*  14.03.2015
+  *  Added loadable examples

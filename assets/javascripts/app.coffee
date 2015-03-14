@@ -2,10 +2,10 @@ React = require 'react'
 
 BuildArea = require './react/components/build_area'
 Persister = require './persistency/persister'
-defaultStructure = require './default_observable'
+examples = require '../../example_observables'
 
 document.addEventListener "DOMContentLoaded", ->
-  startingStructure = Persister.load() || defaultStructure
+  startingStructure = Persister.load() || examples.simpleMap
 
   React.render(
     <BuildArea defaultObservable={startingStructure} />,

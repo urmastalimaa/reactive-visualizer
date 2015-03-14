@@ -37,8 +37,6 @@ and the time scrolling can be enabled only to past values.
 This would require some crazy `eval` magic or proxying Rx functions.
 Proxying is probably much easier.
 
-#### Add examples to the builder
-
 #### Make the UI easy on the eyes
 
 #### Allow operators with arbitrary parameters in the builder

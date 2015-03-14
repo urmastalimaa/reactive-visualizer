@@ -1,5 +1,8 @@
 React = require 'react'
-Persister = require '../..//persistency/persister'
+R = require 'ramda'
+Persister = require '../../persistency/persister'
+examples = require '../../../../example_observables'
+Loader = require './load_selector'
 
 module.exports = React.createClass
   save: ->
@@ -10,14 +13,19 @@ module.exports = React.createClass
     if loaded
       @props.onChange(loaded)
 
+  onLoad: (exampleKey) ->
+    @props.onChange examples[exampleKey]
+
   clear: ->
     Persister.clear()
     @props.onChange(@props.defaultObservable)
 
   render: ->
+    exampleDescriptions = R.mapObj(R.get('description'))(examples)
     <div>
       <button id="save"  onClick={@save}  >Save</button>
-      <button id="load"  onClick={@load}  >Load</button>
+      <button id="save"  onClick={@load}  >Reset</button>
       <button id="clear" onClick={@clear} >Clear</button>
+      <Loader onChange={@onLoad} options={exampleDescriptions}/>
     </div>
 

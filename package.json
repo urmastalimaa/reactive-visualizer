@@ -9,7 +9,8 @@
     "rx": "~2.4",
     "bootstrap": "~ 3.3",
     "react-bootstrap": "~ 0.16",
-    "bootstrap-slider": "4.5"
+    "bootstrap-slider": "4.5",
+    "string": "~ 3.0"
   },
   "devDependencies": {
     "browserify": "~9.0",
