@@ -75,7 +75,7 @@ module.exports = React.createClass
     }
     opEl = React.createElement(getOperatorClass(@props.operator), args)
 
-    <div className={@props.operator.type} id={@props.operator.id} style={width: '100%'}>
+    <div data-type={@props.operator.type} id={@props.operator.id} className='operator'>
       {".#{@props.operator.type}("} {opEl} {')'}
       {@props.children}
       <RemoveOperator onRemove={@handleRemove}/>
