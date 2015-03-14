@@ -29,16 +29,14 @@ module.exports = React.createClass
 
   render: ->
     {root} = @props
-    <div className="observableRoot">
-      <div className={root.type} id={root.id}>
-        {'Rx.Observable.'}
-        <SelectRoot id={root.id} selected={root.type} onChange={@handleRootTypeChange}/>
-        {'('}
-        { if root.args?
-          <InputArea value={root.args} onChange={@onArgsChange}/>
-        }
-        {')'}
-        {@props.children}
-        <SimulationArea id={root.id} />
-      </div>
+    <div className="root" data-type={root.type} id={root.id}>
+      {'Rx.Observable.'}
+      <SelectRoot id={root.id} selected={root.type} onChange={@handleRootTypeChange}/>
+      {'('}
+      { if root.args?
+        <InputArea value={root.args} onChange={@onArgsChange}/>
+      }
+      {')'}
+      {@props.children}
+      <SimulationArea id={root.id} />
     </div>
