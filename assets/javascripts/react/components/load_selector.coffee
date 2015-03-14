@@ -27,13 +27,15 @@ module.exports = React.createClass
     React.render(<span/>, @refs.loadContainer.getDOMNode())
 
   showModal: ->
-    modalContent = R.mapObjIndexed(@mapOption)(@props.options)
-
+    modalContent =
+      <div className="loadOptions">
+        {R.mapObjIndexed(@mapOption)(@props.options)}
+      </div>
     modalInstance = (
         <div id="loadModal" className="static-modal">
           <Modal title="Load an example"
             bsStyle="primary"
-            backdrop={false}
+            backdrop={true}
             animation={true}
             container={@refs.loadContainer}
             onRequestHide={@hideModal}>
