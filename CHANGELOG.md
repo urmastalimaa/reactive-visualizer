@@ -12,3 +12,4 @@
 *  14.03.2015
   *  Added loadable examples.
   *  Show errors when the structure of the observable is invalid.
+  *  Fix an issue where the ordering of the results could be invalid

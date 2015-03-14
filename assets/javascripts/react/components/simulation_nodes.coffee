@@ -57,11 +57,11 @@ SimulationValueArea = React.createClass
 
     width = "#{count * 84}px"
 
-    <div className="simulationTimeWrapper" style={opacity: opacity, minWidth:width, width: width} key={id } >
+    <div className="simulationTimeWrapper" style={opacity: opacity, minWidth:width, width: width} key={id + time} >
       {childCols}
     </div>
 
   render: ->
     <div key={@props.id} className="simulationArea">
-      {R.mapObjIndexed(@timeColumn, @props.values)}
+      {R.values(R.mapObjIndexed(@timeColumn, @props.values))}
     </div>
