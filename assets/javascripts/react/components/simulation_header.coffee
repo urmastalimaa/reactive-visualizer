@@ -24,7 +24,7 @@ module.exports = React.createClass
       </div>
     )(@state.timeCounts)
     <div id="simulation-header" className="simulationHeader">
-      <span style={float: 'right'}>
+      <span className="simulationArea">
         {R.values(timeCols)}
       </span>
     </div>
