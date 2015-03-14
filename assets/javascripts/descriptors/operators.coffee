@@ -158,6 +158,8 @@ recursiveFunctionOperatorsDefaults =
 recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults))(
   flatMap: {}
   flatMapLatest: {}
+  delayWithSelector:
+    getDefaultObservable: R.compose(createSimpleObservable('timer'), R.add("1000 * "), getClosedOverArgName)
   buffer:
     getDefaultObservable: R.compose(createSimpleObservable('timer'), R.always("1000"))
   concatMap:
