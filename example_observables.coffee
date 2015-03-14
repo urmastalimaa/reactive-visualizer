@@ -64,3 +64,19 @@ module.exports =
           ]
       }
     ]
+  "wrong flatMapLatest":
+    description: "Using flatMapLatest is not correct when you want all the mapped results, in this case flatMap is preferred."
+    root:
+      type: 'of', args: "'question1', 'question2', 'question3'"
+    operators: [
+      {
+        type: 'flatMapLatest'
+        args: 'function(question) { return '
+        observable:
+          root:
+            type: 'timer', args: "1000"
+          operators: [
+            { type: 'map', args: 'function(x) { return "answer" + question[question.length - 1] }' }
+          ]
+      }
+    ]
