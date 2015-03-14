@@ -1,4 +1,4 @@
-Rx = require 'rx'
+Rx = require 'rx/index.js'
 R = require 'ramda'
 
 Rx.Observable.fromTime = (timesAndValues, scheduler) ->
@@ -9,3 +9,4 @@ Rx.Observable.fromTime = (timesAndValues, scheduler) ->
 
   Rx.Observable.merge(timers)
 
+module.exports = Rx
