@@ -2,26 +2,19 @@ R = require 'ramda'
 Operators = require '../descriptors/operators'
 Roots = require '../descriptors/roots'
 
-getArgsWithScheduler = ({input, getDefaultArgs, useScheduler}) ->
-  if getDefaultArgs && useScheduler
-    "#{input}, scheduler"
-  else if useScheduler
-    "scheduler"
-  else if getDefaultArgs
-    input
-  else
-    ""
+getArgsWithScheduler = ({input, useScheduler}) ->
+  R.join(',', if useScheduler then R.concat(input, ['scheduler']) else input)
 
-rootEvaluators = R.mapObjIndexed( ({useScheduler, getDefaultArgs}, key) ->
+rootEvaluators = R.mapObjIndexed( ({useScheduler}, key) ->
   (input) ->
     R.always(
       "Rx.Observable.#{key}(" +
-      getArgsWithScheduler({input, useScheduler, getDefaultArgs}) +
+      getArgsWithScheduler({input, useScheduler}) +
       ")"
     )
   )(Roots)
 
-operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, getDefaultArgs, recursionType}, key) ->
+operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, recursionType}, key) ->
   (input) ->
     if recursive
       (innerObservable) ->
@@ -31,7 +24,7 @@ operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, getDefaultArgs,
           when "observableWithSelector" then ".#{key}(#{innerObservable}, #{input})"
     else
       R.always(
-        ".#{key}(#{getArgsWithScheduler({input, useScheduler, getDefaultArgs})})"
+        ".#{key}(#{getArgsWithScheduler({input, useScheduler})})"
       )
   )(Operators)
 

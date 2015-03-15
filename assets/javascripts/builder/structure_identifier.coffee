@@ -6,10 +6,11 @@ identifyObservable = R.curryN 2, (baseId, observable) ->
   rootId = baseId + 'r'
   recursionLevel = (rootId.match(/r/g) || []).length - 1
 
+  definition = Roots[observable.root.type]
   if !observable.root.args?
-    observable.root.args = Roots[observable.root.type].getDefaultArgs?(recursionLevel)
+    observable.root.args = definition.getDefaultArgs?(recursionLevel)
 
-  root: R.assoc('id', rootId, R.pick(['type', 'args'], observable.root))
+  root: R.assoc('id', rootId, R.merge(R.pick(['type', 'args'], observable.root), argTypes: definition.argTypes))
   operators: R.mapIndexed(identifyOperator(rootId)(recursionLevel), observable.operators)
 
 identifyOperator = R.curryN 4, (rootId, recursionLevel, operator, index) ->
@@ -19,7 +20,7 @@ identifyOperator = R.curryN 4, (rootId, recursionLevel, operator, index) ->
   if !operator.args?
     operator.args = definition.getDefaultArgs?(recursionLevel)
 
-  newOperator = R.merge(R.pick(['type', 'args'], operator), id: id, recursionType: definition.recursionType)
+  newOperator = R.merge(R.pick(['type', 'args'], operator), R.merge(id: id, R.pick(['recursionType', 'argTypes'], definition)))
 
   if Operators[operator.type].getDefaultObservable
     observable = operator.observable || definition.getDefaultObservable(recursionLevel)

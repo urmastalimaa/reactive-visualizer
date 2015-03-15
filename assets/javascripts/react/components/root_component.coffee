@@ -27,16 +27,27 @@ module.exports = React.createClass
   onArgsChange: (args) ->
     @props.handleChange(type: @props.root.type, id: @props.root.id, args: args)
 
+  handleArgChange: R.curryN 2, (position, value) ->
+    args = @props.root.args
+    args[position] = value
+    @onArgsChange(args)
+
+
   render: ->
     {root} = @props
+    nodes = R.mapIndexed( (arg, index) =>
+      <InputArea value={arg} key={index} onChange={@handleArgChange(index).bind(@)} />
+    )(root.args)
+
+    <span className="simpleOperatorArgumentsContainer">
+      {nodes}
+    </span>
     <div className="root" data-type={root.type} id={root.id}>
       <div className="rootDescriptionContainer">
         <span className="immutableCode">{'Rx.Observable.'}</span>
         <SelectRoot id={root.id} selected={root.type} onChange={@handleRootTypeChange}/>
         <span className="immutableCode">{'('}</span>
-        { if root.args?
-          <InputArea value={root.args} onChange={@onArgsChange}/>
-        }
+        { nodes }
         <span className="immutableCode">{')'}</span>
         {@props.children}
       </div>

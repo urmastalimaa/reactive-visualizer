@@ -6,14 +6,22 @@ InputArea = require './input_area'
 SimulationArea = require './simulation_nodes'
 
 SimpleOperator = React.createClass
+  handleArgChange: R.curryN 2, (position, value) ->
+    args = @props.operator.args
+    args[position] = value
+    @onArgsChange(args)
+
   onArgsChange: (args) ->
     @props.onChange(R.assoc('args', args, @props.operator))
 
   render: ->
-    if Operators[@props.operator.type].getDefaultArgs
-      <InputArea value={@props.operator.args} id={@props.operator.id} onChange={@onArgsChange} />
-    else
-      false
+    nodes = R.mapIndexed( (arg, index) =>
+      <InputArea value={arg} key={index} onChange={@handleArgChange(index).bind(@)} />
+    )(@props.operator.args)
+
+    <span className="simpleOperatorArgumentsContainer">
+      {nodes}
+    </span>
 
 RecursiveOperator = React.createClass
   render: ->
@@ -75,7 +83,7 @@ module.exports = React.createClass
     }
     opEl = React.createElement(getOperatorClass(@props.operator), args)
 
-    <div data-type={@props.operator.type} id={@props.operator.id} className='operator'>
+    <div data-type={@props.operator.type} className='operator'>
       <span className="immutableCode">{".#{@props.operator.type}("}</span>
       {opEl}
       <span className="immutableCode">{')'}</span>

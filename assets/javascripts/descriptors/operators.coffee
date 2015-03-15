@@ -1,4 +1,5 @@
 R = require 'ramda'
+argTypes = require './argument_types'
 
 defaultFunc = (impl) ->
   "function(value) { #{impl} }"
@@ -18,190 +19,272 @@ getReturningFunctionDeclaration = (args) ->
   "function(#{args}) { return "
 
 simpleOperatorsDefaults = useScheduler: false, recursionType: 'none'
+
+alwaysValues = ->
+  R.always(Array.prototype.slice.call(arguments))
+singleValueType = [argTypes.VALUE]
+singleFunctionType = [argTypes.FUNCTION]
+alwaysEmpty = R.always([])
+
 simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
   average:
-    getDefaultArgs: R.always("function(x) { return x; }")
+    getDefaultArgs: alwaysValues('function(x) { return x; }')
+    argTypes: singleFunctionType
   bufferWithCount:
-    getDefaultArgs: R.always("2")
+    getDefaultArgs: alwaysValues("2")
+    argTypes: singleValueType
   bufferWithTime:
-    getDefaultArgs: R.always("1000")
+    getDefaultArgs: alwaysValues('1000')
+    argTypes: singleValueType
     useScheduler: true
   bufferWithTimeOrCount:
-    getDefaultArgs: R.always("1000", 3)
+    getDefaultArgs: alwaysValues('1000', '3')
+    argTypes: [argTypes.VALUE, argTypes.VALUE]
     useScheduler: true
-  concatAll: {}
-  count: {}
+  concatAll:
+    argTypes: []
+    getDefaultArgs: alwaysEmpty
+  count:
+    argTypes: []
+    getDefaultArgs: alwaysEmpty
   debounce:
-    getDefaultArgs: R.always("1000")
+    getDefaultArgs: alwaysValues('1000')
+    argTypes: singleValueType
     useScheduler: true
   defaultIfEmpty:
-    getDefaultArgs: R.always("'defaultValue'")
+    argTypes: singleValueType
+    getDefaultArgs: alwaysValues("'defaultValue'")
   delay:
-    getDefaultArgs: R.always("1000")
+    getDefaultArgs: alwaysValues('1000')
+    argTypes: singleValueType
     useScheduler: true
   distinct:
-    getDefaultArgs: R.always("function(x) { return x % 2 }")
+    argTypes: singleFunctionType
+    getDefaultArgs: alwaysValues("function(x) { return x % 2 }")
   distinctUntilChanged:
-    getDefaultArgs: R.always("function(x) { return x % 2 }")
+    argTypes: singleFunctionType
+    getDefaultArgs: alwaysValues("function(x) { return x % 2 }")
   elementAt:
-    getDefaultArgs: R.always("1")
+    getDefaultArgs: alwaysValues('1')
+    argTypes: singleValueType
   elementAtOrDefault:
-    getDefaultArgs: R.always("1, 'defaultValue'")
+    getDefaultArgs: alwaysValues('1', "'defaultValue'")
+    argTypes: [argTypes.VALUE, argTypes.VALUE]
   every:
-    getDefaultArgs: R.always("function(x) { return x % 2 == 0 }")
+    getDefaultArgs: alwaysValues("function(x) { return x % 2 == 0 }")
+    argTypes: singleFunctionType
   find:
-    getDefaultArgs: R.always(defaultFunc("return value < 20;"))
+    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"))
+    argTypes: singleFunctionType
   first:
-    getDefaultArgs: R.always(defaultFunc("return value < 20;"))
+    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"))
+    argTypes: singleFunctionType
   firstOrDefault:
-    getDefaultArgs: R.always(defaultFunc("return value < 20;") + ", 'defaultValue'")
+    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"), "'defaultValue'")
+    argTypes: [argTypes.FUNCTION, argTypes.VALUE]
   filter:
-    getDefaultArgs: R.always(defaultFunc("return value < 20;"))
+    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"))
+    argTypes: singleFunctionType
   groupBy:
-    getDefaultArgs: R.always(defaultFunc("return value % 2") + "," + defaultFunc("return value;"))
+    getDefaultArgs: alwaysValues(defaultFunc("return value % 2"), defaultFunc("return value;"))
+    argTypes: [argTypes.FUNCTION, argTypes.FUNCTION]
   includes:
-    getDefaultArgs: R.always("5")
-  ignoreElements: {}
+    getDefaultArgs: alwaysValues("5")
+    argTypes: singleValueType
+  ignoreElements:
+    getDefaultArgs: alwaysEmpty
+    argTypes: []
   indexOf:
-    getDefaultArgs: R.always("5")
-  isEmpty: {}
+    getDefaultArgs: alwaysValues("5")
+    argTypes: singleValueType
+  isEmpty:
+    getDefaultArgs: alwaysEmpty
+    argTypes: []
   last:
-    getDefaultArgs: R.always(defaultFunc("return value < 20;"))
+    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"))
+    argTypes: singleFunctionType
   lastOrDefault:
-    getDefaultArgs: R.always(defaultFunc("return value < 20;") + ", 'defaultValue'")
+    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"), 'defaultValue')
+    argTypes: singleFunctionType
   map:
-    getDefaultArgs: R.always(defaultFunc("return value * value;"))
+    getDefaultArgs: alwaysValues(defaultFunc("return value * value;"))
+    argTypes: singleFunctionType
   max:
-    getDefaultArgs: R.always(defaultFunc("return value;"))
-  mergeAll: {}
+    getDefaultArgs: alwaysValues(defaultFunc("return value;"))
+    argTypes: singleFunctionType
+  mergeAll:
+    getDefaultArgs: alwaysEmpty
+    argTypes: []
   min:
-    getDefaultArgs: R.always(defaultFunc("return value;"))
-  pairwise: {}
+    getDefaultArgs: alwaysValues(defaultFunc("return value;"))
+    argTypes: singleFunctionType
+  pairwise:
+    getDefaultArgs: alwaysEmpty
+    argTypes: []
   pluck:
-    getDefaultArgs: R.always("'property'")
+    getDefaultArgs: alwaysValues("'property'")
+    argTypes: singleValueType
   reduce:
-    getDefaultArgs: R.always("function(acc, x) { return acc * x; }, 1")
+    getDefaultArgs: alwaysValues("function(acc, x) { return acc * x; }", '1')
+    argTypes: singleFunctionType
   repeat:
-    getDefaultArgs: R.always("2")
+    getDefaultArgs: alwaysValues("2")
+    argTypes: singleValueType
   retry:
-    getDefaultArgs: R.always("3")
+    getDefaultArgs: alwaysValues("3")
+    argTypes: singleValueType
   sample:
-    getDefaultArgs: R.always("500")
+    getDefaultArgs: alwaysValues("500")
+    argTypes: singleValueType
     useScheduler: true
   scan:
-    getDefaultArgs: R.always("1, function(acc, x) { return acc * x; }")
+    getDefaultArgs: alwaysValues('1',"function(acc, x) { return acc * x; }")
+    argTypes: [argTypes.VALUE, argTypes.FUNCTION]
   single:
-    getDefaultArgs: R.always(defaultFunc("return value < 20;"))
+    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"))
+    argTypes: singleFunctionType
   singleOrDefault:
-    getDefaultArgs: R.always(defaultFunc("return value < 20;") + ", 'defaultValue'")
+    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"), "'defaultValue'")
+    argTypes: [argTypes.FUNCTION, argTypes.VALUE]
   skip:
-    getDefaultArgs: R.always("5")
+    getDefaultArgs: alwaysValues("5")
+    argTypes: singleValueType
   skipLast:
-    getDefaultArgs: R.always("3")
+    getDefaultArgs: alwaysValues("3")
+    argTypes: singleValueType
   skipLastWithTime:
+    getDefaultArgs: alwaysValues("1000")
+    argTypes: singleValueType
     useScheduler: true
-    getDefaultArgs: R.always("1000")
   skipUntilWithTime:
+    getDefaultArgs: alwaysValues("2000")
+    argTypes: singleValueType
     useScheduler: true
-    getDefaultArgs: R.always("2000")
   startWith:
-    getDefaultArgs: R.always("1, 2, 3")
+    getDefaultArgs: alwaysValues("1, 2, 3")
+    argTypes: singleValueType
   some:
-    getDefaultArgs: R.always(defaultFunc("return value > 10;"))
+    getDefaultArgs: alwaysValues(defaultFunc("return value > 10;"))
+    argTypes: singleFunctionType
   sum:
-    getDefaultArgs: R.always("function(x, idx) { return x; }")
+    getDefaultArgs: alwaysValues("function(x, idx) { return x; }")
+    argTypes: singleFunctionType
   take:
-    getDefaultArgs: R.always("4")
+    getDefaultArgs: alwaysValues("4")
+    argTypes: singleValueType
   takeLast:
-    getDefaultArgs: R.always("4")
+    getDefaultArgs: alwaysValues("4")
+    argTypes: singleValueType
   takeLastBuffer:
-    getDefaultArgs: R.always("4")
+    getDefaultArgs: alwaysValues("4")
+    argTypes: singleValueType
   takeLastBufferWithTime:
     useScheduler: true
-    getDefaultArgs: R.always("2000")
+    getDefaultArgs: alwaysValues("2000")
+    argTypes: singleValueType
   takeLastWithTime:
     useScheduler: true
-    getDefaultArgs: R.always("2000")
+    getDefaultArgs: alwaysValues("2000")
+    argTypes: singleValueType
   takeUntilWithTime:
     useScheduler: true
-    getDefaultArgs: R.always("5000")
+    getDefaultArgs: alwaysValues("5000")
+    argTypes: singleValueType
   takeWhile:
-    getDefaultArgs: R.always(defaultFunc("return value < 20;"))
+    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"))
+    argTypes: singleFunctionType
   timeInterval:
+    getDefaultArgs: alwaysEmpty
+    argTypes: []
     useScheduler: true
   throttleFirst:
-    getDefaultArgs: R.always("1000")
+    getDefaultArgs: alwaysValues("1000")
+    argTypes: singleValueType
     useScheduler: true
   timeout:
-    getDefaultArgs: R.always("1000")
+    getDefaultArgs: alwaysValues("1000")
+    argTypes: singleValueType
     useScheduler: true
   timestamp:
+    getDefaultArgs: alwaysEmpty
+    argTypes: []
     useScheduler: true
-  toArray: {}
+  toArray:
+    getDefaultArgs: alwaysEmpty
+    argTypes: []
   windowWithCount:
-    getDefaultArgs: R.always("2")
+    getDefaultArgs: alwaysValues("2")
+    argTypes: singleValueType
   windowWithTime:
-    getDefaultArgs: R.always("1000")
+    getDefaultArgs: alwaysValues("1000")
+    argTypes: singleValueType
     useScheduler: true
   windowWithTimeOrCount:
-    getDefaultArgs: R.always("1000", 3)
+    getDefaultArgs: alwaysValues("1000", "3")
     useScheduler: true
 )
 
 getReturningFunctionWithClosedOver = R.compose(getReturningFunctionDeclaration, getClosedOverArgName)
 
+wrapInArray = (val) ->
+  [val]
+
 recursiveFunctionOperatorsDefaults =
   recursive: true
   recursionType: 'function'
   getDefaultArgs: getReturningFunctionWithClosedOver
-  getDefaultObservable: R.compose(createSimpleObservable('just'), getClosedOverArgName)
+  getDefaultObservable: R.compose(createSimpleObservable('just'), wrapInArray,  getClosedOverArgName)
+
 recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults))(
   flatMap: {}
   flatMapLatest: {}
   delayWithSelector:
-    getDefaultObservable: R.compose(createSimpleObservable('timer'), R.add("1000 * "), getClosedOverArgName)
+    getDefaultObservable: R.compose(createSimpleObservable('timer'), wrapInArray, R.add("1000 * "), getClosedOverArgName)
   buffer:
-    getDefaultObservable: R.compose(createSimpleObservable('timer'), R.always("1000"))
+    getDefaultObservable: R.compose(createSimpleObservable('timer'), alwaysValues("1000"))
   concatMap:
-    getDefaultObservable: R.compose(createSimpleObservable('range'), ((closedOverArg) -> "0, #{closedOverArg}"), getClosedOverArgName)
+    getDefaultObservable: R.compose(createSimpleObservable('range'), ((closedOverArg) -> ["0", closedOverArg]), getClosedOverArgName)
   debounceWithSelector:
-    getDefaultObservable: R.compose(createSimpleObservable('timer'), getClosedOverArgName)
+    getDefaultObservable: R.compose(createSimpleObservable('timer'), wrapInArray, getClosedOverArgName)
   expand:
-    getDefaultObservable: R.compose(createSimpleObservable('just'), ((arg) -> "#{arg} + #{arg}" ), getClosedOverArgName)
+    getDefaultObservable: R.compose(createSimpleObservable('just'), wrapInArray, ((arg) -> "#{arg} + #{arg}" ), getClosedOverArgName)
   timeoutWithSelector:
-    getDefaultObservable: R.compose(createSimpleObservable('timer'), ((arg) -> "#{arg} * 100"), getClosedOverArgName)
+    getDefaultObservable: R.compose(createSimpleObservable('timer'), wrapInArray, ((arg) -> "#{arg} * 100"), getClosedOverArgName)
   window:
-    getDefaultObservable: R.compose(createSimpleObservable('timer'), R.always("1000"))
+    getDefaultObservable: R.compose(createSimpleObservable('timer'), alwaysValues("1000"))
 )
 
 recursiveOperatorDefaults =
   recursive: true
   recursionType: 'observable'
+
 recursiveOperators = R.mapObj(R.merge(recursiveOperatorDefaults))(
   merge:
-    getDefaultObservable: R.always(createSimpleObservable('just')('1,2'))
+    getDefaultObservable: R.always(createSimpleObservable('of')(['1,2']))
   amb:
     getDefaultObservable: R.always
       root:
         type: 'of'
       operators: [
-        { type: 'delay', args: '1000' }
+        { type: 'delay', args: ['1000'] }
       ]
   concat:
-    getDefaultObservable: R.always(createSimpleObservable('just')('5'))
+    getDefaultObservable: R.always(createSimpleObservable('just')(['5']))
   sequenceEqual:
-    getDefaultObservable: R.always(createSimpleObservable('just')('5'))
+    getDefaultObservable: R.always(createSimpleObservable('just')(['5']))
   skipUntil:
-    getDefaultObservable: R.always(createSimpleObservable('timer')('1000'))
+    getDefaultObservable: R.always(createSimpleObservable('timer')(['1000']))
   takeUntil:
-    getDefaultObservable: R.always(createSimpleObservable('timer')('1000'))
+    getDefaultObservable: R.always(createSimpleObservable('timer')(['1000']))
 )
 
 recursiveOperatorsWithTrailingArgsDefaults =
   recursive: true
   recursionType: 'observableWithSelector'
-  getDefaultObservable: R.always(createSimpleObservable('just')('1,2'))
-  getDefaultArgs: R.always(simpleCombinerFunction)
+  getDefaultObservable: R.always(createSimpleObservable('of')(['1,2']))
+  getDefaultArgs: alwaysValues(simpleCombinerFunction)
+  argTypes: [argTypes.FUNCTION]
+
 recursiveOperatorsWithTrailingArgs = R.mapObj(R.merge(recursiveOperatorsWithTrailingArgsDefaults))(
   combineLatest: {}
   withLatestFrom: {}
