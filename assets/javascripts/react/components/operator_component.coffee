@@ -1,6 +1,7 @@
 R = require 'ramda'
 React = require 'react'
 Operators = require '../../descriptors/operators'
+getDocLink = require('../../documentation_provider').getDocLink
 
 InputArea = require './input_area'
 SimulationArea = require './simulation_nodes'
@@ -87,6 +88,9 @@ module.exports = React.createClass
       <span className="immutableCode">{".#{@props.operator.type}("}</span>
       {opEl}
       <span className="immutableCode">{')'}</span>
+      <a href={getDocLink(@props.operator.type)} target="_blank">
+        {"[doc]"}
+      </a>
       {@props.children}
       <RemoveOperator onRemove={@handleRemove}/>
       <SimulationArea id={@props.operator.id} />

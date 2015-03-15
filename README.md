@@ -27,8 +27,6 @@ Overwriting any of the existing Rx functions is avoided.
 
 ### Future
 
-#### Add documenation links to RxJS documentation
-
 #### Allowing real world data
 
 The observable can be visualized in real time

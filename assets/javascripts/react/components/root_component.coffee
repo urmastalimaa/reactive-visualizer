@@ -3,6 +3,7 @@ React = require 'react'
 Roots = require '../../descriptors/roots'
 InputArea = require './input_area'
 SimulationArea = require './simulation_nodes'
+getDocLink = require('../../documentation_provider').getDocLink
 
 SelectRoot = React.createClass
   handleChange: ->
@@ -49,7 +50,10 @@ module.exports = React.createClass
         <span className="immutableCode">{'('}</span>
         { nodes }
         <span className="immutableCode">{')'}</span>
-        {@props.children}
       </div>
+      <a href={getDocLink(root.type)} target="_blank">
+        {"[doc]"}
+      </a>
+      {@props.children}
       <SimulationArea id={root.id} />
     </div>
