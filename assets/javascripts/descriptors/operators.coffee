@@ -28,199 +28,199 @@ alwaysEmpty = R.always([])
 
 simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
   average:
-    getDefaultArgs: alwaysValues('function(x) { return x; }')
+    getArgs: alwaysValues('function(x) { return x; }')
     argTypes: singleFunctionType
   bufferWithCount:
-    getDefaultArgs: alwaysValues("2")
+    getArgs: alwaysValues("2")
     argTypes: singleValueType
   bufferWithTime:
-    getDefaultArgs: alwaysValues('1000')
+    getArgs: alwaysValues('1000')
     argTypes: singleValueType
     useScheduler: true
   bufferWithTimeOrCount:
-    getDefaultArgs: alwaysValues('1000', '3')
+    getArgs: alwaysValues('1000', '3')
     argTypes: [argTypes.VALUE, argTypes.VALUE]
     useScheduler: true
   concatAll:
     argTypes: []
-    getDefaultArgs: alwaysEmpty
+    getArgs: alwaysEmpty
   count:
     argTypes: []
-    getDefaultArgs: alwaysEmpty
+    getArgs: alwaysEmpty
   debounce:
-    getDefaultArgs: alwaysValues('1000')
+    getArgs: alwaysValues('1000')
     argTypes: singleValueType
     useScheduler: true
   defaultIfEmpty:
     argTypes: singleValueType
-    getDefaultArgs: alwaysValues("'defaultValue'")
+    getArgs: alwaysValues("'defaultValue'")
   delay:
-    getDefaultArgs: alwaysValues('1000')
+    getArgs: alwaysValues('1000')
     argTypes: singleValueType
     useScheduler: true
   distinct:
     argTypes: singleFunctionType
-    getDefaultArgs: alwaysValues("function(x) { return x % 2 }")
+    getArgs: alwaysValues("function(x) { return x % 2 }")
   distinctUntilChanged:
     argTypes: singleFunctionType
-    getDefaultArgs: alwaysValues("function(x) { return x % 2 }")
+    getArgs: alwaysValues("function(x) { return x % 2 }")
   elementAt:
-    getDefaultArgs: alwaysValues('1')
+    getArgs: alwaysValues('1')
     argTypes: singleValueType
   elementAtOrDefault:
-    getDefaultArgs: alwaysValues('1', "'defaultValue'")
+    getArgs: alwaysValues('1', "'defaultValue'")
     argTypes: [argTypes.VALUE, argTypes.VALUE]
   every:
-    getDefaultArgs: alwaysValues("function(x) { return x % 2 == 0 }")
+    getArgs: alwaysValues("function(x) { return x % 2 == 0 }")
     argTypes: singleFunctionType
   find:
-    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"))
+    getArgs: alwaysValues(defaultFunc("return value < 20;"))
     argTypes: singleFunctionType
   first:
-    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"))
+    getArgs: alwaysValues(defaultFunc("return value < 20;"))
     argTypes: singleFunctionType
   firstOrDefault:
-    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"), "'defaultValue'")
+    getArgs: alwaysValues(defaultFunc("return value < 20;"), "'defaultValue'")
     argTypes: [argTypes.FUNCTION, argTypes.VALUE]
   filter:
-    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"))
+    getArgs: alwaysValues(defaultFunc("return value < 20;"))
     argTypes: singleFunctionType
   groupBy:
-    getDefaultArgs: alwaysValues(defaultFunc("return value % 2"), defaultFunc("return value;"))
+    getArgs: alwaysValues(defaultFunc("return value % 2"), defaultFunc("return value;"))
     argTypes: [argTypes.FUNCTION, argTypes.FUNCTION]
   includes:
-    getDefaultArgs: alwaysValues("5")
+    getArgs: alwaysValues("5")
     argTypes: singleValueType
   ignoreElements:
-    getDefaultArgs: alwaysEmpty
+    getArgs: alwaysEmpty
     argTypes: []
   indexOf:
-    getDefaultArgs: alwaysValues("5")
+    getArgs: alwaysValues("5")
     argTypes: singleValueType
   isEmpty:
-    getDefaultArgs: alwaysEmpty
+    getArgs: alwaysEmpty
     argTypes: []
   last:
-    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"))
+    getArgs: alwaysValues(defaultFunc("return value < 20;"))
     argTypes: singleFunctionType
   lastOrDefault:
-    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"), 'defaultValue')
+    getArgs: alwaysValues(defaultFunc("return value < 20;"), 'defaultValue')
     argTypes: singleFunctionType
   map:
-    getDefaultArgs: alwaysValues(defaultFunc("return value * value;"))
+    getArgs: alwaysValues(defaultFunc("return value * value;"))
     argTypes: singleFunctionType
   max:
-    getDefaultArgs: alwaysValues(defaultFunc("return value;"))
+    getArgs: alwaysValues(defaultFunc("return value;"))
     argTypes: singleFunctionType
   mergeAll:
-    getDefaultArgs: alwaysEmpty
+    getArgs: alwaysEmpty
     argTypes: []
   min:
-    getDefaultArgs: alwaysValues(defaultFunc("return value;"))
+    getArgs: alwaysValues(defaultFunc("return value;"))
     argTypes: singleFunctionType
   pairwise:
-    getDefaultArgs: alwaysEmpty
+    getArgs: alwaysEmpty
     argTypes: []
   pluck:
-    getDefaultArgs: alwaysValues("'property'")
+    getArgs: alwaysValues("'property'")
     argTypes: singleValueType
   reduce:
-    getDefaultArgs: alwaysValues("function(acc, x) { return acc * x; }", '1')
+    getArgs: alwaysValues("function(acc, x) { return acc * x; }", '1')
     argTypes: singleFunctionType
   repeat:
-    getDefaultArgs: alwaysValues("2")
+    getArgs: alwaysValues("2")
     argTypes: singleValueType
   retry:
-    getDefaultArgs: alwaysValues("3")
+    getArgs: alwaysValues("3")
     argTypes: singleValueType
   sample:
-    getDefaultArgs: alwaysValues("500")
+    getArgs: alwaysValues("500")
     argTypes: singleValueType
     useScheduler: true
   scan:
-    getDefaultArgs: alwaysValues('1',"function(acc, x) { return acc * x; }")
+    getArgs: alwaysValues('1',"function(acc, x) { return acc * x; }")
     argTypes: [argTypes.VALUE, argTypes.FUNCTION]
   single:
-    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"))
+    getArgs: alwaysValues(defaultFunc("return value < 20;"))
     argTypes: singleFunctionType
   singleOrDefault:
-    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"), "'defaultValue'")
+    getArgs: alwaysValues(defaultFunc("return value < 20;"), "'defaultValue'")
     argTypes: [argTypes.FUNCTION, argTypes.VALUE]
   skip:
-    getDefaultArgs: alwaysValues("5")
+    getArgs: alwaysValues("5")
     argTypes: singleValueType
   skipLast:
-    getDefaultArgs: alwaysValues("3")
+    getArgs: alwaysValues("3")
     argTypes: singleValueType
   skipLastWithTime:
-    getDefaultArgs: alwaysValues("1000")
+    getArgs: alwaysValues("1000")
     argTypes: singleValueType
     useScheduler: true
   skipUntilWithTime:
-    getDefaultArgs: alwaysValues("2000")
+    getArgs: alwaysValues("2000")
     argTypes: singleValueType
     useScheduler: true
   startWith:
-    getDefaultArgs: alwaysValues("1, 2, 3")
+    getArgs: alwaysValues("1, 2, 3")
     argTypes: singleValueType
   some:
-    getDefaultArgs: alwaysValues(defaultFunc("return value > 10;"))
+    getArgs: alwaysValues(defaultFunc("return value > 10;"))
     argTypes: singleFunctionType
   sum:
-    getDefaultArgs: alwaysValues("function(x, idx) { return x; }")
+    getArgs: alwaysValues("function(x, idx) { return x; }")
     argTypes: singleFunctionType
   take:
-    getDefaultArgs: alwaysValues("4")
+    getArgs: alwaysValues("4")
     argTypes: singleValueType
   takeLast:
-    getDefaultArgs: alwaysValues("4")
+    getArgs: alwaysValues("4")
     argTypes: singleValueType
   takeLastBuffer:
-    getDefaultArgs: alwaysValues("4")
+    getArgs: alwaysValues("4")
     argTypes: singleValueType
   takeLastBufferWithTime:
     useScheduler: true
-    getDefaultArgs: alwaysValues("2000")
+    getArgs: alwaysValues("2000")
     argTypes: singleValueType
   takeLastWithTime:
     useScheduler: true
-    getDefaultArgs: alwaysValues("2000")
+    getArgs: alwaysValues("2000")
     argTypes: singleValueType
   takeUntilWithTime:
     useScheduler: true
-    getDefaultArgs: alwaysValues("5000")
+    getArgs: alwaysValues("5000")
     argTypes: singleValueType
   takeWhile:
-    getDefaultArgs: alwaysValues(defaultFunc("return value < 20;"))
+    getArgs: alwaysValues(defaultFunc("return value < 20;"))
     argTypes: singleFunctionType
   timeInterval:
-    getDefaultArgs: alwaysEmpty
+    getArgs: alwaysEmpty
     argTypes: []
     useScheduler: true
   throttleFirst:
-    getDefaultArgs: alwaysValues("1000")
+    getArgs: alwaysValues("1000")
     argTypes: singleValueType
     useScheduler: true
   timeout:
-    getDefaultArgs: alwaysValues("1000")
+    getArgs: alwaysValues("1000")
     argTypes: singleValueType
     useScheduler: true
   timestamp:
-    getDefaultArgs: alwaysEmpty
+    getArgs: alwaysEmpty
     argTypes: []
     useScheduler: true
   toArray:
-    getDefaultArgs: alwaysEmpty
+    getArgs: alwaysEmpty
     argTypes: []
   windowWithCount:
-    getDefaultArgs: alwaysValues("2")
+    getArgs: alwaysValues("2")
     argTypes: singleValueType
   windowWithTime:
-    getDefaultArgs: alwaysValues("1000")
+    getArgs: alwaysValues("1000")
     argTypes: singleValueType
     useScheduler: true
   windowWithTimeOrCount:
-    getDefaultArgs: alwaysValues("1000", "3")
+    getArgs: alwaysValues("1000", "3")
     useScheduler: true
 )
 
@@ -233,7 +233,8 @@ recursiveFunctionOperatorsDefaults =
   recursive: true
   recursionType: 'function'
   argTypes: [argTypes.RECURSIVE_FUNCTION]
-  getDefaultArgs: getReturningFunctionWithClosedOver
+  getArgs: getReturningFunctionWithClosedOver
+  getDefaultDeclaration: getReturningFunctionWithClosedOver
   getDefaultObservable: R.compose(createSimpleObservable('just'), wrapInArray,  getClosedOverArgName)
 
 recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults))(
@@ -284,7 +285,7 @@ recursiveOperatorsWithTrailingArgsDefaults =
   recursive: true
   recursionType: 'observableWithSelector'
   getDefaultObservable: R.always(createSimpleObservable('of')(['1,2']))
-  getDefaultArgs: alwaysValues(simpleCombinerFunction)
+  getArgs: alwaysValues(simpleCombinerFunction)
   argTypes: [argTypes.OBSERVABLE, argTypes.FUNCTION]
 
 recursiveOperatorsWithTrailingArgs = R.mapObj(R.merge(recursiveOperatorsWithTrailingArgsDefaults))(

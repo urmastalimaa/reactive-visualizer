@@ -1,5 +1,5 @@
 module.exports =
   FUNCTION: 'function'
   VALUE: 'value'
-  RECURSIVE_FUNCTION: 'recursive_function'
+  RECURSIVE_FUNCTION: 'observable_function'
   OBSERVABLE: 'observable'
