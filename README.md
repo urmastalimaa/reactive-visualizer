@@ -4,9 +4,13 @@
 
 ### Running it
 
-* `npm install`
-* `grunt` or `grunt default`
-* Open `localhost:3700`
+* Clone the repository: `git clone https://github.com/urmastalimaa/rx-visualize.git`
+* Install dependencies: `npm install` (*package.json* lists dependencies) [(npmjs.com)](https://www.npmjs.com/)
+* Build the source code and run a local web-server: `grunt` or `grunt default` (*Gruntfile.js* describes these targets)
+* Navigate to the application in a web browser `localhost:3700`
+
+####
+  The project will be soon made available as a package on `npm`
 
 ### Developing
 * `grunt dev_watch`
