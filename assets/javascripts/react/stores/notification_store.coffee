@@ -25,11 +25,11 @@ class NotificationStore extends BaseStore
       acc + timeCounts[key]
     )(0)(R.reverse(timeKeys))
 
-    maxCount = R.compose(
+    maxCount = Math.max(R.compose(
       R.flip(R.indexOf)(sums)
       R.max
       R.filter(R.gte(MAX_NR_OF_RELEVANT_TIMES))
-    )(sums)
+    )(sums), 1)
 
     takeLast(maxCount, timeKeys)
 
