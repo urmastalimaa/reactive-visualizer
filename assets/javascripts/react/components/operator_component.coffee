@@ -2,67 +2,16 @@ R = require 'ramda'
 React = require 'react'
 Operators = require '../../descriptors/operators'
 getDocLink = require('../../documentation_provider').getDocLink
+argTypes = require '../../descriptors/argument_types'
 
 InputArea = require './input_area'
 SimulationArea = require './simulation_nodes'
-
-SimpleOperator = React.createClass
-  handleArgChange: R.curryN 2, (position, value) ->
-    args = @props.operator.args
-    args[position] = value
-    @onArgsChange(args)
-
-  onArgsChange: (args) ->
-    @props.onChange(R.assoc('args', args, @props.operator))
-
-  render: ->
-    nodes = R.mapIndexed( (arg, index) =>
-      <InputArea value={arg} key={index} onChange={@handleArgChange(index).bind(@)} />
-    )(@props.operator.args)
-
-    <span className="simpleOperatorArgumentsContainer">
-      {nodes}
-    </span>
 
 RecursiveOperator = React.createClass
   render: ->
     <span className="recursiveContainer" style={paddingLeft: '50px'} >
       <@props.ObservableComponent id={@props.operator.id} observable={@props.operator.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
     </span>
-
-RecursionFunctionOperator = React.createClass
-  onArgsChange: (args) ->
-    @props.onChange(R.assoc('args', args, @props.operator))
-
-  render: ->
-    <span className="recusiveFunctionOperator">
-      <span className="functionDeclaration" id={@props.operator.id}>
-        <InputArea value={@props.operator.args} onChange={@onArgsChange}/>
-      </span>
-      <RecursiveOperator operator={@props.operator} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange} onChange={@props.onChange} ObservableComponent={@props.ObservableComponent}/>
-      {'}'}
-    </span>
-
-RecursiveOperatorWithTrailingArgs = React.createClass
-  onArgsChange: (args) ->
-    @props.onChange(R.assoc('args', args, @props.operator))
-
-  render: ->
-    <span>
-      <RecursiveOperator operator={@props.operator} recursionLevel={@props.recursionLevel} onChildOperatorChange={@props.onChildOperatorChange} onChange={@props.onChange} ObservableComponent={@props.ObservableComponent}/>
-      ,
-      <span className="recursiveOperatorTrailingArg" id={@props.operator.id}>
-        <InputArea value={@props.operator.args} onChange={@onArgsChange} />
-      </span>
-    </span>
-
-
-getOperatorClass = ({recursionType}) ->
-  switch recursionType
-    when 'none' then SimpleOperator
-    when 'function' then RecursionFunctionOperator
-    when 'observable' then RecursiveOperator
-    when 'observableWithSelector' then RecursiveOperatorWithTrailingArgs
 
 module.exports = React.createClass
   handleRemove: ->
@@ -74,20 +23,40 @@ module.exports = React.createClass
   onChange: (operator) ->
     @props.onChange(operator)
 
-  render: ->
-    args = {
-      operator: @props.operator
-      onChildOperatorChange: @handleChildObservableChange
-      recursionLevel: @props.recursionLevel
-      onChange: @onChange
-      ObservableComponent: @props.ObservableComponent
-    }
-    opEl = React.createElement(getOperatorClass(@props.operator), args)
+  onArgsChange: (args) ->
+    @props.onChange(R.assoc('args', args, @props.operator))
 
+  handleArgChange: R.curryN 2, (position, value) ->
+    args = @props.operator.args
+    args[position] = value
+    @onArgsChange(args)
+
+  getArgContainer: (operatorArgTypes) ->
+    realIndex = 0
+    R.mapIndexed((type, index) =>
+      res = if R.eq(type, argTypes.RECURSIVE_FUNCTION)
+        <span key={index}>
+          <span className="functionDeclaration" id={@props.operator.id}>
+            <InputArea value={@props.operator.args} onChange={@onArgsChange}/>
+          </span>
+          {React.createElement(RecursiveOperator, @props)}
+          {'}'}
+        </span>
+      else if R.eq(type, argTypes.OBSERVABLE)
+        React.createElement(RecursiveOperator, R.merge(key: index, @props))
+      else if R.eq(type, argTypes.FUNCTION) || R.eq(type, argTypes.VALUE)
+        res = <InputArea value={@props.operator.args[realIndex]} key={index} onChange={@handleArgChange(realIndex).bind(@)} />
+        realIndex += 1
+        res
+    )(operatorArgTypes)
+
+  render: ->
     <div data-type={@props.operator.type} className='operator'>
-      <span className="immutableCode">{".#{@props.operator.type}("}</span>
-      {opEl}
-      <span className="immutableCode">{')'}</span>
+      <span>
+        <span className="immutableCode">{".#{@props.operator.type}("}</span>
+        {@getArgContainer(@props.operator.argTypes)}
+        <span className="immutableCode">{')'}</span>
+      </span>
       {@props.children}
       <RemoveOperator onRemove={@handleRemove}/>
       <a href={getDocLink(@props.operator.type)} target="_blank">

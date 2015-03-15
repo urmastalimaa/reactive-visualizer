@@ -232,6 +232,7 @@ wrapInArray = (val) ->
 recursiveFunctionOperatorsDefaults =
   recursive: true
   recursionType: 'function'
+  argTypes: [argTypes.RECURSIVE_FUNCTION]
   getDefaultArgs: getReturningFunctionWithClosedOver
   getDefaultObservable: R.compose(createSimpleObservable('just'), wrapInArray,  getClosedOverArgName)
 
@@ -257,6 +258,7 @@ recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults
 recursiveOperatorDefaults =
   recursive: true
   recursionType: 'observable'
+  argTypes: [argTypes.OBSERVABLE]
 
 recursiveOperators = R.mapObj(R.merge(recursiveOperatorDefaults))(
   merge:
@@ -283,7 +285,7 @@ recursiveOperatorsWithTrailingArgsDefaults =
   recursionType: 'observableWithSelector'
   getDefaultObservable: R.always(createSimpleObservable('of')(['1,2']))
   getDefaultArgs: alwaysValues(simpleCombinerFunction)
-  argTypes: [argTypes.FUNCTION]
+  argTypes: [argTypes.OBSERVABLE, argTypes.FUNCTION]
 
 recursiveOperatorsWithTrailingArgs = R.mapObj(R.merge(recursiveOperatorsWithTrailingArgsDefaults))(
   combineLatest: {}
