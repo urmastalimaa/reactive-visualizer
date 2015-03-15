@@ -43,8 +43,8 @@ Observable = React.createClass
     {root} = @props.observable
 
     operatorNodes = @props.observable.operators.map (operator, index) =>
-      <ObservableOperator operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel}
-        onChange={@handleOperatorChange} key={operator.id} ObservableComponent={Observable}>
+      <ObservableOperator key={operator.type + operator.id + index} operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel}
+        onChange={@handleOperatorChange} ObservableComponent={Observable}>
         <AddOperator id={operator.id} onSelect={handleAddOperatorTo(operator)}/>
       </ObservableOperator>
 
