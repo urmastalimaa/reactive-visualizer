@@ -88,11 +88,11 @@ module.exports = React.createClass
       <span className="immutableCode">{".#{@props.operator.type}("}</span>
       {opEl}
       <span className="immutableCode">{')'}</span>
+      {@props.children}
+      <RemoveOperator onRemove={@handleRemove}/>
       <a href={getDocLink(@props.operator.type)} target="_blank">
         {"[doc]"}
       </a>
-      {@props.children}
-      <RemoveOperator onRemove={@handleRemove}/>
       <SimulationArea id={@props.operator.id} />
     </div>
 

@@ -51,9 +51,9 @@ module.exports = React.createClass
         { nodes }
         <span className="immutableCode">{')'}</span>
       </div>
+      {@props.children}
       <a href={getDocLink(root.type)} target="_blank">
         {"[doc]"}
       </a>
-      {@props.children}
       <SimulationArea id={root.id} />
     </div>
