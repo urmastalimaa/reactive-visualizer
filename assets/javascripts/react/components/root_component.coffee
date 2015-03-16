@@ -23,10 +23,10 @@ SelectRoot = React.createClass
 
 module.exports = React.createClass
   handleRootTypeChange: (type) ->
-    @props.handleChange(type: type, args: Roots[type].getDefaultArgs?())
+    @props.handleChange(type: type, args: undefined)
 
   onArgsChange: (args) ->
-    @props.handleChange(type: @props.root.type, id: @props.root.id, args: args)
+    @props.handleChange(R.assoc('args', args, @props.root))
 
   handleArgChange: R.curryN 2, (position, value) ->
     args = @props.root.args
@@ -37,7 +37,7 @@ module.exports = React.createClass
   render: ->
     {root} = @props
     nodes = R.mapIndexed( (arg, index) =>
-      <InputArea value={arg} key={index} onChange={@handleArgChange(index).bind(@)} />
+      <InputArea value={arg} key={"" + @props.root.type + index} onChange={@handleArgChange(index).bind(@)} />
     )(root.args)
 
     <span className="simpleOperatorArgumentsContainer">

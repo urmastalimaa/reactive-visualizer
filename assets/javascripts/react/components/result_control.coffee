@@ -8,12 +8,12 @@ ReactBootstrap = require 'react-bootstrap'
 {Alert, Button, ButtonToolbar} = ReactBootstrap
 
 buildObservable    = require '../../builder/builder'
-evaluateObservable = require '../../factory/factory'
+inspect            = require '../../inspector/inspector'
 simulateObservable = require '../../simulator/simulator'
 
 getNotifications = R.compose(
   simulateObservable
-  evaluateObservable
+  inspect
   buildObservable
 )
 

@@ -1,7 +1,7 @@
 React = require 'react'
 R = require 'ramda'
 
-identifyStructure = require '../../builder/structure_identifier'
+serialize = require '../../builder/serializer'
 
 SimulationHeader = require './simulation_header'
 Observable = require './observable'
@@ -10,10 +10,10 @@ ResultControl = require './result_control'
 
 module.exports = React.createClass
   getInitialState: ->
-    observable: identifyStructure(@props.defaultObservable)
+    observable: serialize(@props.defaultObservable)
 
   handleChange: (observable) ->
-    @setState observable: identifyStructure(observable)
+    @setState observable: serialize(observable)
 
   render: ->
     <div className="buildArea" style={@props.style}>

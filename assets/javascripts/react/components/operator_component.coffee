@@ -10,18 +10,12 @@ SimulationArea = require './simulation_nodes'
 RecursiveOperator = React.createClass
   render: ->
     <span className="recursiveContainer" style={paddingLeft: '50px'} >
-      <@props.ObservableComponent id={@props.operator.id} observable={@props.operator.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
+      <@props.ObservableComponent id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
     </span>
 
 module.exports = React.createClass
   handleRemove: ->
     @props.onRemove(@props.operator)
-
-  handleChildObservableChange: (observable) ->
-    @props.onChildOperatorChange(@props.operator, observable)
-
-  onChange: (operator) ->
-    @props.onChange(operator)
 
   onArgsChange: (args) ->
     @props.onChange(R.assoc('args', args, @props.operator))
@@ -31,24 +25,37 @@ module.exports = React.createClass
     args[position] = value
     @onArgsChange(args)
 
-  getArgContainer: (operatorArgTypes) ->
-    realIndex = 0
-    R.mapIndexed((type, index) =>
-      res = if R.eq(type, argTypes.RECURSIVE_FUNCTION)
-        <span key={index}>
-          <span className="functionDeclaration" id={@props.operator.id}>
-            <InputArea value={@props.operator.args} onChange={@onArgsChange}/>
+  getArgContainer: ->
+    definition = Operators[@props.operator.type]
+
+    R.mapIndexed( (arg, index) =>
+      handleArgChange = @handleArgChange(index).bind(@)
+      switch definition.argTypes[index]
+
+        when argTypes.OBSERVABLE_FUNCTION
+          onDeclarationChange = (declaration) =>
+            handleArgChange(R.merge(arg.observable, functionDeclaration: declaration))
+          onObservableChange = (observable) =>
+            handleArgChange(R.merge(arg.observable, observable: observable))
+
+          <span key={index}>
+            <span className="functionDeclaration" id={@props.operator.id}>
+              <InputArea value={arg.functionDeclaration} onChange={onDeclarationChange}/>
+            </span>
+            <RecursiveOperator id={@props.operator.id} observable={arg.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={onObservableChange} ObservableComponent={@props.ObservableComponent}/>
+            {'}'}
           </span>
-          {React.createElement(RecursiveOperator, @props)}
-          {'}'}
-        </span>
-      else if R.eq(type, argTypes.OBSERVABLE)
-        React.createElement(RecursiveOperator, R.merge(key: index, @props))
-      else if R.eq(type, argTypes.FUNCTION) || R.eq(type, argTypes.VALUE)
-        res = <InputArea value={@props.operator.args[realIndex]} key={index} onChange={@handleArgChange(realIndex).bind(@)} />
-        realIndex += 1
-        res
-    )(operatorArgTypes)
+
+        when argTypes.OBSERVABLE
+          <RecursiveOperator key={index} id={@props.operator.id} observable={arg} recursionLevel={@props.recursionLevel} onChildOperatorChange={handleArgChange} ObservableComponent={@props.ObservableComponent} />
+
+        when argTypes.FUNCTION, argTypes.VALUE
+          <InputArea key={index} value={arg} onChange={handleArgChange} />
+
+        else
+          console.error "this shouldnt happen", definition[@props.operator.type].argTypes, index
+
+    )(@props.operator.args)
 
   render: ->
     <div data-type={@props.operator.type} className='operator'>
