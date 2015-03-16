@@ -22,27 +22,15 @@ createCollector = ->
 createDoOperator = (id) ->
   ".do(createMockObserver(scheduler, collector.collect, '#{id}'))"
 
-buildOperator = (previousCode, {id, observable, getCode}) ->
-  previousCode + (
-    if observable
-      buildObservable(observable, getCode)
-    else
-      getCode()
-  ) + createDoOperator(id)
-
-buildRoot = ({id, getCode}) ->
-  getCode() + createDoOperator(id)
-
-buildObservable = ({operators, root}, wrap) ->
-  wrap(R.reduce(buildOperator, buildRoot(root))(operators))
-
-evalFactory = R.curryN 3, (observable, collector, scheduler) ->
+inspect = R.curryN 3, (buildObservable, collector, scheduler) ->
   try
-    eval(buildObservable(observable, R.I))
+    observable = buildObservable R.curryN 2, (id, op) ->
+      op + createDoOperator(id)
+    eval(observable)
   catch err
     console.error "Error during evaluation", err
     Rx.Observable.empty()
 
-module.exports = (observable) ->
+module.exports = (buildObservable) ->
   collector = createCollector()
-  [evalFactory(observable, collector), collector]
+  [inspect(buildObservable, collector), collector]
