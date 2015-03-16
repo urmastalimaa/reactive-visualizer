@@ -20,11 +20,14 @@ module.exports = React.createClass
     </div>
 
   selectOption: (optionKey) ->
-    @hideModal()
     @props.onChange(optionKey)
+    @hideModal()
 
   hideModal: ->
     React.render(<span/>, @refs.loadContainer.getDOMNode())
+
+  hideModalWithTimeout: ->
+    setTimeout @hideModal
 
   showModal: ->
     modalContent =
@@ -38,7 +41,7 @@ module.exports = React.createClass
             backdrop={true}
             animation={true}
             container={@refs.loadContainer}
-            onRequestHide={@hideModal}>
+            onRequestHide={@hideModalWithTimeout}>
             <div className="modal-body">
               {modalContent}
             </div>
