@@ -2,43 +2,53 @@ R = require 'ramda'
 Operators = require '../descriptors/operators'
 Roots = require '../descriptors/roots'
 
-getArgsWithScheduler = ({input, useScheduler}) ->
-  R.join(',', if useScheduler then R.concat(input, ['scheduler']) else input)
+buildArg = R.curryN 2, (operatorInspector, arg) ->
+  if arg.functionDeclaration && arg.observable
+    arg.functionDeclaration + " " + buildCode(arg.observable)(operatorInspector) + "}"
+  else if arg.root && arg.operators
+    buildCode(arg)(operatorInspector)
+  else
+    arg
 
-rootEvaluators = R.mapObjIndexed( ({useScheduler}, key) ->
-  (input) ->
-    R.always(
-      "Rx.Observable.#{key}(" +
-      getArgsWithScheduler({input, useScheduler}) +
-      ")"
-    )
+buildArgs = R.curryN 2, (operatorInspector, args) ->
+  R.mapIndexed( (argType, index) ->
+    if args[index]
+      buildArg(operatorInspector)(args[index])
+    else if argType == 'scheduler'
+      'scheduler'
+    else
+      'null'
+  )
+
+rootEvaluators = R.mapObjIndexed( ({argTypes}, key) ->
+  (args) ->
+    (id, operatorInspector) ->
+      argTypes = Roots[key].argTypes
+      operatorInspector(id,
+      "Rx.Observable.#{key}(#{
+        R.join(',')(buildArgs(operatorInspector, args)(argTypes))
+      })")
   )(Roots)
 
-operatorEvaluators = R.mapObjIndexed( ({useScheduler, recursive, recursionType}, key) ->
-  (input) ->
-    if recursive
-      (innerObservable) ->
-        switch recursionType
-          when "function" then ".#{key}(#{input}#{innerObservable}})"
-          when "observable" then ".#{key}(#{innerObservable})"
-          when "observableWithSelector" then ".#{key}(#{innerObservable}, #{input})"
-    else
-      R.always(
-        ".#{key}(#{getArgsWithScheduler({input, useScheduler})})"
-      )
+operatorEvaluators = R.mapObjIndexed( ({argTypes}, key) ->
+  (args) ->
+    (id, operatorInspector) ->
+      argTypes = Operators[key].argTypes
+      operatorInspector(id,
+      ".#{key}(#{
+        R.join(',')(buildArgs(operatorInspector, args)(argTypes))
+      })")
   )(Operators)
 
-evalRoot = ({id, type, args}) ->
-  getCode: rootEvaluators[type](args)
-  id: id
+evalRoot = R.curryN 2, (operatorInspector, {id, type, args}) ->
+  rootEvaluators[type](args)(id, operatorInspector)
 
-evalOperator = ({id, type, args, observable}) ->
-  id: id
-  getCode: operatorEvaluators[type](args)
-  observable: observable && buildCode(observable)
+evalOperator = R.curryN 2, (operatorInspector, {id, type, args, observable}) ->
+  operatorEvaluators[type](args)(id, operatorInspector)
 
 buildCode = ({root, operators}) ->
-  root: evalRoot(root)
-  operators: operators.map evalOperator
+  (operatorInspector) ->
+    evalRoot(operatorInspector)(root) +
+      R.join('', R.map(evalOperator(operatorInspector))(operators))
 
 module.exports = buildCode
