@@ -48,8 +48,10 @@ module.exports = React.createClass
     React.render(modalInstance, @refs.loadContainer.getDOMNode())
 
   render: ->
-    <Button bsStyle="primary" id="loadButton" onClick={@showModal}>
+    <span id="loadArea">
+      <Button bsStyle="primary" id="loadButton" onClick={@showModal}>
+        Load
+      </Button>
       <span id="loadContainer" ref="loadContainer"/>
-      Load
-    </Button>
+    </span>
 
