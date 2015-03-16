@@ -41,7 +41,4 @@ and the time scrolling can be enabled only to past values.
 This would require some crazy `eval` magic or proxying Rx functions.
 Proxying is probably much easier.
 
-
-#### Allow operators with arbitrary parameters in the builder
-
 #### Create the builder based on the operators Typescript definitions

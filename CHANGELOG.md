@@ -16,3 +16,4 @@
 *  15.03.2015
   *  Made non-recursive operators display arguments based on their definition
   *  Added links to RxJS documentation
+  *  Rewrote argument evaluation, added support for arbitrary arguments
