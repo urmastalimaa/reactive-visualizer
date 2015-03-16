@@ -5,57 +5,44 @@ alwaysValues = ->
   R.always(Array.prototype.slice.call(arguments))
 singleValueType = [argTypes.VALUE]
 singleFunctionType = [argTypes.FUNCTION]
-alwaysEmpty = R.always([])
 
 roots =
   of:
-    getDefaultArgs: alwaysValues("1,2,3")
-    argTypes: singleValueType
-    useScheduler: false
+    args: ["1,2,3"]
+    argTypes: [argTypes.VALUE]
   just:
-    getDefaultArgs: alwaysValues("5")
-    argTypes: singleValueType
-    useScheduler: true
+    args: [5]
+    argTypes: [argTypes.VALUE]
   fromTime:
-    getDefaultArgs: alwaysValues("{500: 1, 1000: 2, 3000: 3}")
-    argTypes: singleValueType
-    useScheduler: true
+    args: ["{500: 1, 1000: 2, 3000: 3}"]
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   interval:
-    getDefaultArgs: alwaysValues("1000")
-    argTypes: singleValueType
-    useScheduler: true
+    args: [1000]
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   timer:
-    getDefaultArgs: alwaysValues("500, 2000")
-    argTypes: [argTypes.VALUE, argTypes.VALUE]
-    useScheduler: true
+    args: [500, 2000]
+    argTypes: [argTypes.VALUE, argTypes.VALUE, argTypes.SCHEDULER]
   repeat:
-    getDefaultArgs: alwaysValues("42", "3")
-    argTypes: [argTypes.VALUE, argTypes.VALUE]
-    useScheduler: true
+    args: [42, 3]
+    argTypes: [argTypes.VALUE, argTypes.VALUE, argTypes.SCHEDULER]
   generate:
-    getDefaultArgs: alwaysValues("0", "function(x){ return x < 3;}", "function(x) { return x + 1;}", "function(x) { return x; }")
-    argTypes: [argTypes.VALUE, argTypes.FUNCTION, argTypes.FUNCTION, argTypes.FUNCTION]
-    useScheduler: true
+    args: [0, "function(x){ return x < 3;}", "function(x) { return x + 1;}", "function(x) { return x; }"]
+    argTypes: [argTypes.VALUE, argTypes.FUNCTION, argTypes.FUNCTION, argTypes.FUNCTION, argTypes.SCHEDULER]
   generateWithRelativeTime:
-    getDefaultArgs: alwaysValues("1", "function(x) { return x < 4;}", "function(x) { return x + 1;}", "function(x) { return x; }", "function(x) { return 500 * x; }")
-    argTypes: [argTypes.VALUE, argTypes.FUNCTION, argTypes.FUNCTION, argTypes.FUNCTION, argTypes.FUNCTION]
-    useScheduler: true
+    args: [1, "function(x) { return x < 4;}", "function(x) { return x + 1;}", "function(x) { return x; }", "function(x) { return 500 * x; }"]
+    argTypes: [argTypes.VALUE, argTypes.FUNCTION, argTypes.FUNCTION, argTypes.FUNCTION, argTypes.FUNCTION, argTypes.SCHEDULER]
   never:
-    argTypes: alwaysEmpty
+    args: []
     argTypes: []
-    useScheduler: false
   empty:
-    argTypes: alwaysEmpty
-    argTypes: []
-    useScheduler: true
+    args: []
+    argTypes: [argTypes.SCHEDULER]
   range:
-    getDefaultArgs: alwaysValues("1, 5")
-    argTypes: [argTypes.VALUE, argTypes.VALUE]
-    useScheduler: true
+    args: [1, 5]
+    argTypes: [argTypes.VALUE, argTypes.VALUE, argTypes.SCHEDULER]
   pairs:
-    getDefaultArgs: alwaysValues("{foo: 42, bar: 56, baz: 78}")
-    argTypes: singleValueType
-    useScheduler: true
+    args: ["{foo: 42, bar: 56, baz: 78}"]
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
 
 sortByKeys = R.compose(R.fromPairs, R.sortBy(R.nthArg(0)), R.toPairs)
 

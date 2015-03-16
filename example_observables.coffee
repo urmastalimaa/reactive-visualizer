@@ -1,10 +1,17 @@
+R = require 'ramda'
+
 module.exports =
   simpleMap:
     description: 'The squares of a few values over time'
     root:
-      type: 'fromTime', args: ["{1000: 1, 3000: 2, 5000: 3}"]
-    operators: [ { type: 'map', args: ["function(x) { return x * x }"] } ]
-
+      type: 'fromTime'
+      args: [ "{1000: 1, 3000: 2, 5000: 3}" ]
+    operators: [
+      {
+        type: 'map'
+        args: [ "function(x) { return x * x }" ]
+      }
+    ]
   mapAndTake:
     description: 'The squares of infinite values bounded by take'
     root:
@@ -22,13 +29,17 @@ module.exports =
     operators: [
       {
         type: 'flatMap'
-        args: ["function(productNr) { return "]
-        observable:
-          root:
-            type: 'timer', args: ["(5 - productNr * 2) * 1000"]
-          operators: [
-            { type: 'map', args: ["function(x) { return 'product ' + productNr }"] }
-          ]
+        args: [
+          {
+            functionDeclaration: R.always("function(productNr) { return ")
+            observable:
+              root:
+                type: 'timer', args: ["(5 - productNr * 2) * 1000"]
+              operators: [
+                { type: 'map', args: ["function(x) { return 'product ' + productNr }"] }
+              ]
+          }
+        ]
       }
     ]
 
@@ -39,13 +50,17 @@ module.exports =
     operators: [
       {
         type: 'concatMap'
-        args: ["function(productNr) { return "]
-        observable:
-          root:
-            type: 'timer', args: ["(5 - productNr * 2) * 1000"]
-          operators: [
-            { type: 'map', args: ["function(x) { return 'product ' + productNr }"] }
-          ]
+        args: [
+          {
+            functionDeclaration: R.always("function(productNr) { return ")
+            observable:
+              root:
+                type: 'timer', args: ["(5 - productNr * 2) * 1000"]
+              operators: [
+                { type: 'map', args: ["function(x) { return 'product ' + productNr }"] }
+              ]
+          }
+        ]
       }
     ]
   "fixedRaceCondition#2":
@@ -55,15 +70,20 @@ module.exports =
     operators: [
       {
         type: 'flatMapLatest'
-        args: ["function(productNr) { return "]
-        observable:
-          root:
-            type: 'timer', args: ["(5 - productNr * 2) * 1000"]
-          operators: [
-            { type: 'map', args: ["function(x) { return 'product ' + productNr }"] }
-          ]
+        args: [
+          {
+            functionDeclaration: R.always("function(productNr) { return ")
+            observable:
+              root:
+                type: 'timer', args: ["(5 - productNr * 2) * 1000"]
+              operators: [
+                { type: 'map', args: ["function(x) { return 'product ' + productNr }"] }
+              ]
+          }
+        ]
       }
     ]
+
   "wrong flatMapLatest":
     description: "Using flatMapLatest is not correct when you want all the mapped results, in this case flatMap is preferred."
     root:
@@ -71,15 +91,20 @@ module.exports =
     operators: [
       {
         type: 'flatMapLatest'
-        args: ["function(question) { return "]
-        observable:
-          root:
-            type: 'timer', args: ["1000"]
-          operators: [
-            { type: 'map', args: ["function(x) { return 'answer' + question[question.length - 1] }"] }
-          ]
+        args: [
+          {
+            functionDeclaration: R.always("function(question) { return ")
+            observable:
+              root:
+                type: 'timer', args: ["1000"]
+              operators: [
+                { type: 'map', args: ["function(x) { return 'answer' + question[question.length - 1] }"] }
+              ]
+          }
+        ]
       }
     ]
+
   delayWithSelector:
     description: "Every value takes progressively longer to process"
     root:
@@ -87,19 +112,24 @@ module.exports =
     operators: [
       {
         type: 'delayWithSelector'
-        args: ["function(input) { return "]
-        observable:
-          root:
-            type: 'timer', args: ["input * input * 500"]
-          operators: [
-            {
-              type: 'timeout'
-              args: ["3000"]
-            }
-          ]
+        args: [
+          {
+            functionDeclaration: R.always("function(input) { return ")
+            observable:
+              root:
+                type: 'timer', args: ["input * input * 500"]
+              operators: [
+                {
+                  type: 'timeout'
+                  args: ["3000"]
+                }
+              ]
+          }
+        ]
       }
       {
         type: 'takeUntilWithTime'
         args: ["6000"]
       }
     ]
+

@@ -18,7 +18,7 @@ simpleCombinerFunction = 'function(first, second){ return {first: first, second:
 getReturningFunctionDeclaration = (args) ->
   "function(#{args}) { return "
 
-simpleOperatorsDefaults = useScheduler: false, recursionType: 'none'
+simpleOperatorsDefaults = {}
 
 alwaysValues = ->
   R.always(Array.prototype.slice.call(arguments))
@@ -28,200 +28,185 @@ alwaysEmpty = R.always([])
 
 simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
   average:
-    getArgs: alwaysValues('function(x) { return x; }')
+    args: alwaysValues('function(x) { return x; }')
     argTypes: singleFunctionType
   bufferWithCount:
-    getArgs: alwaysValues("2")
+    args: alwaysValues("2")
     argTypes: singleValueType
   bufferWithTime:
-    getArgs: alwaysValues('1000')
-    argTypes: singleValueType
-    useScheduler: true
+    args: alwaysValues('1000')
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   bufferWithTimeOrCount:
-    getArgs: alwaysValues('1000', '3')
-    argTypes: [argTypes.VALUE, argTypes.VALUE]
-    useScheduler: true
+    args: alwaysValues('1000', '3')
+    argTypes: [argTypes.VALUE, argTypes.VALUE, argTypes.SCHEDULER]
   concatAll:
     argTypes: []
-    getArgs: alwaysEmpty
+    args: alwaysEmpty
   count:
     argTypes: []
-    getArgs: alwaysEmpty
+    args: alwaysEmpty
   debounce:
-    getArgs: alwaysValues('1000')
-    argTypes: singleValueType
-    useScheduler: true
+    args: alwaysValues('1000')
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   defaultIfEmpty:
     argTypes: singleValueType
-    getArgs: alwaysValues("'defaultValue'")
+    args: alwaysValues("'defaultValue'")
   delay:
-    getArgs: alwaysValues('1000')
-    argTypes: singleValueType
-    useScheduler: true
+    args: alwaysValues('1000')
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   distinct:
     argTypes: singleFunctionType
-    getArgs: alwaysValues("function(x) { return x % 2 }")
+    args: alwaysValues("function(x) { return x % 2 }")
   distinctUntilChanged:
     argTypes: singleFunctionType
-    getArgs: alwaysValues("function(x) { return x % 2 }")
+    args: alwaysValues("function(x) { return x % 2 }")
   elementAt:
-    getArgs: alwaysValues('1')
+    args: alwaysValues('1')
     argTypes: singleValueType
   elementAtOrDefault:
-    getArgs: alwaysValues('1', "'defaultValue'")
+    args: alwaysValues('1', "'defaultValue'")
     argTypes: [argTypes.VALUE, argTypes.VALUE]
   every:
-    getArgs: alwaysValues("function(x) { return x % 2 == 0 }")
+    args: alwaysValues("function(x) { return x % 2 == 0 }")
     argTypes: singleFunctionType
   find:
-    getArgs: alwaysValues(defaultFunc("return value < 20;"))
+    args: alwaysValues(defaultFunc("return value < 20;"))
     argTypes: singleFunctionType
   first:
-    getArgs: alwaysValues(defaultFunc("return value < 20;"))
+    args: alwaysValues(defaultFunc("return value < 20;"))
     argTypes: singleFunctionType
   firstOrDefault:
-    getArgs: alwaysValues(defaultFunc("return value < 20;"), "'defaultValue'")
+    args: alwaysValues(defaultFunc("return value < 20;"), "'defaultValue'")
     argTypes: [argTypes.FUNCTION, argTypes.VALUE]
   filter:
-    getArgs: alwaysValues(defaultFunc("return value < 20;"))
+    args: alwaysValues(defaultFunc("return value < 20;"))
     argTypes: singleFunctionType
   groupBy:
-    getArgs: alwaysValues(defaultFunc("return value % 2"), defaultFunc("return value;"))
+    args: alwaysValues(defaultFunc("return value % 2"), defaultFunc("return value;"))
     argTypes: [argTypes.FUNCTION, argTypes.FUNCTION]
   includes:
-    getArgs: alwaysValues("5")
+    args: alwaysValues("5")
     argTypes: singleValueType
   ignoreElements:
-    getArgs: alwaysEmpty
+    args: alwaysEmpty
     argTypes: []
   indexOf:
-    getArgs: alwaysValues("5")
+    args: alwaysValues("5")
     argTypes: singleValueType
   isEmpty:
-    getArgs: alwaysEmpty
+    args: alwaysEmpty
     argTypes: []
   last:
-    getArgs: alwaysValues(defaultFunc("return value < 20;"))
+    args: alwaysValues(defaultFunc("return value < 20;"))
     argTypes: singleFunctionType
   lastOrDefault:
-    getArgs: alwaysValues(defaultFunc("return value < 20;"), 'defaultValue')
+    args: alwaysValues(defaultFunc("return value < 20;"), 'defaultValue')
     argTypes: singleFunctionType
   map:
-    getArgs: alwaysValues(defaultFunc("return value * value;"))
+    args: alwaysValues(defaultFunc("return value * value;"))
     argTypes: singleFunctionType
   max:
-    getArgs: alwaysValues(defaultFunc("return value;"))
+    args: alwaysValues(defaultFunc("return value;"))
     argTypes: singleFunctionType
   mergeAll:
-    getArgs: alwaysEmpty
+    args: alwaysEmpty
     argTypes: []
   min:
-    getArgs: alwaysValues(defaultFunc("return value;"))
+    args: alwaysValues(defaultFunc("return value;"))
     argTypes: singleFunctionType
   pairwise:
-    getArgs: alwaysEmpty
+    args: alwaysEmpty
     argTypes: []
   pluck:
-    getArgs: alwaysValues("'property'")
+    args: alwaysValues("'property'")
     argTypes: singleValueType
   reduce:
-    getArgs: alwaysValues("function(acc, x) { return acc * x; }", '1')
+    args: alwaysValues("function(acc, x) { return acc * x; }", '1')
     argTypes: singleFunctionType
   repeat:
-    getArgs: alwaysValues("2")
+    args: alwaysValues("2")
     argTypes: singleValueType
   retry:
-    getArgs: alwaysValues("3")
+    args: alwaysValues("3")
     argTypes: singleValueType
   sample:
-    getArgs: alwaysValues("500")
-    argTypes: singleValueType
-    useScheduler: true
+    args: alwaysValues("500")
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   scan:
-    getArgs: alwaysValues('1',"function(acc, x) { return acc * x; }")
+    args: alwaysValues('1',"function(acc, x) { return acc * x; }")
     argTypes: [argTypes.VALUE, argTypes.FUNCTION]
   single:
-    getArgs: alwaysValues(defaultFunc("return value < 20;"))
+    args: alwaysValues(defaultFunc("return value < 20;"))
     argTypes: singleFunctionType
   singleOrDefault:
-    getArgs: alwaysValues(defaultFunc("return value < 20;"), "'defaultValue'")
+    args: alwaysValues(defaultFunc("return value < 20;"), "'defaultValue'")
     argTypes: [argTypes.FUNCTION, argTypes.VALUE]
   skip:
-    getArgs: alwaysValues("5")
+    args: alwaysValues("5")
     argTypes: singleValueType
   skipLast:
-    getArgs: alwaysValues("3")
+    args: alwaysValues("3")
     argTypes: singleValueType
   skipLastWithTime:
-    getArgs: alwaysValues("1000")
-    argTypes: singleValueType
-    useScheduler: true
+    args: alwaysValues("1000")
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   skipUntilWithTime:
-    getArgs: alwaysValues("2000")
-    argTypes: singleValueType
-    useScheduler: true
+    args: alwaysValues("2000")
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   startWith:
-    getArgs: alwaysValues("1, 2, 3")
+    args: alwaysValues("1, 2, 3")
     argTypes: singleValueType
   some:
-    getArgs: alwaysValues(defaultFunc("return value > 10;"))
+    args: alwaysValues(defaultFunc("return value > 10;"))
     argTypes: singleFunctionType
   sum:
-    getArgs: alwaysValues("function(x, idx) { return x; }")
+    args: alwaysValues("function(x, idx) { return x; }")
     argTypes: singleFunctionType
   take:
-    getArgs: alwaysValues("4")
+    args: alwaysValues("4")
     argTypes: singleValueType
   takeLast:
-    getArgs: alwaysValues("4")
+    args: alwaysValues("4")
     argTypes: singleValueType
   takeLastBuffer:
-    getArgs: alwaysValues("4")
+    args: alwaysValues("4")
     argTypes: singleValueType
   takeLastBufferWithTime:
-    useScheduler: true
-    getArgs: alwaysValues("2000")
-    argTypes: singleValueType
+    args: alwaysValues("2000")
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   takeLastWithTime:
-    useScheduler: true
-    getArgs: alwaysValues("2000")
-    argTypes: singleValueType
+    args: alwaysValues("2000")
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   takeUntilWithTime:
-    useScheduler: true
-    getArgs: alwaysValues("5000")
-    argTypes: singleValueType
+    args: alwaysValues("5000")
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   takeWhile:
-    getArgs: alwaysValues(defaultFunc("return value < 20;"))
+    args: alwaysValues(defaultFunc("return value < 20;"))
     argTypes: singleFunctionType
   timeInterval:
-    getArgs: alwaysEmpty
-    argTypes: []
-    useScheduler: true
+    args: alwaysEmpty
+    argTypes: [argTypes.SCHEDULER]
   throttleFirst:
-    getArgs: alwaysValues("1000")
-    argTypes: singleValueType
-    useScheduler: true
+    args: alwaysValues("1000")
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   timeout:
-    getArgs: alwaysValues("1000")
-    argTypes: singleValueType
-    useScheduler: true
+    args: alwaysValues("1000")
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   timestamp:
-    getArgs: alwaysEmpty
-    argTypes: []
-    useScheduler: true
+    args: alwaysEmpty
+    argTypes: [argTypes.SCHEDULER]
   toArray:
-    getArgs: alwaysEmpty
+    args: alwaysEmpty
     argTypes: []
   windowWithCount:
-    getArgs: alwaysValues("2")
+    args: alwaysValues("2")
     argTypes: singleValueType
   windowWithTime:
-    getArgs: alwaysValues("1000")
-    argTypes: singleValueType
-    useScheduler: true
+    args: alwaysValues("1000")
+    argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   windowWithTimeOrCount:
-    getArgs: alwaysValues("1000", "3")
-    useScheduler: true
+    args: alwaysValues("1000", "3")
+    argTypes: [argTypes.VALUE, argTypes.VALUE, argTypes.SCHEDULER]
 )
 
 getReturningFunctionWithClosedOver = R.compose(getReturningFunctionDeclaration, getClosedOverArgName)
@@ -230,62 +215,133 @@ wrapInArray = (val) ->
   [val]
 
 recursiveFunctionOperatorsDefaults =
-  recursive: true
-  recursionType: 'function'
-  argTypes: [argTypes.RECURSIVE_FUNCTION]
-  getArgs: getReturningFunctionWithClosedOver
-  getDefaultDeclaration: getReturningFunctionWithClosedOver
-  getDefaultObservable: R.compose(createSimpleObservable('just'), wrapInArray,  getClosedOverArgName)
+  argTypes: [argTypes.OBSERVABLE_FUNCTION]
+  args: [
+    functionDeclaration: getReturningFunctionWithClosedOver
+    observable:
+      root:
+        type: 'just'
+        args: [
+          getClosedOverArgName
+        ]
+      operators: []
+  ]
 
 recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults))(
   flatMap: {}
   flatMapLatest: {}
   delayWithSelector:
-    getDefaultObservable: R.compose(createSimpleObservable('timer'), wrapInArray, R.add("1000 * "), getClosedOverArgName)
+    args: [
+      functionDeclaration: getReturningFunctionWithClosedOver
+      observable:
+        root:
+          type: 'timer'
+          args: [
+            R.compose(R.add("1000 * "), getClosedOverArgName)
+          ]
+        operators: []
+    ]
   buffer:
-    getDefaultObservable: R.compose(createSimpleObservable('timer'), alwaysValues("1000"))
+    args: [
+      functionDeclaration: getReturningFunctionWithClosedOver
+      observable:
+        root:
+          type: 'timer'
+          args: [ R.always("1000") ]
+        operators: []
+    ]
   concatMap:
-    getDefaultObservable: R.compose(createSimpleObservable('range'), ((closedOverArg) -> ["0", closedOverArg]), getClosedOverArgName)
+    args: [
+      functionDeclaration: getReturningFunctionWithClosedOver
+      observable:
+        root:
+          type: 'range'
+          args: [
+            R.compose(
+              ((closedOverArg) -> ["0", closedOverArg])
+              getClosedOverArgName
+            )
+          ]
+        operators: []
+    ]
   debounceWithSelector:
-    getDefaultObservable: R.compose(createSimpleObservable('timer'), wrapInArray, getClosedOverArgName)
+    args: [
+      functionDeclaration: getReturningFunctionWithClosedOver
+      observable:
+        root:
+          type: 'timer'
+          args: [ getClosedOverArgName ]
+        operators: []
+    ]
   expand:
-    getDefaultObservable: R.compose(createSimpleObservable('just'), wrapInArray, ((arg) -> "#{arg} + #{arg}" ), getClosedOverArgName)
+    args: [
+      functionDeclaration: getReturningFunctionWithClosedOver
+      observable:
+        root:
+          type: 'just'
+          args: [
+            R.compose(
+              ((arg) -> "#{arg} + #{arg}" )
+              getClosedOverArgName
+            )
+          ]
+        operators: []
+    ]
   timeoutWithSelector:
-    getDefaultObservable: R.compose(createSimpleObservable('timer'), wrapInArray, ((arg) -> "#{arg} * 100"), getClosedOverArgName)
+    args: [
+      functionDeclaration: getReturningFunctionWithClosedOver
+      observable:
+        root:
+          type: 'timer'
+          args: [
+            R.compose(
+              ((arg) -> "#{arg} * 100")
+              getClosedOverArgName
+            )
+          ]
+        operators: []
+    ]
   window:
-    getDefaultObservable: R.compose(createSimpleObservable('timer'), alwaysValues("1000"))
+    args: [
+      functionDeclaration: getReturningFunctionWithClosedOver
+      observable:
+        root:
+          type: 'timer'
+          args: [ R.always("1000") ]
+        operators: []
+    ]
+
 )
 
 recursiveOperatorDefaults =
-  recursive: true
-  recursionType: 'observable'
   argTypes: [argTypes.OBSERVABLE]
 
 recursiveOperators = R.mapObj(R.merge(recursiveOperatorDefaults))(
   merge:
-    getDefaultObservable: R.always(createSimpleObservable('of')(['1,2']))
+    args: createSimpleObservable('of')(['1,2'])
   amb:
-    getDefaultObservable: R.always
+    args: [
       root:
         type: 'of'
       operators: [
-        { type: 'delay', args: ['1000'] }
+        { type: 'delay', args: [1000] }
       ]
+    ]
   concat:
-    getDefaultObservable: R.always(createSimpleObservable('just')(['5']))
+    args: [createSimpleObservable('just')(['5'])]
   sequenceEqual:
-    getDefaultObservable: R.always(createSimpleObservable('just')(['5']))
+    args: [createSimpleObservable('just')(['5'])]
   skipUntil:
-    getDefaultObservable: R.always(createSimpleObservable('timer')(['1000']))
+    args: [createSimpleObservable('timer')(['1000'])]
   takeUntil:
-    getDefaultObservable: R.always(createSimpleObservable('timer')(['1000']))
+    args: [createSimpleObservable('timer')(['1000'])]
 )
 
 recursiveOperatorsWithTrailingArgsDefaults =
-  recursive: true
-  recursionType: 'observableWithSelector'
-  getDefaultObservable: R.always(createSimpleObservable('of')(['1,2']))
-  getArgs: alwaysValues(simpleCombinerFunction)
+  args: [
+    R.always(createSimpleObservable('of')(['1,2']))
+    simpleCombinerFunction
+  ]
   argTypes: [argTypes.OBSERVABLE, argTypes.FUNCTION]
 
 recursiveOperatorsWithTrailingArgs = R.mapObj(R.merge(recursiveOperatorsWithTrailingArgsDefaults))(
