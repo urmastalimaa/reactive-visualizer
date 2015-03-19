@@ -30,7 +30,7 @@ module.exports = React.createClass
 
     R.mapIndexed( (arg, index) =>
       handleArgChange = @handleArgChange(index).bind(@)
-      switch definition.argTypes[index]
+      switch argType = definition.argTypes[index]
 
         when argTypes.OBSERVABLE_FUNCTION
           onDeclarationChange = (declaration) =>
@@ -50,7 +50,7 @@ module.exports = React.createClass
           <RecursiveOperator key={index} id={@props.operator.id} observable={arg} recursionLevel={@props.recursionLevel} onChildOperatorChange={handleArgChange} ObservableComponent={@props.ObservableComponent} />
 
         when argTypes.FUNCTION, argTypes.VALUE
-          <InputArea key={index} value={arg} onChange={handleArgChange} />
+          <InputArea key={index} value={arg} onChange={handleArgChange} className={"input#{argType}"} />
 
         else
           console.error "this shouldnt happen", definition[@props.operator.type].argTypes, index

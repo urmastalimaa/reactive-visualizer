@@ -13,10 +13,11 @@ module.exports = React.createClass
     @props.onChange(@state.value)
 
   render: ->
+    className = "#{@props.className || ''} codeTextarea"
     <Textarea
       value={@state.value}
       ref="textarea"
       onChange={@onChange}
       onBlur={@onBlur}
-      className="codeTextarea"
+      className={className}
       rows="1" />

@@ -37,7 +37,8 @@ module.exports = React.createClass
   render: ->
     {root} = @props
     nodes = R.mapIndexed( (arg, index) =>
-      <InputArea value={arg} key={"" + @props.root.type + index} onChange={@handleArgChange(index).bind(@)} />
+      argType = Roots[root.type].argTypes[index]
+      <InputArea className={"input#{argType}"} value={arg} key={"" + @props.root.type + index} onChange={@handleArgChange(index).bind(@)} />
     )(root.args)
 
     <span className="simpleOperatorArgumentsContainer">
