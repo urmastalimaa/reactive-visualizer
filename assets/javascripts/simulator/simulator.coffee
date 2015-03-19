@@ -5,7 +5,7 @@ collectResults = ([observableFactory, collector]) ->
   try
     results = scheduler.startWithTiming ->
       observableFactory(scheduler)
-    , 0, 0, 100000
+    , 0, 0, 30000
     collector.results()
   catch error
     error: error
