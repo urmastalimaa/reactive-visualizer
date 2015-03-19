@@ -30,8 +30,8 @@ module.exports = React.createClass
 
     R.mapIndexed( (arg, index) =>
       handleArgChange = @handleArgChange(index).bind(@)
-      switch argType = definition.argTypes[index]
-
+      argType = definition.argTypes[index]
+      switch argType
         when argTypes.OBSERVABLE_FUNCTION
           onDeclarationChange = (declaration) =>
             handleArgChange(R.merge(arg.observable, functionDeclaration: declaration))

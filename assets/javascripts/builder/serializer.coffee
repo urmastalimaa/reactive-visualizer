@@ -47,10 +47,18 @@ serializeOperator = R.curryN 4, (rootId, recursionLevel, operator, index) ->
   definition = Operators[operator.type]
   id = rootId + Array(index + 2).join("o")
 
+  argsToUse = operator.args || definition.args
+
+  finalArgs =
+    if typeof argsToUse is 'function'
+      argsToUse(recursionLevel)
+    else
+      argsToUse
+
   operatorArgs = R.compose(
     serializeOperatorArgs(id, recursionLevel, operator)
     R.map(wrapSimpleValueInFunction)
-  )(operator.args || definition.args)
+  )(finalArgs)
 
   { type: operator.type, id: id, args: operatorArgs }
 
