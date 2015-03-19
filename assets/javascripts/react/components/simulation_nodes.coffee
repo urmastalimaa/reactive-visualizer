@@ -56,7 +56,7 @@ SimulationValueArea = React.createClass
     index = R.indexOf(time)(keys)
     opacity = ( 1 / keys.length) * (index + 1)
 
-    width = "#{count * 60}px"
+    width = "#{count * 84}px"
 
     <div className="simulationTimeWrapper" style={opacity: opacity, minWidth:width, width: width} key={id + time} >
       {childCols}
