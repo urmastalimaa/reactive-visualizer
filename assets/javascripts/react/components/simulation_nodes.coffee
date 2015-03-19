@@ -20,19 +20,22 @@ module.exports = React.createClass
     <SimulationValueArea values={@state.notifications} id={@props.id}/>
 
 SimulationValueArea = React.createClass
-  completeColumn: ({time, value}, id) ->
-    <div key={id} className="simulationValue">
-      {'C'}
-    </div>
 
   valueColumn: ({time, value}, id) ->
-    <div key={id} className="simulationValue">
+    <div key={id} className="simulationValue simulationNext">
       {JSON.stringify(value.value)}
     </div>
 
+  completeColumn: ({time, value}, id) ->
+    <div key={id} className="simulationValue simulationComplete">
+      {'C'}
+    </div>
+
   errorColumn: ({time, value}, id) ->
-    <div key={id} className="simulationValue">
-      {value.exception || 'Error'}
+    errorMessage = value.exception?.message || value.exception?.error ||
+      value?.error || value.exception
+    <div key={id} className="simulationValue simulationError">
+      {JSON.stringify(errorMessage) || 'Error'}
     </div>
 
   childColumn: (notification, id) ->
