@@ -319,7 +319,7 @@ recursiveOperatorDefaults =
 
 recursiveOperators = R.mapObj(R.merge(recursiveOperatorDefaults))(
   merge:
-    args: createSimpleObservable('of')(['1,2'])
+    args: [createSimpleObservable('of')(['1,2'])]
   amb:
     args: [
       root:

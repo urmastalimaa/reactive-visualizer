@@ -8,7 +8,7 @@ callNth = ->
     arguments[args[0]](args.slice(1)...)
 
 wrapSimpleValueInFunction = (val) ->
-  if (typeof val is 'function') || val.functionDeclaration || val.root
+  if (typeof val is 'function') || val.functionDeclaration
     val
   else
     R.always(val)
