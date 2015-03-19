@@ -67,7 +67,7 @@ module.exports = React.createClass
       {@props.children}
       <RemoveOperator onRemove={@handleRemove}/>
       <a href={getDocLink(@props.operator.type)} target="_blank">
-        {"[doc]"}
+        {"?"}
       </a>
       <SimulationArea id={@props.operator.id} />
     </div>

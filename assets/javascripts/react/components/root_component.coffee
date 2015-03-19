@@ -53,7 +53,7 @@ module.exports = React.createClass
       </div>
       {@props.children}
       <a href={getDocLink(root.type)} target="_blank">
-        {"[doc]"}
+        {"?"}
       </a>
       <SimulationArea id={root.id} />
     </div>
