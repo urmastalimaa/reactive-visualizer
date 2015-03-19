@@ -105,6 +105,7 @@ simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
   map:
     args: alwaysValues(defaultFunc("return value * value;"))
     argTypes: singleFunctionType
+    docAlias: 'select'
   max:
     args: alwaysValues(defaultFunc("return value;"))
     argTypes: singleFunctionType

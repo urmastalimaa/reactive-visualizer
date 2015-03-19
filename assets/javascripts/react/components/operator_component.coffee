@@ -58,6 +58,7 @@ module.exports = React.createClass
     )(@props.operator.args)
 
   render: ->
+    docOperator = Operators[@props.operator.type].docAlias || @props.operator.type
     <div data-type={@props.operator.type} className='operator'>
       <span>
         <span className="immutableCode">{".#{@props.operator.type}("}</span>
@@ -66,7 +67,7 @@ module.exports = React.createClass
       </span>
       {@props.children}
       <RemoveOperator onRemove={@handleRemove}/>
-      <a href={getDocLink(@props.operator.type)} target="_blank">
+      <a href={getDocLink(docOperator)} target="_blank">
         {"?"}
       </a>
       <SimulationArea id={@props.operator.id} />
