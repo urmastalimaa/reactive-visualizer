@@ -13,13 +13,15 @@ module.exports = React.createClass
     observable: serialize(@props.defaultObservable)
 
   handleChange: (observable) ->
+    console.log "serialized", observable, serialize(observable)
     @setState observable: serialize(observable)
 
   render: ->
     <div className="buildArea" style={@props.style}>
       <SimulationHeader />
       <Observable observable={@state.observable} id='' recursionLevel=0 onChange={@handleChange} rowLength={@props.rowLength}/>
+      <ResultControl observable={@state.observable}/>
+
       <PersistencyArea defaultObservable={@props.defaultObservable}
         observable={@state.observable} onChange={@handleChange} />
-      <ResultControl observable={@state.observable}/>
     </div>
