@@ -9,7 +9,7 @@ SimulationArea = require './simulation_nodes'
 
 RecursiveOperator = React.createClass
   render: ->
-    <span className="recursiveContainer" style={paddingLeft: '50px'} >
+    <span className="recursiveContainer">
       <@props.ObservableComponent id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
     </span>
 
@@ -60,7 +60,7 @@ module.exports = React.createClass
   render: ->
     docOperator = Operators[@props.operator.type].docAlias || @props.operator.type
     <div data-type={@props.operator.type} className='operator'>
-      <span>
+      <span className="operatorContainer">
         <span className="immutableCode">{".#{@props.operator.type}("}</span>
         {@getArgContainer(@props.operator.argTypes)}
         <span className="immutableCode">{')'}</span>

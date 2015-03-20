@@ -24,7 +24,7 @@ module.exports = React.createClass
 
   render: ->
     exampleDescriptions = R.mapObj(R.get('description'))(examples)
-    <ButtonToolbar id="persistency">
+    <ButtonToolbar id="persistency" className="persistencyArea">
       <ButtonGroup>
         <Button id="save" tooltip="funky" bsStyle="primary" onClick={@save}  >Save </Button>
         <Button id="load"  bsStyle="primary" onClick={@load}  >Reset</Button>
