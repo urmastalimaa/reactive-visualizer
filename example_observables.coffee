@@ -132,4 +132,21 @@ module.exports =
         args: ["6000"]
       }
     ]
+  generateAndBuffer:
+    description: "Values come later and later, buffer length changes"
+    root:
+      type: 'generateWithRelativeTime',
+      args: [
+        1,
+        "function(x) { return x <= 10 }"
+        "function(x) { return x + 1 }"
+        "function(x) { return x }"
+        "function(x) { return 200 * x }"
+      ]
+    operators: [
+      {
+        type: 'bufferWithTimeOrCount'
+        args: [ 2000, 3 ]
+      }
+    ]
 
