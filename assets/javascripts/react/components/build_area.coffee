@@ -6,6 +6,7 @@ serialize = require '../../builder/serializer'
 SimulationHeader = require './simulation_header'
 Observable = require './observable'
 PersistencyArea = require './persistency'
+Persister = require '../../persistency/persister'
 ResultControl = require './result_control'
 
 module.exports = React.createClass
@@ -13,7 +14,7 @@ module.exports = React.createClass
     observable: serialize(@props.defaultObservable)
 
   handleChange: (observable) ->
-    console.log "serialized", observable, serialize(observable)
+    Persister.save(serialize(observable))
     @setState observable: serialize(observable)
 
   render: ->

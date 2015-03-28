@@ -2,36 +2,37 @@ React = require 'react'
 R = require 'ramda'
 Persister = require '../../persistency/persister'
 examples = require '../../../../example_observables'
-Loader = require './load_selector'
+Loader = require './loader'
+Saver = require './saver'
+
 ReactBootstrap = require 'react-bootstrap'
 {Button, ButtonToolbar, ButtonGroup} = ReactBootstrap
 
 module.exports = React.createClass
-  save: ->
-    Persister.save(@props.observable)
+  getInitialState: ->
+    userExamples: Persister.allExamples()
 
-  load: ->
-    loaded = Persister.load()
-    if loaded
-      @props.onChange(loaded)
+  onLoad: (observable) ->
+    @props.onChange observable
 
-  onLoad: (exampleKey) ->
-    @props.onChange examples[exampleKey]
+  onRemove: (example) ->
+    newExamples = Persister.removeExample(example)
+    @setState userExamples: newExamples
 
-  clear: ->
-    Persister.clear()
-    @props.onChange(@props.defaultObservable)
+  onSave: ({name, description}) ->
+    newExamples = Persister.addExample
+      name: name
+      description: description
+      observable: @props.observable
+    @setState userExamples: newExamples
 
   render: ->
-    exampleDescriptions = R.mapObj(R.get('description'))(examples)
     <ButtonToolbar id="persistency" className="persistencyArea">
       <ButtonGroup>
-        <Button id="save" tooltip="funky" bsStyle="primary" onClick={@save}  >Save </Button>
-        <Button id="load"  bsStyle="primary" onClick={@load}  >Reset</Button>
-        <Button id="clear" bsStyle="primary" onClick={@clear} >Clear</Button>
+        <Loader onLoad={@onLoad} onRemove={@onRemove} bundledExamples={examples} userExamples={@state.userExamples}/>
       </ButtonGroup>
       <ButtonGroup>
-        <Loader onChange={@onLoad} options={exampleDescriptions}/>
+        <Saver onSave={@onSave} />
       </ButtonGroup>
     </ButtonToolbar>
 
