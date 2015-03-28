@@ -1,6 +1,13 @@
 React = require 'react'
 Page = require './react/page'
+Persister = require './persistency/persister'
 
-document.addEventListener "DOMContentLoaded", ->
-  React.render(<Page />, document.getElementById('content'))
+renderPage = ->
+  try
+    React.render(<Page />, document.getElementById('content'))
+  catch e
+    console.error "Couldn't render page, retrying", e
+    Persister.save(null)
+    renderPage()
 
+document.addEventListener "DOMContentLoaded", renderPage
