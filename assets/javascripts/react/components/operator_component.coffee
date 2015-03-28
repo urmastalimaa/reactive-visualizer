@@ -36,7 +36,7 @@ module.exports = React.createClass
           onDeclarationChange = (declaration) =>
             handleArgChange(R.merge(arg.observable, functionDeclaration: declaration))
           onObservableChange = (observable) =>
-            handleArgChange(R.merge(arg.observable, observable: observable))
+            handleArgChange(R.merge(arg, observable: observable))
 
           <span key={index}>
             <span className="functionDeclaration" id={@props.operator.id}>

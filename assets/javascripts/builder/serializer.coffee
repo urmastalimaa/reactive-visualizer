@@ -31,8 +31,13 @@ serializeRoot = (id, recursionLevel, root) ->
 serializeOperatorArgs = (id, recursionLevel, operator) ->
   R.mapIndexed( (getArg, index) ->
     if getArg.functionDeclaration && getArg.observable
+      functionDeclaration =
+        if (typeof getArg.functionDeclaration is 'function')
+          getArg.functionDeclaration(recursionLevel + 1)
+        else
+          getArg.functionDeclaration
       # A function returning an observable
-      functionDeclaration: getArg.functionDeclaration(recursionLevel + 1)
+      functionDeclaration: functionDeclaration
       observable: serializeObservable(id + index, recursionLevel + 1)(getArg.observable)
     else
       arg = getArg(recursionLevel)
