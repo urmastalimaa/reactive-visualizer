@@ -13,7 +13,7 @@ createSimpleObservable = R.curryN 2, (rootType, rootArgs) ->
 getClosedOverArgName = (recursionLevel) ->
   'outerValue' + (recursionLevel && recursionLevel + 1 || '')
 
-simpleCombinerFunction = 'function(first, second){ return {first: first, second: second}; }'
+simpleCombinerFunction = 'function(first, second){ return first + second; }'
 
 getReturningFunctionDeclaration = (args) ->
   "function(#{args}) { return "
