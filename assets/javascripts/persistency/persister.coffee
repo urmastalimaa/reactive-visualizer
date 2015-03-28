@@ -1,6 +1,6 @@
 R = require 'ramda'
 
-saveObservable = (observable) ->
+saveObservable = R.tap (observable) ->
   localStorage.savedObservable = JSON.stringify(observable)
 
 loadObservable = ->
@@ -9,10 +9,8 @@ loadObservable = ->
   catch error
     null
 
-saveExamples = (examples) ->
-  console.log "saving", examples
+saveExamples = R.tap (examples) ->
   localStorage.examples = JSON.stringify(examples)
-  examples
 
 loadExamples = ->
   try
