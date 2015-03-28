@@ -28,6 +28,12 @@ The observable will be evalued and run through virtual time scheduler and the
 values from each operator will be collected.
 Overwriting any of the existing Rx functions is avoided.
 
+Proxying all the observable functions and logging the values
+that go through them initially seemed like a good idea, but it was dropped due to the following reasons:
+
+1. Tying an operator call to a row in the UI is hard, it would require carrying some metadata through the operators.
+2. Operators might reuse other operators resulting in calls to operators which do not appear in the UI.
+
 
 ### Future
 
