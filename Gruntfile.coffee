@@ -7,7 +7,7 @@ generateBrowserifyConf = ({minify, map, watch} = {}) ->
     ]
 
   options =
-    transform: ['coffee-reactify']
+    transform: ['coffee-reactify', 'brfs']
     browserifyOptions:
       extensions: ['.coffee']
     preBundleCB: (b) ->

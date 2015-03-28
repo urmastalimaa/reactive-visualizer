@@ -11,7 +11,9 @@
     "react-bootstrap": "~ 0.16",
     "bootstrap-slider": "4.5",
     "string": "~ 3.0",
-    "react-textarea-autosize": "~ 1.1"
+    "react-textarea-autosize": "~ 1.1", 
+    "react-markdown-to-html": "~ 1.0",
+    "markdown-it": "~ 4.0"
   },
   "devDependencies": {
     "browserify": "~9.0",
@@ -31,7 +33,8 @@
     "grunt-concurrent": "~1.0",
     "http-server": "> 0.0",
     "mocha": "2.1.0",
-    "expect": "~ 1.5"
+    "expect": "~ 1.5",
+    "brfs": "~ 1.4"
   },
   "scripts": {
     "test": "mocha"
