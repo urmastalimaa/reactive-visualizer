@@ -21,7 +21,7 @@ module.exports = React.createClass
 
   selectOption: (optionKey) ->
     @props.onChange(optionKey)
-    @hideModal()
+    @hideModalWithTimeout()
 
   hideModal: ->
     React.render(<span/>, @refs.loadContainer.getDOMNode())
