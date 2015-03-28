@@ -27,14 +27,11 @@ module.exports = React.createClass
   getInitialState: ->
     notifications: {}
     time: 0
-
-  componentWillUpdate: ->
-    @hideAnalyzeError() if @state.notifications.error
+    playing: false
 
   handleTimeChange: (time) ->
     if @state.time != time
-      NotificationStore.setVirtualTime(time, @state.notifications)
-      @setState time: time
+      @setState time: time, playing: false
 
   hideAnalyzeError: ->
     @showInErrorArea(<span />)
@@ -45,28 +42,26 @@ module.exports = React.createClass
   showInErrorArea: (component)->
     React.render(component, @refs.analyzeError.getDOMNode())
 
-  analyze: ->
-    notifications = getNotifications(@props.observable)
-    if !notifications.error
-      @handleNewNotifications(notifications)
-    else
-      @showAnalyzeError()
-      @handleNewNotifications(notifications)
-
-  handleNewNotifications: (notifications) ->
-    NotificationStore.setVirtualTime(0, notifications)
-
-    @setState notifications: notifications
-    @setState time: 0
-
   componentWillReceiveProps: (nextProps) ->
     unless R.eq(@props.observable, nextProps.observable)
-      @setState notifications: {}
+      @setState notifications: getNotifications(nextProps.observable)
+
+  componentWillUpdate: (nextProps, nextState) ->
+    @hideAnalyzeError() if @state.notifications.error
+    @showAnalyzeError() if nextState.notifications.error
+
+    unless nextState.playing
+      # could optimize somewhat to filter out pointless time changes
+      NotificationStore.setVirtualTime(nextState.time, nextState.notifications)
+
+  componentDidMount: ->
+    # force componentWillUpdate
+    @setState notifications: getNotifications(@props.observable)
 
   play: ->
-    timeCallback = (time) =>
-      @setState time: time
-    NotificationStore.play @state.notifications, @state.time, timeCallback
+    playCallback = (time) =>
+      @setState time: time, playing: true
+    NotificationStore.play @state.notifications, @state.time, playCallback
 
   render: ->
     showReplayArea = R.keys(@state.notifications).length > 0 && !@state.notifications.error
@@ -77,9 +72,6 @@ module.exports = React.createClass
     ]
 
     <ButtonToolbar>
-      <Button className="analyze" id="analyze" onClick={@analyze} bsStyle="success" style={marginBottom: '5px'}>
-      Analyze
-        <div id="analyzeError" ref="analyzeError" />
-      </Button>
+      <div id="analyzeError" ref="analyzeError" />
       { if showReplayArea then replayArea }
     </ButtonToolbar>
