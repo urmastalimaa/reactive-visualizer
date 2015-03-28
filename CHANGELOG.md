@@ -17,3 +17,7 @@
   *  Made non-recursive operators display arguments based on their definition
   *  Added links to RxJS documentation
   *  Rewrote argument evaluation, added support for arbitrary arguments
+*  28.03.2015
+  * Reworked persistency to autosave the observable and to allow saving user examples
+  * Added in-browser help
+  * Reworking result control to analyze the observable without explicit analyze
