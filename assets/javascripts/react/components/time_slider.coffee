@@ -3,7 +3,7 @@ React = require 'react'
 Slider = require '../components/bootstrap_slider'
 
 getUniqueTimes =  (notifications) ->
-  R.compose(R.uniq, R.map(R.get('time')), R.flatten, R.values)(notifications)
+  R.compose(R.uniq, R.map(R.prop('time')), R.flatten, R.values)(notifications)
 
 TimeSlider = React.createClass(
 

@@ -49,7 +49,7 @@ class NotificationStore extends BaseStore
             val
       res
     )({})
-    R.map(R.countBy(R.get('time'))),
+    R.map(R.countBy(R.prop('time'))),
     R.values
   )
 
@@ -76,7 +76,7 @@ class NotificationStore extends BaseStore
 
     times = R.compose(
       R.uniq
-      R.sortBy(R.I)
+      R.sortBy(R.identity)
       R.filter(R.lt(startTime))
       R.pluck('time')
       R.flatten

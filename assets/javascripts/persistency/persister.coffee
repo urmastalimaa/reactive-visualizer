@@ -28,13 +28,13 @@ module.exports =
   addExample:
     R.compose(
       saveExamples
-      R.useWith(R.flip(R.append), loadExamples, R.I)(null)
+      R.useWith(R.append, R.identity, loadExamples)(R.__, null)
     )
 
   removeExample:
     R.compose(
       saveExamples
-      R.useWith(R.flip(R.reject), loadExamples, R.eqDeep)(null)
+      R.useWith(R.reject, R.eqDeep, loadExamples)(R.__, null)
     )
 
   clearExamples:
