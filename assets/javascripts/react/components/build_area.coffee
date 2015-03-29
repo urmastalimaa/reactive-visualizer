@@ -18,7 +18,7 @@ module.exports = React.createClass
     @setState observable: serialize(observable)
 
   render: ->
-    <div className="buildArea" style={@props.style}>
+    <div id="buildArea" style={@props.style}>
       <SimulationHeader />
       <Observable observable={@state.observable} id='' recursionLevel=0 onChange={@handleChange} rowLength={@props.rowLength}/>
       <ResultControl observable={@state.observable}/>

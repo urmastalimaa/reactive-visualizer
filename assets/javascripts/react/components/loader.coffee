@@ -5,8 +5,11 @@ ModalButton = require './modal_button'
 {Button, PanelGroup, Panel} = require 'react-bootstrap'
 
 module.exports = React.createClass
-  getInitialState: ->
-    modalOpen: false
+  getDefaultProps: ->
+    bundledExamples: []
+    userExamples: []
+    onLoad: ->
+    onRemove: ->
 
   mapExample: R.curryN 3, (deletable, example, index) ->
     {name, description, observable} = example

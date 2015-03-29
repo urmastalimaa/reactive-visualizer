@@ -14,8 +14,8 @@ DescriptionContainer = React.createClass
       </TabPane>
     )(R.keys(HelpTexts))
 
-    <Accordion id='helpContainer'>
-      <Panel ref='pane' header='Help' eventKey='1'>
+    <Accordion id='informationContainer'>
+      <Panel ref='pane' id="help" header='Help' eventKey='1'>
         <TabbedArea defaultActiveKey={0}>
           {helpTabs}
         </TabbedArea>
