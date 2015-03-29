@@ -34,7 +34,10 @@
     "http-server": "> 0.0",
     "mocha": "2.1.0",
     "expect": "~ 1.5",
-    "brfs": "~ 1.4"
+    "brfs": "~ 1.4",
+    "jsdom": "~ 3.1",
+    "coffee-react" : "~ 3.0",
+    "sinon": "~ 1.14"
   },
   "scripts": {
     "test": "mocha"

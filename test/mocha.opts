@@ -1,5 +1,5 @@
 --reporter spec
 --ui bdd
---compilers coffee:coffee-script/register
+--compilers coffee:./test/jsx_compiler.js
 --recursive
 
