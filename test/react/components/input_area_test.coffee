@@ -1,29 +1,14 @@
-require '../../test_helper'
-InputArea = require assetPath + 'react/components/input_area'
-jsdom = require('jsdom')
-React = require 'react'
+require '../react_test_helper'
 sinon = require 'sinon'
-
-{TestUtils} = require('react/addons').addons
-
-global.document = jsdom.jsdom('<!doctype html><html><body></body></html>')
-global.window = document.parentWindow
-
-render = (component) ->
-  renderTarget = document.getElementsByTagName('body')[0]
-  renderedComponent = React.render(component, renderTarget)
 
 describe 'InputArea', ->
   componentArgs = memo().is -> {}
 
   beforeEach ->
-    @renderedComponent = render(React.createElement(InputArea, componentArgs()))
-    @textarea = TestUtils.findRenderedDOMComponentWithTag(@renderedComponent,
+    InputArea = require assetPath + 'react/components/input_area'
+    @inputArea = render(React.createElement(InputArea, componentArgs()))
+    @textarea = TestUtils.findRenderedDOMComponentWithTag(@inputArea,
       'textarea')
-
-  afterEach ->
-    # clean the DOM
-    render(React.createElement("span"))
 
   it 'creates a textarea node', ->
     expect(@textarea.getDOMNode()).toExist()
@@ -40,7 +25,7 @@ describe 'InputArea', ->
       onChange: sinon.stub()
 
     beforeEach ->
-      TestUtils.Simulate.change(@textarea.getDOMNode(), target: { value: '51'})
+      Simulate.change(@textarea.getDOMNode(), target: { value: '51'})
 
     it "changes the value", ->
       expect(@textarea.getDOMNode().value).toEqual('51')
@@ -50,7 +35,7 @@ describe 'InputArea', ->
 
     context 'followed by blur', ->
       beforeEach ->
-        TestUtils.Simulate.blur(@textarea.getDOMNode())
+        Simulate.blur(@textarea.getDOMNode())
 
       it "calls the onChange callback", ->
         sinon.assert.calledWith(componentArgs().onChange, '51')
