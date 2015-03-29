@@ -11,26 +11,21 @@ module.exports = React.createClass
     onLoad: ->
     onRemove: ->
 
-  mapExample: R.curryN 3, (deletable, example, index) ->
-    {name, description, observable} = example
-    humanized = S(name).humanize().s
-    clickHandler = R.useWith @selectOption, R.always(observable)
+  deleteButton: (example) ->
+    <button className="smallClose" onClick={R.partial(@props.onRemove, example)}>
+      &#10006;
+    </button>
 
-    deleteButton =
-      if deletable
-        <button className="smallClose" onClick={R.partial(@props.onRemove, example)}>
-          &#10006;
-        </button>
-      else
-        <span/>
+  createExample: R.curry (deletable, example, index) ->
+    clickHandler = R.partial @selectOption, example.observable
 
     <div className="example" key={index}>
-      <Button bsStyle="default" onClick={clickHandler}>
-        {humanized}
+      <Button bsStyle="default" onClick={clickHandler} className="selectExample">
+        {S(example.name).humanize().toString()}
       </Button>
-      {deleteButton}
-      <span className="loadDescription">
-        {description}
+      {@deleteButton(example) if deletable}
+      <span className="exampleDescription">
+        {example.description}
       </span>
     </div>
 
@@ -42,10 +37,10 @@ module.exports = React.createClass
     examples =
       <PanelGroup className="examples" defaultActiveKey='1' accordion>
         <Panel header="Bundled examples" eventKey='1'>
-          {R.mapIndexed(R.partial(@mapExample, false))(@props.bundledExamples)}
+          {R.mapIndexed(R.partial(@createExample, false))(@props.bundledExamples)}
         </Panel>
         <Panel header="User examples" eventKey='2'>
-          {R.mapIndexed(R.partial(@mapExample, true))(@props.userExamples)}
+          {R.mapIndexed(R.partial(@createExample, true))(@props.userExamples)}
         </Panel>
       </PanelGroup>
 

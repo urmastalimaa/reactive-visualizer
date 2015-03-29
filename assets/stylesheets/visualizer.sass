@@ -22,6 +22,17 @@ body
   margin-left: 2px
   margin-right: 2px
 
+#saveNameInput
+  margin: 10px
+  display: block
+
+#saveDescriptionInput
+  @extend #saveNameInput
+  width: 60%
+
+#saveConfirm
+  @extend #saveNameInput
+
 .simpleOperatorArgumentsContainer
   width: initial
   display: inline-block
@@ -45,7 +56,7 @@ body
 .simpleOperatorArgumentsContainer > .codeTextarea
   width: inherit
 
-.rootSelect
+.selectRoot
   display: inherit
   font-size: 18px
 
@@ -135,7 +146,7 @@ body
   padding-bottom: 5px
   width: 100%
 
-.loadDescription
+.exampleDescription
   width: 60%
   float: right
 

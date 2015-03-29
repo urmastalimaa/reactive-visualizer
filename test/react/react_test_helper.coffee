@@ -3,6 +3,7 @@ require '../test_helper'
 html = "<!doctype html><html><head><meta charset='utf-8'></head><body></body></html>"
 
 process.env.NODE_ENV = 'development'
+R = require 'ramda'
 
 before (next) ->
   done = (errors, window) ->
@@ -41,8 +42,8 @@ afterEach ->
   # clean the DOM
   global.React.unmountComponentAtNode(global.document.body)
 
-global.render = (component) ->
-  global.React.render(component, global.document.body)
+global.render = (component, done) ->
+  global.React.render(component, global.document.body, done)
 
 global.findByTag = (component, tag) ->
   global.TestUtils.findRenderedDOMComponentWithTag(component, tag)
@@ -55,3 +56,9 @@ global.scryByClass = (component, className) ->
 
 global.scryByTag = (component, className) ->
   global.TestUtils.scryRenderedDOMComponentsWithTag(component, className)
+
+global.findAll = (component, test) ->
+  global.TestUtils.findAllInRenderedTree(component, test)
+
+global.findById = (component, id) ->
+  findAll(component, R.compose(R.propEq('id', id), R.invoke('getDOMNode', [])))[0]

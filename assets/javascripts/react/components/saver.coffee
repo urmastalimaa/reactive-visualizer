@@ -9,34 +9,26 @@ Saver = React.createClass
     name: ""
     description: ""
 
-  changeName: ->
-    @setState name: @refs.name.getDOMNode().value
-
-  changeDescription: ->
-    @setState description: @refs.description.getDOMNode().value
-
   save: ->
-    @props.onSave(name: @state.name, description: @state.description)
+    @props.onSave(R.pick(['name', 'description'])(@state))
     @refs.modalButton.setState open: false
     @setState @getInitialState()
 
   nameInput: ->
-    <div>
-      <input ref="name" required={true} type="text" placeholder="...name" onChange={@changeName} value={@state.name} />
-    </div>
+    onChange = (event) =>
+      @setState name: event.target.value
+    <input id="saveNameInput" type="text" placeholder="...name" onChange={onChange} value={@state.name} />
 
   descriptionInput: ->
-    <div>
-      <textarea ref="description" required={true} placeholder="...description" onChange={@changeDescription} value={@state.description}/>
-    </div>
+    onChange = (event) =>
+      @setState description: event.target.value
+    <textarea id="saveDescriptionInput" placeholder="...description" onChange={onChange} value={@state.description}/>
 
   saveButton: ->
     if @state.name && @state.description
-      <Button bsStyle="success" onClick={@save}>
+      <Button id="saveConfirm" bsStyle="success" onClick={@save}>
         Save
       </Button>
-    else
-      <span/>
 
   render: ->
     <ModalButton ref="modalButton" id="save" title="Save an example" buttonText="Save">
