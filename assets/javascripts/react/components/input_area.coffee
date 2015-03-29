@@ -3,11 +3,15 @@ Textarea = require 'react-textarea-autosize'
 
 module.exports = React.createClass
 
+  getDefaultProps: ->
+    value: ""
+    onChange: ->
+
   getInitialState: ->
     value: @props.value
 
-  onChange: ->
-    @setState value: @refs.textarea.getDOMNode().value
+  onChange: (event) ->
+    @setState value: event.target.value
 
   onBlur: ->
     @props.onChange(@state.value)
