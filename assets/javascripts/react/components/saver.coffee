@@ -6,7 +6,6 @@ R = require 'ramda'
 Saver = React.createClass
 
   getInitialState: ->
-    modalOpen: false
     name: ""
     description: ""
 
@@ -18,6 +17,7 @@ Saver = React.createClass
 
   save: ->
     @props.onSave(name: @state.name, description: @state.description)
+    @refs.modalButton.setState open: false
     @setState @getInitialState()
 
   nameInput: ->
@@ -38,15 +38,8 @@ Saver = React.createClass
     else
       <span/>
 
-  componentDidUpdate: (prevProps, prevState) ->
-    if !prevState.modalOpen && @state.modalOpen
-      @refs.name.getDOMNode().focus()
-
   render: ->
-    openCloseModal = (isOpen) =>
-      R.nAry 0, R.partial(@setState.bind(@), modalOpen: isOpen)
-
-    <ModalButton ref="modalButton" id="save" title="Save an example" buttonText="Save" open={@state.modalOpen} onOpenClose={openCloseModal} >
+    <ModalButton ref="modalButton" id="save" title="Save an example" buttonText="Save">
       {@nameInput()}
       {@descriptionInput()}
       {@saveButton()}

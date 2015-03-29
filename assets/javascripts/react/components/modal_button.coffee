@@ -7,8 +7,15 @@ ModalButton = React.createClass
     id: 'id'
     title: 'Modal'
     buttonText: 'Button'
+
+  getInitialState: ->
     open: false
-    onOpenClose: (isOpen) -> (->)
+
+  open: ->
+    @setState open: true
+
+  close: ->
+    @setState open: false
 
   getEmptyModalInstance: ->
     <span />
@@ -18,7 +25,7 @@ ModalButton = React.createClass
       backdrop={true}
       animation={true}
       container={@refs.modalContainer}
-      onRequestHide={@props.onOpenClose(false)}>
+      onRequestHide={@close}>
       <div className="modal-body">
         {@props.children}
       </div>
@@ -26,11 +33,11 @@ ModalButton = React.createClass
 
   render: ->
     <span id={@props.id} className="modalButtonContainer">
-      <Button bsStyle="primary" className="modalButton" onClick={@props.onOpenClose(true)}>
+      <Button id={"#{@props.id}Button"} bsStyle="primary" className="modalButton" onClick={@open}>
         {@props.buttonText}
       </Button>
       <span id={"#{@props.id}modalContainer"} ref="modalContainer">
-      {if @props.open then @getModalInstance() else @getEmptyModalInstance() }
+      {if @state.open then @getModalInstance() else @getEmptyModalInstance() }
       </span>
     </span>
 

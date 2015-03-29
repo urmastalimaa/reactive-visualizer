@@ -33,12 +33,9 @@ module.exports = React.createClass
 
   selectOption: (observable) ->
     @props.onLoad(observable)
-    @setState modalOpen: false
+    @refs.modalButton.setState open: false
 
   render: ->
-    openCloseModal = (isOpen) =>
-      R.nAry 0, R.partial(@setState.bind(@), modalOpen: isOpen)
-
     examples =
       <PanelGroup className="examples" defaultActiveKey='1' accordion>
         <Panel header="Bundled examples" eventKey='1'>
@@ -49,7 +46,7 @@ module.exports = React.createClass
         </Panel>
       </PanelGroup>
 
-    <ModalButton ref="modalButton" id="load" title="Load an example" buttonText="Load" open={@state.modalOpen} onOpenClose={openCloseModal}>
+    <ModalButton ref="modalButton" id="load" title="Load an example" buttonText="Load">
       {examples}
     </ModalButton>
 
