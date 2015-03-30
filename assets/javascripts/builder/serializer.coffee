@@ -1,74 +1,57 @@
-R = require 'ramda'
+R = require '../ramda_additions'
+
 Roots = require '../descriptors/roots'
 Operators = require '../descriptors/operators'
 
-identify = require './identifier'
-
-callNth = ->
-  args = Array.prototype.slice.call(arguments)
-  ->
-    arguments[args[0]](args.slice(1)...)
-
-wrapSimpleValueInFunction = (val) ->
-  if (typeof val is 'function') || val.functionDeclaration
-    val
-  else
-    R.always(val)
-
-serializeObservable = R.curry (recursionLevel, observable) ->
-  {root, operators} = observable
-
-  root: serializeRoot(recursionLevel, root)
-  operators: R.mapIndexed(serializeOperator(recursionLevel), operators)
-
-serializeRoot = (recursionLevel, root) ->
-  rootArgs = R.compose(
-    R.map(callNth(0, recursionLevel))
-    R.map(wrapSimpleValueInFunction)
-  )(root.args || Roots[root.type].args)
-
-  { type: root.type, args: rootArgs }
-
-serializeOperatorArgs = (recursionLevel, operator) ->
-  R.mapIndexed( (getArg, index) ->
-    if getArg.functionDeclaration && getArg.observable
-      functionDeclaration =
-        if (typeof getArg.functionDeclaration is 'function')
-          getArg.functionDeclaration(recursionLevel + 1)
-        else
-          getArg.functionDeclaration
-      # A function returning an observable
-      functionDeclaration: functionDeclaration
-      observable: serializeObservable(recursionLevel + 1)(getArg.observable)
-    else
-      arg = getArg(recursionLevel)
-      if arg.root && arg.operators
-        # A naked observable
-        serializeObservable(recursionLevel + 1)(arg)
-      else
-        arg
+serializeObservable = (recursionLevel) ->
+  R.compose(
+    R.propMap('root', serializeRoot(recursionLevel))
+    R.propMap('operators', R.map(serializeOperator(recursionLevel)))
   )
 
-serializeOperator = R.curry (recursionLevel, operator, index) ->
-  definition = Operators[operator.type]
+serializeRoot = R.curry (recursionLevel, root) ->
+  R.assoc(
+    'args',
+    serializeArgs(recursionLevel)(root.args || Roots[root.type].args)
+    root
+  )
 
-  argsToUse = operator.args || definition.args
+serializeOperator = R.curry (recursionLevel, operator) ->
+  R.assoc(
+    'args',
+    serializeArgs(recursionLevel)(operator.args || Operators[operator.type].args),
+    operator
+  )
 
-  finalArgs =
-    if typeof argsToUse is 'function'
-      argsToUse(recursionLevel)
-    else
-      argsToUse
+serializeArgs = (recursionLevel) ->
+  R.map(serializeArg(recursionLevel))
 
-  operatorArgs = R.compose(
-    serializeOperatorArgs(recursionLevel, operator)
-    R.map(wrapSimpleValueInFunction)
-  )(finalArgs)
+serializeArg = R.curry (recursionLevel, getArg) ->
+  selectArgSerializer(getArg)(recursionLevel)(getArg)
 
-  { type: operator.type, args: operatorArgs }
+selectArgSerializer = (arg) ->
+  if arg.functionDeclaration
+    serializeFunctionDeclarationArg
+  else if arg.observable
+    serializeObservableArg
+  else
+    serializeSimpleArg
 
-module.exports = R.compose(
-  identify
-  serializeObservable(0)
-)
+serializeSimpleArg = (recursionLevel) ->
+  R.compose(
+    R.flip(R.call)([recursionLevel])
+    R.ensureFunction
+  )
 
+serializeFunctionDeclarationArg = (recursionLevel) ->
+  R.compose(
+    R.propMap('functionDeclaration', serializeSimpleArg(recursionLevel + 1))
+    R.propMap('observable', serializeObservable(recursionLevel + 1 ))
+  )
+
+serializeObservableArg = (recursionLevel) ->
+  R.propMap('observable', serializeObservable(recursionLevel + 1))
+
+module.exports =
+  serializeObservable: serializeObservable
+  serializeOperator: serializeOperator

@@ -48,8 +48,9 @@ describe 'BuildArea', ->
               type: 'merge'
               args: [
                 {
-                  root: { type: 'timer', args: [1000, ''] }
-                  operators: []
+                  observable:
+                    root: { type: 'timer', args: [1000, ''] }
+                    operators: []
                 }
               ]
             }

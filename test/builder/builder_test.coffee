@@ -60,11 +60,14 @@ describe 'build', ->
         type: 'merge'
         id: 'ro'
         args: [
-          root:
-            type: 'of'
-            id: 'ro0r'
-            args: ['1,2']
-          operators: []
+          {
+            observable:
+              root:
+                type: 'of'
+                id: 'ro0r'
+                args: ['1,2']
+              operators: []
+          }
         ]
       ]
 
@@ -84,11 +87,12 @@ describe 'build', ->
         id: 'ro'
         args: [
           {
-            root:
-              type: 'timer'
-              id: 'ro0r'
-              args: [1000]
-            operators: []
+            observable:
+              root:
+                type: 'timer'
+                id: 'ro0r'
+                args: [1000]
+              operators: []
           },
           'function(a,b) { return a + b; }'
         ]

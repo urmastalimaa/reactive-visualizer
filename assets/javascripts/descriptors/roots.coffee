@@ -1,10 +1,6 @@
 R = require 'ramda'
 
 argTypes = require './argument_types'
-alwaysValues = ->
-  R.always(Array.prototype.slice.call(arguments))
-singleValueType = [argTypes.VALUE]
-singleFunctionType = [argTypes.FUNCTION]
 
 roots =
   of:

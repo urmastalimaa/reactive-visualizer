@@ -37,12 +37,14 @@ Operator = React.createClass
     R.mapIndexed( (arg, index) =>
       handleArgChange = @handleArgChange(index).bind(@)
       argType = definition.argTypes[index]
+
+      onObservableChange = (observable) =>
+        handleArgChange(R.merge(arg, observable: observable))
+
       switch argType
         when argTypes.OBSERVABLE_FUNCTION
           onDeclarationChange = (declaration) =>
             handleArgChange(R.merge(observable: arg.observable, functionDeclaration: declaration))
-          onObservableChange = (observable) =>
-            handleArgChange(R.merge(arg, observable: observable))
 
           <span key={index}>
             <span className="functionDeclaration" id={@props.operator.id}>
@@ -53,7 +55,7 @@ Operator = React.createClass
           </span>
 
         when argTypes.OBSERVABLE
-          <RecursiveOperator key={index} id={@props.operator.id} observable={arg} recursionLevel={@props.recursionLevel} onChildOperatorChange={handleArgChange} ObservableComponent={@props.ObservableComponent} />
+          <RecursiveOperator key={index} id={@props.operator.id} observable={arg.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={onObservableChange} ObservableComponent={@props.ObservableComponent} />
 
         when argTypes.FUNCTION, argTypes.VALUE
           <InputArea key={index} value={arg} onChange={handleArgChange} className={"input#{argType}"} />

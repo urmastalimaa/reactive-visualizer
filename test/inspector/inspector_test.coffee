@@ -73,11 +73,12 @@ describe 'inspect', ->
           id: 'ro'
           args: [
             {
-              root:
-                type: 'timer'
-                id: 'ro0r'
-                args: [100]
-              operators: []
+              observable:
+                root:
+                  type: 'timer'
+                  id: 'ro0r'
+                  args: [100]
+                operators: []
             },
             'function(a,b) { return a + b; }'
           ]

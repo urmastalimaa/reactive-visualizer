@@ -5,8 +5,8 @@ Roots = require '../descriptors/roots'
 buildArg = R.curryN 2, (operatorInspector, arg) ->
   if arg.functionDeclaration && arg.observable
     arg.functionDeclaration + " " + buildCode(arg.observable)(operatorInspector) + "}"
-  else if arg.root && arg.operators
-    buildCode(arg)(operatorInspector)
+  else if arg.observable
+    buildCode(arg.observable)(operatorInspector)
   else
     arg
 

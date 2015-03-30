@@ -5,6 +5,8 @@ Operators = require '../../descriptors/operators'
 ObservableOperator = require './operator_component'
 ObservableRoot = require './root_component'
 
+serializeOperator = require('../../builder/serializer').serializeOperator
+
 Observable = React.createClass
   handleAddOperator: (operator, type) ->
     return unless type
@@ -13,8 +15,9 @@ Observable = React.createClass
     operatorIndex = R.indexOf(operator, operators)
     previous = R.slice(0, operatorIndex + 1, operators)
     after = R.slice(operatorIndex + 1, operators.length, operators)
+    operator = serializeOperator(@props.recursionLevel, type: type)
 
-    newList = R.concat(R.concat(previous, [{type}]), after)
+    newList = R.concat(R.append(operator, previous), after)
 
     @props.onChange R.merge @props.observable,
       operators: newList

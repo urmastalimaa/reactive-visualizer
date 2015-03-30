@@ -1,5 +1,3 @@
-R = require 'ramda'
-
 module.exports = [
   {
     name: 'simpleMap'
@@ -38,7 +36,7 @@ module.exports = [
           type: 'flatMap'
           args: [
             {
-              functionDeclaration: R.always("function(productNr) { return ")
+              functionDeclaration: "function(productNr) { return "
               observable:
                 root:
                   type: 'timer', args: ["(5 - productNr * 2) * 1000"]
@@ -61,7 +59,7 @@ module.exports = [
           type: 'concatMap'
           args: [
             {
-              functionDeclaration: R.always("function(productNr) { return ")
+              functionDeclaration: "function(productNr) { return "
               observable:
                 root:
                   type: 'timer', args: ["(5 - productNr * 2) * 1000"]
@@ -84,7 +82,7 @@ module.exports = [
           type: 'flatMapLatest'
           args: [
             {
-              functionDeclaration: R.always("function(productNr) { return ")
+              functionDeclaration: "function(productNr) { return "
               observable:
                 root:
                   type: 'timer', args: ["(5 - productNr * 2) * 1000"]
@@ -107,7 +105,7 @@ module.exports = [
           type: 'flatMapLatest'
           args: [
             {
-              functionDeclaration: R.always("function(question) { return ")
+              functionDeclaration: "function(question) { return "
               observable:
                 root:
                   type: 'timer', args: ["1000"]
@@ -130,7 +128,7 @@ module.exports = [
           type: 'delayWithSelector'
           args: [
             {
-              functionDeclaration: R.always("function(input) { return ")
+              functionDeclaration: "function(input) { return "
               observable:
                 root:
                   type: 'timer', args: ["input * input * 500"]
@@ -169,5 +167,27 @@ module.exports = [
         }
       ]
   }
+  {
+    name: 'merge'
+    description: 'Merge two unrelated observables'
+    observable:
+      root:
+        type: 'timer'
+        args: [ 1000 ]
+      operators: [
+        {
+          type: 'merge'
+          args: [
+            observable:
+              root:
+                type: 'timer'
+                args: [500]
+              operators: []
+          ]
+        }
+      ]
+
+  }
+
 ]
 

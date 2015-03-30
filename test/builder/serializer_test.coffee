@@ -1,33 +1,31 @@
 require '../test_helper'
 R = require 'ramda'
 
-serialize = require '../../assets/javascripts/builder/serializer'
+serialize = require('../../assets/javascripts/builder/serializer').serializeObservable
 
 describe 'serialize', ->
   observable = memo().is -> {}
 
   subject = ->
-    serialize(observable())
+    serialize(0)(observable())
 
   context 'simple map', ->
     observable.is ->
       root:
         type: 'just'
-        args: [ R.always('5') ]
+        args: ['5']
       operators: [
         type: 'map'
-        args: [ R.always('function(x) { return x; }') ]
+        args: [ 'function(x) { return x; }' ]
       ]
 
     it 'serializes correctly', ->
       expect(subject()).toEqual
         root:
           type: 'just'
-          id: 'r'
           args: ['5']
         operators: [
           type: 'map'
-          id: 'ro'
           args: ['function(x) { return x; }']
         ]
 
@@ -57,18 +55,15 @@ describe 'serialize', ->
       expect(subject()).toEqual
         root:
           type: 'just'
-          id: 'r'
           args: ['5']
         operators: [
           type: 'flatMap'
-          id: 'ro'
           args: [
             {
               functionDeclaration: 'function(arg1){ return'
               observable:
                 root:
                   type: 'just'
-                  id: 'ro0r'
                   args: ['4*arg1']
                 operators: []
             }
@@ -79,17 +74,18 @@ describe 'serialize', ->
     observable.is ->
       root:
         type: 'just'
-        args: [ R.always('5') ]
+        args: [ '5' ]
       operators: [
         {
           type: 'merge'
           args: [
-            R.always(
-              root:
-                type: 'of'
-                args: [ R.always('1,2') ]
-              operators: []
-            )
+            {
+              observable:
+                root:
+                  type: 'of'
+                  args: [ '1,2' ]
+                operators: []
+            }
           ]
         }
       ]
@@ -98,17 +94,17 @@ describe 'serialize', ->
       expect(subject()).toEqual
         root:
           type: 'just'
-          id: 'r'
           args: ['5']
         operators: [
           type: 'merge'
-          id: 'ro'
           args: [
-            root:
-              type: 'of'
-              id: 'ro0r'
-              args: ['1,2']
-            operators: []
+            {
+              observable:
+                root:
+                  type: 'of'
+                  args: ['1,2']
+                operators: []
+            }
           ]
         ]
 
@@ -116,18 +112,19 @@ describe 'serialize', ->
     observable.is ->
       root:
         type: 'just'
-        args: [ R.always('5') ]
+        args: [ '5' ]
       operators: [
         {
           type: 'combineLatest'
           args: [
-            R.always(
+            {
               root:
                 type: 'timer'
-                args: [ R.always(1000) ]
+                args: [ 1000 ]
               operators: []
-            )
-            R.always('function(a,b) { return a + b; }')
+
+            }
+            'function(a,b) { return a + b; }'
           ]
         }
       ]
@@ -136,17 +133,14 @@ describe 'serialize', ->
       expect(subject()).toEqual {
         root:
           type: 'just'
-          id: 'r'
           args: ['5']
 
         operators: [
           type: 'combineLatest'
-          id: 'ro'
           args: [
             {
               root:
                 type: 'timer'
-                id: 'ro0r'
                 args: [1000]
               operators: []
             },

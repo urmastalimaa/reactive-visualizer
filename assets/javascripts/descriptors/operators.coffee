@@ -11,7 +11,7 @@ createSimpleObservable = R.curryN 2, (rootType, rootArgs) ->
   operators: []
 
 getClosedOverArgName = (recursionLevel) ->
-  'outerValue' + (recursionLevel && recursionLevel + 1 || '')
+  'outerValue' + (recursionLevel || '')
 
 simpleCombinerFunction = 'function(first, second){ return first + second; }'
 
@@ -20,11 +20,9 @@ getReturningFunctionDeclaration = (args) ->
 
 simpleOperatorsDefaults = {}
 
-alwaysValues = ->
-  R.always(Array.prototype.slice.call(arguments))
+alwaysValues = -> Array.prototype.slice.call(arguments)
 singleValueType = [argTypes.VALUE]
 singleFunctionType = [argTypes.FUNCTION]
-alwaysEmpty = R.always([])
 
 simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
   average:
@@ -41,10 +39,10 @@ simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
     argTypes: [argTypes.VALUE, argTypes.VALUE, argTypes.SCHEDULER]
   concatAll:
     argTypes: []
-    args: alwaysEmpty
+    args: []
   count:
     argTypes: []
-    args: alwaysEmpty
+    args: []
   debounce:
     args: alwaysValues('1000')
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
@@ -88,13 +86,13 @@ simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
     args: alwaysValues("5")
     argTypes: singleValueType
   ignoreElements:
-    args: alwaysEmpty
+    args: []
     argTypes: []
   indexOf:
     args: alwaysValues("5")
     argTypes: singleValueType
   isEmpty:
-    args: alwaysEmpty
+    args: []
     argTypes: []
   last:
     args: alwaysValues(defaultFunc("return value < 20;"))
@@ -110,13 +108,13 @@ simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
     args: alwaysValues(defaultFunc("return value;"))
     argTypes: singleFunctionType
   mergeAll:
-    args: alwaysEmpty
+    args: []
     argTypes: []
   min:
     args: alwaysValues(defaultFunc("return value;"))
     argTypes: singleFunctionType
   pairwise:
-    args: alwaysEmpty
+    args: []
     argTypes: []
   pluck:
     args: alwaysValues("'property'")
@@ -185,7 +183,7 @@ simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
     args: alwaysValues(defaultFunc("return value < 20;"))
     argTypes: singleFunctionType
   timeInterval:
-    args: alwaysEmpty
+    args: []
     argTypes: [argTypes.SCHEDULER]
   throttleFirst:
     args: alwaysValues("1000")
@@ -194,10 +192,10 @@ simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
     args: alwaysValues("1000")
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   timestamp:
-    args: alwaysEmpty
+    args: []
     argTypes: [argTypes.SCHEDULER]
   toArray:
-    args: alwaysEmpty
+    args: []
     argTypes: []
   windowWithCount:
     args: alwaysValues("2")
@@ -319,7 +317,7 @@ recursiveOperatorDefaults =
 
 recursiveOperators = R.mapObj(R.merge(recursiveOperatorDefaults))(
   merge:
-    args: [createSimpleObservable('of')(['1,2'])]
+    args: [observable: createSimpleObservable('of')(['1,2'])]
   amb:
     args: [
       root:
@@ -329,18 +327,18 @@ recursiveOperators = R.mapObj(R.merge(recursiveOperatorDefaults))(
       ]
     ]
   concat:
-    args: [createSimpleObservable('just')(['5'])]
+    args: [observable: createSimpleObservable('just')(['5'])]
   sequenceEqual:
-    args: [createSimpleObservable('just')(['5'])]
+    args: [observable: createSimpleObservable('just')(['5'])]
   skipUntil:
-    args: [createSimpleObservable('timer')(['1000'])]
+    args: [observable: createSimpleObservable('timer')(['1000'])]
   takeUntil:
-    args: [createSimpleObservable('timer')(['1000'])]
+    args: [observable: createSimpleObservable('timer')(['1000'])]
 )
 
 recursiveOperatorsWithTrailingArgsDefaults =
   args: [
-    R.always(createSimpleObservable('of')(['1,2']))
+    observable: createSimpleObservable('of')(['1,2'])
     simpleCombinerFunction
   ]
   argTypes: [argTypes.OBSERVABLE, argTypes.FUNCTION]

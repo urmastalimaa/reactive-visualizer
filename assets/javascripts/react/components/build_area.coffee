@@ -1,7 +1,7 @@
 React = require 'react'
 R = require 'ramda'
 
-serialize = require '../../builder/serializer'
+identify = require '../../builder/identifier'
 
 SimulationHeader = require './simulation_header'
 Observable = require './observable'
@@ -15,11 +15,11 @@ BuildArea = React.createClass
     defaultObservable: examples[0].observable
 
   getInitialState: ->
-    observable: serialize(@props.defaultObservable)
+    observable: identify(@props.defaultObservable)
 
   handleChange: (observable) ->
-    Persister.save(serialize(observable))
-    @setState observable: serialize(observable)
+    Persister.save(observable)
+    @setState observable: identify(observable)
 
   render: ->
     <div id="buildArea" style={@props.style}>

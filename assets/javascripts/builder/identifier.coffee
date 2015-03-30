@@ -1,21 +1,10 @@
-R = require 'ramda'
+R = require '../ramda_additions'
 
-assocApply = R.curry (key, fn, value) ->
-  R.assoc(key, fn(value), value)
-
-identifyArg = R.curry (operatorId, operatorArg, index) ->
-  if operatorArg.observable
-    R.merge(operatorArg, observable: identifyObservable(operatorId + index, operatorArg.observable))
-  else if operatorArg.root && operatorArg.operators
-    identifyObservable(operatorId + index, operatorArg)
-  else
-    operatorArg
-
-identifyArgs = (operator) ->
-  R.mapIndexed(identifyArg(operator.id))(operator.args)
-
-identifyOperator = R.curry (baseId, operator, index) ->
-  R.assoc('id', baseId + 'r' + Array(index + 2).join("o"), operator)
+identifyObservable = (baseId) ->
+  R.compose(
+    R.propMap('root', R.assoc('id', baseId + 'r'))
+    R.propMap('operators', identifyOperators(baseId))
+  )
 
 identifyOperators = (baseId) ->
   R.mapIndexed(
@@ -25,8 +14,22 @@ identifyOperators = (baseId) ->
     )
   )
 
-identifyObservable = R.curry (baseId, obs) ->
-  root: R.assoc('id', baseId + 'r', obs.root)
-  operators: identifyOperators(baseId)(obs.operators)
+identifyOperator = R.curry (baseId, operator, index) ->
+  R.assoc('id', baseId + 'r' + Array(index + 2).join("o"), operator)
+
+identifyArgs = (operator) ->
+  R.mapIndexed(identifyArg(operator.id))(operator.args)
+
+identifyArg = R.curry (operatorId, operatorArg, index) ->
+  identifier =
+    if operatorArg.observable
+      R.propMap('observable', identifyObservable(operatorId + index))
+    else
+      R.identity
+
+  identifier(operatorArg)
+
+assocApply = R.curry (key, fn, value) ->
+  R.assoc(key, fn(value), value)
 
 module.exports = identifyObservable('')
