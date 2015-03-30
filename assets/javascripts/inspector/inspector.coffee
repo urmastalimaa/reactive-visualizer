@@ -27,9 +27,9 @@ createCollector = ->
 createDoOperator = (id) ->
   ".do(createMockObserver(scheduler, collector.collect, '#{id}'))"
 
-inspect = R.curryN 3, (buildObservable, collector, scheduler) ->
+inspect = R.curry (buildObservable, collector, scheduler) ->
   try
-    observable = buildObservable R.curryN 2, (id, op) ->
+    observable = buildObservable R.curry (id, op) ->
       op + createDoOperator(id)
     eval(observable)
   catch err

@@ -4,19 +4,17 @@ R = require 'ramda'
 build = require '../../assets/javascripts/builder/builder'
 
 describe 'build', ->
-  serialized = memo().is ->
+  observable = memo().is ->
   operatorInspector = R.nthArg(1)
-  subject = -> build(serialized())(operatorInspector)
+  subject = -> build(observable())(operatorInspector)
 
   context 'simple map', ->
-    serialized.is ->
+    observable.is ->
       root:
         type: 'just'
-        id: 'r'
         args: ['5']
       operators: [
         type: 'map'
-        id: 'ro'
         args: ['function(x) { return x; }']
       ]
 
@@ -25,21 +23,18 @@ describe 'build', ->
         .toEqual 'Rx.Observable.just(5).map(function(x) { return x; })'
 
   context 'flatMap', ->
-    serialized.is ->
+    observable.is ->
       root:
         type: 'just'
-        id: 'r'
         args: ['5']
       operators: [
         type: 'flatMap'
-        id: 'ro'
         args: [
           {
             functionDeclaration: 'function(arg1){ return'
             observable:
               root:
                 type: 'just'
-                id: 'ro0r'
                 args: ['4*arg1']
               operators: []
           }
@@ -51,20 +46,17 @@ describe 'build', ->
         .toEqual 'Rx.Observable.just(5).flatMap(function(arg1){ return Rx.Observable.just(4*arg1)})'
 
   context 'merge', ->
-    serialized.is ->
+    observable.is ->
       root:
         type: 'just'
-        id: 'r'
         args: ['5']
       operators: [
         type: 'merge'
-        id: 'ro'
         args: [
           {
             observable:
               root:
                 type: 'of'
-                id: 'ro0r'
                 args: ['1,2']
               operators: []
           }
@@ -76,21 +68,18 @@ describe 'build', ->
         .toEqual 'Rx.Observable.just(5).merge(Rx.Observable.of(1,2))'
 
   context 'combineLatest', ->
-    serialized.is ->
+    observable.is ->
       root:
         type: 'just'
-        id: 'r'
         args: ['5']
 
       operators: [
         type: 'combineLatest'
-        id: 'ro'
         args: [
           {
             observable:
               root:
                 type: 'timer'
-                id: 'ro0r'
                 args: [1000]
               operators: []
           },
