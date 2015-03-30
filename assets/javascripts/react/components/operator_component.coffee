@@ -34,7 +34,7 @@ module.exports = React.createClass
       switch argType
         when argTypes.OBSERVABLE_FUNCTION
           onDeclarationChange = (declaration) =>
-            handleArgChange(R.merge(arg.observable, functionDeclaration: declaration))
+            handleArgChange(R.merge(observable: arg.observable, functionDeclaration: declaration))
           onObservableChange = (observable) =>
             handleArgChange(R.merge(arg, observable: observable))
 
