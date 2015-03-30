@@ -18,24 +18,30 @@ simpleCombinerFunction = 'function(first, second){ return first + second; }'
 getReturningFunctionDeclaration = (args) ->
   "function(#{args}) { return "
 
-simpleOperatorsDefaults = {}
+getReturningFunctionWithClosedOver = R.compose(getReturningFunctionDeclaration, getClosedOverArgName)
 
-alwaysValues = -> Array.prototype.slice.call(arguments)
-singleValueType = [argTypes.VALUE]
-singleFunctionType = [argTypes.FUNCTION]
+arr = -> Array.prototype.slice.call(arguments)
 
-simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
+justOverClosedArg =
+  root:
+    type: 'just'
+    args: [
+      getClosedOverArgName
+    ]
+  operators: []
+
+operators =
   average:
-    args: alwaysValues('function(x) { return x; }')
-    argTypes: singleFunctionType
+    args: arr('function(x) { return x; }')
+    argTypes: [argTypes.FUNCTION]
   bufferWithCount:
-    args: alwaysValues("2")
-    argTypes: singleValueType
+    args: arr("2")
+    argTypes: [argTypes.VALUE]
   bufferWithTime:
-    args: alwaysValues('1000')
+    args: arr('1000')
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   bufferWithTimeOrCount:
-    args: alwaysValues('1000', '3')
+    args: arr('1000', '3')
     argTypes: [argTypes.VALUE, argTypes.VALUE, argTypes.SCHEDULER]
   concatAll:
     argTypes: []
@@ -44,152 +50,152 @@ simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
     argTypes: []
     args: []
   debounce:
-    args: alwaysValues('1000')
+    args: arr('1000')
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   defaultIfEmpty:
-    argTypes: singleValueType
-    args: alwaysValues("'defaultValue'")
+    argTypes: [argTypes.VALUE]
+    args: arr("'defaultValue'")
   delay:
-    args: alwaysValues('1000')
+    args: arr('1000')
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   distinct:
-    argTypes: singleFunctionType
-    args: alwaysValues("function(x) { return x % 2 }")
+    argTypes: [argTypes.FUNCTION]
+    args: arr("function(x) { return x % 2 }")
   distinctUntilChanged:
-    argTypes: singleFunctionType
-    args: alwaysValues("function(x) { return x % 2 }")
+    argTypes: [argTypes.FUNCTION]
+    args: arr("function(x) { return x % 2 }")
   elementAt:
-    args: alwaysValues('1')
-    argTypes: singleValueType
+    args: arr('1')
+    argTypes: [argTypes.VALUE]
   elementAtOrDefault:
-    args: alwaysValues('1', "'defaultValue'")
+    args: arr('1', "'defaultValue'")
     argTypes: [argTypes.VALUE, argTypes.VALUE]
   every:
-    args: alwaysValues("function(x) { return x % 2 == 0 }")
-    argTypes: singleFunctionType
+    args: arr("function(x) { return x % 2 == 0 }")
+    argTypes: [argTypes.FUNCTION]
   find:
-    args: alwaysValues(defaultFunc("return value < 20;"))
-    argTypes: singleFunctionType
+    args: arr(defaultFunc("return value < 20;"))
+    argTypes: [argTypes.FUNCTION]
   first:
-    args: alwaysValues(defaultFunc("return value < 20;"))
-    argTypes: singleFunctionType
+    args: arr(defaultFunc("return value < 20;"))
+    argTypes: [argTypes.FUNCTION]
   firstOrDefault:
-    args: alwaysValues(defaultFunc("return value < 20;"), "'defaultValue'")
+    args: arr(defaultFunc("return value < 20;"), "'defaultValue'")
     argTypes: [argTypes.FUNCTION, argTypes.VALUE]
   filter:
-    args: alwaysValues(defaultFunc("return value < 20;"))
-    argTypes: singleFunctionType
+    args: arr(defaultFunc("return value < 20;"))
+    argTypes: [argTypes.FUNCTION]
   groupBy:
-    args: alwaysValues(defaultFunc("return value % 2"), defaultFunc("return value;"))
+    args: arr(defaultFunc("return value % 2"), defaultFunc("return value;"))
     argTypes: [argTypes.FUNCTION, argTypes.FUNCTION]
   includes:
-    args: alwaysValues("5")
-    argTypes: singleValueType
+    args: arr("5")
+    argTypes: [argTypes.VALUE]
   ignoreElements:
     args: []
     argTypes: []
   indexOf:
-    args: alwaysValues("5")
-    argTypes: singleValueType
+    args: arr("5")
+    argTypes: [argTypes.VALUE]
   isEmpty:
     args: []
     argTypes: []
   last:
-    args: alwaysValues(defaultFunc("return value < 20;"))
-    argTypes: singleFunctionType
+    args: arr(defaultFunc("return value < 20;"))
+    argTypes: [argTypes.FUNCTION]
   lastOrDefault:
-    args: alwaysValues(defaultFunc("return value < 20;"), 'defaultValue')
-    argTypes: singleFunctionType
+    args: arr(defaultFunc("return value < 20;"), 'defaultValue')
+    argTypes: [argTypes.FUNCTION]
   map:
-    args: alwaysValues(defaultFunc("return value * value;"))
-    argTypes: singleFunctionType
+    args: arr(defaultFunc("return value * value;"))
+    argTypes: [argTypes.FUNCTION]
     docAlias: 'select'
   max:
-    args: alwaysValues(defaultFunc("return value;"))
-    argTypes: singleFunctionType
+    args: arr(defaultFunc("return value;"))
+    argTypes: [argTypes.FUNCTION]
   mergeAll:
     args: []
     argTypes: []
   min:
-    args: alwaysValues(defaultFunc("return value;"))
-    argTypes: singleFunctionType
+    args: arr(defaultFunc("return value;"))
+    argTypes: [argTypes.FUNCTION]
   pairwise:
     args: []
     argTypes: []
   pluck:
-    args: alwaysValues("'property'")
-    argTypes: singleValueType
+    args: arr("'property'")
+    argTypes: [argTypes.VALUE]
   reduce:
-    args: alwaysValues("function(acc, x) { return acc * x; }", '1')
-    argTypes: singleFunctionType
+    args: arr("function(acc, x) { return acc * x; }", '1')
+    argTypes: [argTypes.FUNCTION]
   repeat:
-    args: alwaysValues("2")
-    argTypes: singleValueType
+    args: arr("2")
+    argTypes: [argTypes.VALUE]
   retry:
-    args: alwaysValues("3")
-    argTypes: singleValueType
+    args: arr("3")
+    argTypes: [argTypes.VALUE]
   sample:
-    args: alwaysValues("500")
+    args: arr("500")
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   scan:
-    args: alwaysValues('1',"function(acc, x) { return acc * x; }")
+    args: arr('1',"function(acc, x) { return acc * x; }")
     argTypes: [argTypes.VALUE, argTypes.FUNCTION]
   single:
-    args: alwaysValues(defaultFunc("return value < 20;"))
-    argTypes: singleFunctionType
+    args: arr(defaultFunc("return value < 20;"))
+    argTypes: [argTypes.FUNCTION]
   singleOrDefault:
-    args: alwaysValues(defaultFunc("return value < 20;"), "'defaultValue'")
+    args: arr(defaultFunc("return value < 20;"), "'defaultValue'")
     argTypes: [argTypes.FUNCTION, argTypes.VALUE]
   skip:
-    args: alwaysValues("5")
-    argTypes: singleValueType
+    args: arr("5")
+    argTypes: [argTypes.VALUE]
   skipLast:
-    args: alwaysValues("3")
-    argTypes: singleValueType
+    args: arr("3")
+    argTypes: [argTypes.VALUE]
   skipLastWithTime:
-    args: alwaysValues("1000")
+    args: arr("1000")
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   skipUntilWithTime:
-    args: alwaysValues("2000")
+    args: arr("2000")
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   startWith:
-    args: alwaysValues("1, 2, 3")
-    argTypes: singleValueType
+    args: arr("1, 2, 3")
+    argTypes: [argTypes.VALUE]
   some:
-    args: alwaysValues(defaultFunc("return value > 10;"))
-    argTypes: singleFunctionType
+    args: arr(defaultFunc("return value > 10;"))
+    argTypes: [argTypes.FUNCTION]
   sum:
-    args: alwaysValues("function(x, idx) { return x; }")
-    argTypes: singleFunctionType
+    args: arr("function(x, idx) { return x; }")
+    argTypes: [argTypes.FUNCTION]
   take:
-    args: alwaysValues("4")
-    argTypes: singleValueType
+    args: arr("4")
+    argTypes: [argTypes.VALUE]
   takeLast:
-    args: alwaysValues("4")
-    argTypes: singleValueType
+    args: arr("4")
+    argTypes: [argTypes.VALUE]
   takeLastBuffer:
-    args: alwaysValues("4")
-    argTypes: singleValueType
+    args: arr("4")
+    argTypes: [argTypes.VALUE]
   takeLastBufferWithTime:
-    args: alwaysValues("2000")
+    args: arr("2000")
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   takeLastWithTime:
-    args: alwaysValues("2000")
+    args: arr("2000")
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   takeUntilWithTime:
-    args: alwaysValues("5000")
+    args: arr("5000")
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   takeWhile:
-    args: alwaysValues(defaultFunc("return value < 20;"))
-    argTypes: singleFunctionType
+    args: arr(defaultFunc("return value < 20;"))
+    argTypes: [argTypes.FUNCTION]
   timeInterval:
     args: []
     argTypes: [argTypes.SCHEDULER]
   throttleFirst:
-    args: alwaysValues("1000")
+    args: arr("1000")
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   timeout:
-    args: alwaysValues("1000")
+    args: arr("1000")
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   timestamp:
     args: []
@@ -198,38 +204,31 @@ simpleOperators = R.mapObj(R.merge(simpleOperatorsDefaults))(
     args: []
     argTypes: []
   windowWithCount:
-    args: alwaysValues("2")
-    argTypes: singleValueType
+    args: arr("2")
+    argTypes: [argTypes.VALUE]
   windowWithTime:
-    args: alwaysValues("1000")
+    args: arr("1000")
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
   windowWithTimeOrCount:
-    args: alwaysValues("1000", "3")
+    args: arr("1000", "3")
     argTypes: [argTypes.VALUE, argTypes.VALUE, argTypes.SCHEDULER]
-)
-
-getReturningFunctionWithClosedOver = R.compose(getReturningFunctionDeclaration, getClosedOverArgName)
-
-wrapInArray = (val) ->
-  [val]
-
-recursiveFunctionOperatorsDefaults =
-  argTypes: [argTypes.OBSERVABLE_FUNCTION]
-  args: [
-    functionDeclaration: getReturningFunctionWithClosedOver
-    observable:
-      root:
-        type: 'just'
-        args: [
-          getClosedOverArgName
-        ]
-      operators: []
-  ]
-
-recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults))(
-  flatMap: {}
-  flatMapLatest: {}
+  #
+  # recursive with function
+  #
+  flatMap:
+    argTypes: [argTypes.OBSERVABLE_FUNCTION]
+    args: [
+      functionDeclaration: getReturningFunctionWithClosedOver
+      observable: justOverClosedArg
+    ]
+  flatMapLatest:
+    argTypes: [argTypes.OBSERVABLE_FUNCTION]
+    args: [
+      functionDeclaration: getReturningFunctionWithClosedOver
+      observable: justOverClosedArg
+    ]
   delayWithSelector:
+    argTypes: [argTypes.OBSERVABLE_FUNCTION]
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
@@ -241,6 +240,7 @@ recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults
         operators: []
     ]
   buffer:
+    argTypes: [argTypes.OBSERVABLE_FUNCTION]
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
@@ -250,6 +250,7 @@ recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults
         operators: []
     ]
   concatMap:
+    argTypes: [argTypes.OBSERVABLE_FUNCTION]
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
@@ -264,6 +265,7 @@ recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults
         operators: []
     ]
   debounceWithSelector:
+    argTypes: [argTypes.OBSERVABLE_FUNCTION]
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
@@ -273,6 +275,7 @@ recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults
         operators: []
     ]
   expand:
+    argTypes: [argTypes.OBSERVABLE_FUNCTION]
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
@@ -287,6 +290,7 @@ recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults
         operators: []
     ]
   timeoutWithSelector:
+    argTypes: [argTypes.OBSERVABLE_FUNCTION]
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
@@ -301,6 +305,7 @@ recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults
         operators: []
     ]
   window:
+    argTypes: [argTypes.OBSERVABLE_FUNCTION]
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
@@ -309,16 +314,14 @@ recursiveFunctionOperators = R.mapObj(R.merge(recursiveFunctionOperatorsDefaults
           args: [ R.always("1000") ]
         operators: []
     ]
-
-)
-
-recursiveOperatorDefaults =
-  argTypes: [argTypes.OBSERVABLE]
-
-recursiveOperators = R.mapObj(R.merge(recursiveOperatorDefaults))(
+  #
+  # recursive with unrelated observable
+  #
   merge:
+    argTypes: [argTypes.OBSERVABLE]
     args: [observable: createSimpleObservable('of')(['1,2'])]
   amb:
+    argTypes: [argTypes.OBSERVABLE]
     args: [
       root:
         type: 'of'
@@ -327,30 +330,37 @@ recursiveOperators = R.mapObj(R.merge(recursiveOperatorDefaults))(
       ]
     ]
   concat:
+    argTypes: [argTypes.OBSERVABLE]
     args: [observable: createSimpleObservable('just')(['5'])]
   sequenceEqual:
+    argTypes: [argTypes.OBSERVABLE]
     args: [observable: createSimpleObservable('just')(['5'])]
   skipUntil:
+    argTypes: [argTypes.OBSERVABLE]
     args: [observable: createSimpleObservable('timer')(['1000'])]
   takeUntil:
+    argTypes: [argTypes.OBSERVABLE]
     args: [observable: createSimpleObservable('timer')(['1000'])]
-)
+  #
+  # recursive with combiner function
+  #
+  combineLatest:
+    argTypes: [argTypes.OBSERVABLE, argTypes.FUNCTION]
+    args: [
+      observable: createSimpleObservable('of')(['1,2'])
+      simpleCombinerFunction
+    ]
+  withLatestFrom:
+    argTypes: [argTypes.OBSERVABLE, argTypes.FUNCTION]
+    args: [
+      observable: createSimpleObservable('of')(['1,2'])
+      simpleCombinerFunction
+    ]
+  zip:
+    argTypes: [argTypes.OBSERVABLE, argTypes.FUNCTION]
+    args: [
+      observable: createSimpleObservable('of')(['1,2'])
+      simpleCombinerFunction
+    ]
 
-recursiveOperatorsWithTrailingArgsDefaults =
-  args: [
-    observable: createSimpleObservable('of')(['1,2'])
-    simpleCombinerFunction
-  ]
-  argTypes: [argTypes.OBSERVABLE, argTypes.FUNCTION]
-
-recursiveOperatorsWithTrailingArgs = R.mapObj(R.merge(recursiveOperatorsWithTrailingArgsDefaults))(
-  combineLatest: {}
-  withLatestFrom: {}
-  zip: {}
-)
-
-module.exports = R.sortByKeys(R.reduce(R.merge, {}, [simpleOperators
-  recursiveOperators
-  recursiveFunctionOperators
-  recursiveOperatorsWithTrailingArgs
-]))
+module.exports = R.sortByKeys(operators)
