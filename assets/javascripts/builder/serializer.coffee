@@ -55,3 +55,4 @@ serializeObservableArg = (recursionLevel) ->
 module.exports =
   serializeObservable: serializeObservable
   serializeOperator: serializeOperator
+  serializeRoot: serializeRoot

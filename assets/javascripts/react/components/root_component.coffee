@@ -6,6 +6,7 @@ InputArea = require './input_area'
 SimulationArea = require './simulation_nodes'
 getDocLink = require('../../documentation_provider').getDocLink
 exampleObservable = require('../../../../example_observables')[0].observable
+serializeRoot = require('../../builder/serializer').serializeRoot
 
 SelectRoot = React.createClass
   render: ->
@@ -24,7 +25,7 @@ Root = React.createClass
     root: exampleObservable.root
 
   handleRootTypeChange: (type) ->
-    @props.handleChange(type: type, args: undefined)
+    @props.handleChange(serializeRoot(@props.recursionLevel)(type: type))
 
   onArgsChange: (args) ->
     @props.handleChange(R.assoc('args', args, @props.root))

@@ -45,5 +45,5 @@ describe 'RootComponent', ->
         Simulate.change(getRootSelector(), target: {value: newType})
 
       it 'calls onChange', ->
-        sinon.assert.calledWith(props().handleChange, type: newType, args: undefined)
+        sinon.assert.calledWith(props().handleChange, type: newType, args: [1000])
 

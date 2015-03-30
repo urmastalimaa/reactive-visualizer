@@ -52,7 +52,7 @@ Observable = React.createClass
       </ObservableOperator>
 
     <div className="observable" style={paddingLeft: 'inherit'}>
-     <ObservableRoot root={root} handleChange={@handleRootChange} >
+     <ObservableRoot root={root} handleChange={@handleRootChange} recursionLevel={@props.recursionLevel} >
       <AddOperator id={root.id} onSelect={handleAddOperatorTo(root)}/>
      </ObservableRoot>
      {operatorNodes}
