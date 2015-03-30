@@ -10,6 +10,7 @@ before (next) ->
     global.window = window
     global.document = window.document
     global.document.body = document.getElementsByTagName('body')[0]
+    global.localStorage = {}
 
     global.navigator = window.navigator = {}
     navigator.userAgent = 'NodeJs JsDom'

@@ -3,6 +3,7 @@ React = require 'react'
 Operators = require '../../descriptors/operators'
 getDocLink = require('../../documentation_provider').getDocLink
 argTypes = require '../../descriptors/argument_types'
+exampleObservable = require('../../../../example_observables')[0].observable
 
 InputArea = require './input_area'
 SimulationArea = require './simulation_nodes'
@@ -13,7 +14,12 @@ RecursiveOperator = React.createClass
       <@props.ObservableComponent id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
     </span>
 
-module.exports = React.createClass
+Operator = React.createClass
+  getDefaultProps: ->
+    onChange: ->
+    onRemove: ->
+    operator: exampleObservable.operators[0]
+
   handleRemove: ->
     @props.onRemove(@props.operator)
 
@@ -79,3 +85,4 @@ RemoveOperator = React.createClass
   render: ->
     <button className='remove' onClick={@handleClick}>-</button>
 
+module.exports = Operator

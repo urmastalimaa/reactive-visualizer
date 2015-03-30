@@ -8,8 +8,12 @@ Observable = require './observable'
 PersistencyArea = require './persistency'
 Persister = require '../../persistency/persister'
 ResultControl = require './result_control'
+examples = require '../../../../example_observables'
 
-module.exports = React.createClass
+BuildArea = React.createClass
+  getDefaultProps: ->
+    defaultObservable: examples[0].observable
+
   getInitialState: ->
     observable: serialize(@props.defaultObservable)
 
@@ -26,3 +30,5 @@ module.exports = React.createClass
       <PersistencyArea defaultObservable={@props.defaultObservable}
         observable={@state.observable} onChange={@handleChange} />
     </div>
+
+module.exports = BuildArea

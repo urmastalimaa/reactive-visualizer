@@ -32,7 +32,7 @@ Slider = React.createClass(
     @setState slider: slider
 
   render: ->
-    <div style={@props.style}/>
+    <div id={@props.id} style={@props.style}/>
 )
 
 module.exports = Slider
