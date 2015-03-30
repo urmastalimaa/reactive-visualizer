@@ -2,6 +2,8 @@ require '../react_test_helper'
 sinon = require 'sinon'
 R = require 'ramda'
 
+# TODO test that loading actually changes arguments in inputs
+
 describe 'BuildArea', ->
   props = memo().is ->
 

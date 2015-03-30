@@ -10,6 +10,9 @@ module.exports = React.createClass
   getInitialState: ->
     value: @props.value
 
+  componentWillReceiveProps: (nextProps) ->
+    @setState value: nextProps.value
+
   onChange: (event) ->
     @setState value: event.target.value
 
