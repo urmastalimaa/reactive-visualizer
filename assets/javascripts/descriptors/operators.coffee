@@ -1,4 +1,4 @@
-R = require 'ramda'
+R = require '../ramda_additions'
 argTypes = require './argument_types'
 
 defaultFunc = (impl) ->
@@ -349,9 +349,7 @@ recursiveOperatorsWithTrailingArgs = R.mapObj(R.merge(recursiveOperatorsWithTrai
   zip: {}
 )
 
-sortByKeys = R.compose(R.fromPairs, R.sortBy(R.nthArg(0)), R.toPairs)
-
-module.exports = sortByKeys(R.reduce(R.merge, {}, [simpleOperators
+module.exports = R.sortByKeys(R.reduce(R.merge, {}, [simpleOperators
   recursiveOperators
   recursiveFunctionOperators
   recursiveOperatorsWithTrailingArgs

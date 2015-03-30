@@ -1,5 +1,4 @@
-R = require 'ramda'
-
+R = require '../ramda_additions'
 argTypes = require './argument_types'
 
 roots =
@@ -40,6 +39,5 @@ roots =
     args: ["{foo: 42, bar: 56, baz: 78}"]
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
 
-sortByKeys = R.compose(R.fromPairs, R.sortBy(R.nthArg(0)), R.toPairs)
 
-module.exports = sortByKeys(roots)
+module.exports = R.sortByKeys(roots)
