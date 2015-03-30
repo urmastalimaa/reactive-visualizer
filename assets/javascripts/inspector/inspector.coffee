@@ -13,10 +13,15 @@ createMockObserver = (scheduler, collect, id) ->
 
 createCollector = ->
   resultMap = {}
+  count = 0
 
   collect: (id, notification) ->
     resultMap[id] ?= []
     resultMap[id].push notification
+    count += 1
+    if count > 1000
+      console.log "too many!"
+      throw new Error("Too many values")
   results: -> resultMap
 
 createDoOperator = (id) ->
