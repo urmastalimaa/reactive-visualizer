@@ -2,7 +2,7 @@ R = require './ramda_additions'
 
 identifyObservable = (baseId) ->
   R.compose(
-    R.propMap('root', R.assoc('id', baseId + 'r'))
+    R.propMap('factory', R.assoc('id', baseId + 'r'))
     R.propMap('operators', identifyOperators(baseId))
   )
 

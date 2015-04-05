@@ -1,12 +1,12 @@
 ## Purpose
 The *Observable editor* provides a *JavaScript* editor for creating an *Observable*.
-The building blocks for creating an *Observable* are *roots* and *operators*.
+The building blocks for creating an *Observable* are *factories* and *operators*.
 
-## *Root*
-An *Observable* if created by specifying a *root*, which produces the initial values.  
-A list of *roots* is provided in the drop-down next to `Rx.Observable.`.
+## *Factory*
+An *Observable* if created by specifying a *factory*, which produces the initial values.  
+A list of *factories* is provided in the drop-down next to `Rx.Observable.`.
 
-The simplest *Observable* consists of a single *root*:
+The simplest *Observable* consists of a single *factory*:
 ```js
   Rx.Observable.just(5)
 ```
@@ -20,7 +20,7 @@ An *Observable* of 5 values every 500ms is created with:
 ```
 
 A list of *operators* is provided in the drop-down which opens when hovering over the `+` symbol.  
-The `+` symbol is located next to existing *roots* and *operators*.  
+The `+` symbol is located next to existing *factories* and *operators*.  
 
 An *operator* can be removed by clicking on the `-` symbol.
 

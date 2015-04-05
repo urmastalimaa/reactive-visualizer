@@ -35,7 +35,7 @@ module.exports = React.createClass
 
   render: ->
     examples =
-      <PanelGroup className="examples" defaultActiveKey='1' accordion>
+      <PanelGroup className="examples" defaultActiveKey='' accordion>
         <Panel header="Bundled examples" eventKey='1'>
           {R.mapIndexed(R.partial(@createExample, false))(@props.bundledExamples)}
         </Panel>

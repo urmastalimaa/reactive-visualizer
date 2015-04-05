@@ -18,7 +18,7 @@ describe 'inspect', ->
 
     context 'simpleMap', ->
       serialized.is ->
-        root:
+        factory:
           type: 'just'
           id: 'r'
           args: ['5']
@@ -36,7 +36,7 @@ describe 'inspect', ->
 
     context 'flatMap', ->
       serialized.is ->
-        root:
+        factory:
           type: 'just'
           id: 'r'
           args: ['5']
@@ -47,7 +47,7 @@ describe 'inspect', ->
             {
               functionDeclaration: 'function(arg1){ return'
               observable:
-                root:
+                factory:
                   type: 'just'
                   id: 'ro0r'
                   args: ['4*arg1']
@@ -63,7 +63,7 @@ describe 'inspect', ->
 
     context 'combineLatest', ->
       serialized.is ->
-        root:
+        factory:
           type: 'just'
           id: 'r'
           args: ['5']
@@ -74,7 +74,7 @@ describe 'inspect', ->
           args: [
             {
               observable:
-                root:
+                factory:
                   type: 'timer'
                   id: 'ro0r'
                   args: [100]
@@ -93,7 +93,7 @@ describe 'inspect', ->
     context 'non-recursive operators', ->
       operator = memo().is ->
       serialized.is ->
-        root:
+        factory:
           type: 'of'
           id: 'r'
           args: ['1,2']
@@ -127,7 +127,7 @@ describe 'inspect', ->
 
     context 'with single recursive operator', ->
       serialized.is ->
-        root:
+        factory:
           id: 'r'
           type: 'of'
           args: ['1, 2']
@@ -142,7 +142,7 @@ describe 'inspect', ->
         ]
 
       innerObservable = memo().is ->
-        root:
+        factory:
           id: 'ro'
           type: 'of'
           args: ['x2, x2 * x2']
@@ -160,7 +160,7 @@ describe 'inspect', ->
 
     context 'with complex observable', ->
       serialized.is ->
-        root:
+        factory:
           id: 'r'
           type: 'of'
           args: ['1,2']
@@ -171,7 +171,7 @@ describe 'inspect', ->
             args: [
               functionDeclaration: 'function(outerValue) { return'
               observable:
-                root:
+                factory:
                   id: 'ror'
                   type: 'of'
                   args: ['outerValue, outerValue * outerValue']
@@ -181,7 +181,7 @@ describe 'inspect', ->
                   args: [
                     functionDeclaration: 'function(x){ return'
                     observable:
-                      root:
+                      factory:
                         id: 'roror'
                         type: 'timer'
                         args: ['x * 100']

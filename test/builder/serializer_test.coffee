@@ -11,7 +11,7 @@ describe 'serialize', ->
 
   context 'simple map', ->
     observable.is ->
-      root:
+      factory:
         type: 'just'
         args: [R.always('5')]
       operators: [
@@ -21,7 +21,7 @@ describe 'serialize', ->
 
     it 'serializes correctly', ->
       expect(subject()).toEqual
-        root:
+        factory:
           type: 'just'
           args: ['5']
         operators: [
@@ -31,7 +31,7 @@ describe 'serialize', ->
 
   context 'flatMap', ->
     observable.is ->
-      root:
+      factory:
         type: 'just'
         args: ['5']
       operators: [
@@ -41,7 +41,7 @@ describe 'serialize', ->
             functionDeclaration: (recursionLevel) ->
               "function(arg#{recursionLevel}){ return"
             observable:
-              root:
+              factory:
                 type: 'just'
                 args: [
                   R.compose(R.add('4*'), R.add('arg'))
@@ -53,7 +53,7 @@ describe 'serialize', ->
 
     it 'serializes correctly', ->
       expect(subject()).toEqual
-        root:
+        factory:
           type: 'just'
           args: ['5']
         operators: [
@@ -62,7 +62,7 @@ describe 'serialize', ->
             {
               functionDeclaration: 'function(arg1){ return'
               observable:
-                root:
+                factory:
                   type: 'just'
                   args: ['4*arg1']
                 operators: []
@@ -72,7 +72,7 @@ describe 'serialize', ->
 
   context 'merge', ->
     observable.is ->
-      root:
+      factory:
         type: 'just'
         args: [ '5' ]
       operators: [
@@ -81,7 +81,7 @@ describe 'serialize', ->
           args: [
             {
               observable:
-                root:
+                factory:
                   type: 'of'
                   args: [ R.always('1,2') ]
                 operators: []
@@ -92,7 +92,7 @@ describe 'serialize', ->
 
     it 'serialize correctly', ->
       expect(subject()).toEqual
-        root:
+        factory:
           type: 'just'
           args: ['5']
         operators: [
@@ -100,7 +100,7 @@ describe 'serialize', ->
           args: [
             {
               observable:
-                root:
+                factory:
                   type: 'of'
                   args: ['1,2']
                 operators: []
@@ -110,7 +110,7 @@ describe 'serialize', ->
 
   context 'combineLatest', ->
     observable.is ->
-      root:
+      factory:
         type: 'just'
         args: [ '5' ]
       operators: [
@@ -119,7 +119,7 @@ describe 'serialize', ->
           args: [
             {
               observable:
-                root:
+                factory:
                   type: 'timer'
                   args: [ 1000 ]
                 operators: [
@@ -136,7 +136,7 @@ describe 'serialize', ->
 
     it 'serialize correctly', ->
       expect(subject()).toEqual {
-        root:
+        factory:
           type: 'just'
           args: ['5']
 
@@ -145,7 +145,7 @@ describe 'serialize', ->
           args: [
             {
               observable:
-                root:
+                factory:
                   type: 'timer'
                   args: [1000]
                 operators: [

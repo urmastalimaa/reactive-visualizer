@@ -3,7 +3,7 @@ module.exports = [
     name: 'simpleMap'
     description: 'The squares of a few values over time.'
     observable:
-      root:
+      factory:
         type: 'fromTime'
         args: [ "{1000: 1, 3000: 2, 5000: 3}" ]
       operators: [
@@ -17,7 +17,7 @@ module.exports = [
     name: 'mapAndTake'
     description: 'The squares of infinite values bounded by take.'
     observable:
-      root:
+      factory:
         type: 'interval', args: ["500"]
       operators: [
         { type: 'map', args: ["function(x) { return x * x }"] }
@@ -29,7 +29,7 @@ module.exports = [
     description:
       "User requests page 1, changes his mind and requests page 2, receives wrong page."
     observable:
-      root:
+      factory:
         type: 'fromTime', args: ["{1000: 1, 2000: 2}"]
       operators: [
         {
@@ -38,7 +38,7 @@ module.exports = [
             {
               functionDeclaration: "function(productNr) { return "
               observable:
-                root:
+                factory:
                   type: 'timer', args: ["(5 - productNr * 2) * 1000"]
                 operators: [
                   { type: 'map', args: ["function(x) { return 'product ' + productNr }"] }
@@ -52,7 +52,7 @@ module.exports = [
     name: "fixedRaceCondition#1"
     description: "Fix race condition #1 by mapping waiting for previous response before new request. The user gets the every requested page and has to wait."
     observable:
-      root:
+      factory:
         type: 'fromTime', args: ["{1000: 1, 2000: 2}"]
       operators: [
         {
@@ -61,7 +61,7 @@ module.exports = [
             {
               functionDeclaration: "function(productNr) { return "
               observable:
-                root:
+                factory:
                   type: 'timer', args: ["(5 - productNr * 2) * 1000"]
                 operators: [
                   { type: 'map', args: ["function(x) { return 'product ' + productNr }"] }
@@ -75,7 +75,7 @@ module.exports = [
     name: "fixedRaceCondition#2"
     description: "Fix race condition #1 by flat mapping the latest request. The user gets the latest requested page immediately."
     observable:
-      root:
+      factory:
         type: 'fromTime', args: ["{1000: 1, 2000: 2}"]
       operators: [
         {
@@ -84,7 +84,7 @@ module.exports = [
             {
               functionDeclaration: "function(productNr) { return "
               observable:
-                root:
+                factory:
                   type: 'timer', args: ["(5 - productNr * 2) * 1000"]
                 operators: [
                   { type: 'map', args: ["function(x) { return 'product ' + productNr }"] }
@@ -98,7 +98,7 @@ module.exports = [
     name: "wrong flatMapLatest"
     description: "Using flatMapLatest is not correct when you want all the mapped results, in this case flatMap is preferred."
     observable:
-      root:
+      factory:
         type: 'of', args: ["'question1', 'question2', 'question3'"]
       operators: [
         {
@@ -107,7 +107,7 @@ module.exports = [
             {
               functionDeclaration: "function(question) { return "
               observable:
-                root:
+                factory:
                   type: 'timer', args: ["1000"]
                 operators: [
                   { type: 'map', args: ["function(x) { return 'answer' + question[question.length - 1] }"] }
@@ -121,7 +121,7 @@ module.exports = [
     name: 'delayWithSelector'
     description: "Every value takes progressively longer to process."
     observable:
-      root:
+      factory:
         type: 'interval', args: ["500"]
       operators: [
         {
@@ -130,7 +130,7 @@ module.exports = [
             {
               functionDeclaration: "function(input) { return "
               observable:
-                root:
+                factory:
                   type: 'timer', args: ["input * input * 500"]
                 operators: [
                   {
@@ -151,7 +151,7 @@ module.exports = [
     name: 'generateAndBuffer'
     description: "Values come later and later, buffer length changes."
     observable:
-      root:
+      factory:
         type: 'generateWithRelativeTime',
         args: [
           1,
@@ -171,7 +171,7 @@ module.exports = [
     name: 'merge'
     description: 'Merge two unrelated observables.'
     observable:
-      root:
+      factory:
         type: 'timer'
         args: [ 1000 ]
       operators: [
@@ -179,7 +179,7 @@ module.exports = [
           type: 'merge'
           args: [
             observable:
-              root:
+              factorfactory:
                 type: 'timer'
                 args: [500]
               operators: []

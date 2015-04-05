@@ -10,7 +10,7 @@ describe 'identify', ->
 
   context 'simple map', ->
     observable.is ->
-      root:
+      factory:
         type: 'just'
         args: ['5']
       operators: [
@@ -20,7 +20,7 @@ describe 'identify', ->
 
     it 'builds correctly', ->
       expect(subject()).toEqual
-        root:
+        factory:
           id: 'r'
           type: 'just'
           args: ['5']
@@ -32,7 +32,7 @@ describe 'identify', ->
 
   context 'flatMap', ->
     observable.is ->
-      root:
+      factory:
         type: 'just'
         args: ['5']
       operators: [
@@ -41,7 +41,7 @@ describe 'identify', ->
           {
             functionDeclaration: 'function(arg1){ return'
             observable:
-              root:
+              factory:
                 type: 'just'
                 args: ['4*arg1']
               operators: []
@@ -51,7 +51,7 @@ describe 'identify', ->
 
     it 'builds correctly', ->
       expect(subject()).toEqual
-        root:
+        factory:
           id: 'r'
           type: 'just'
           args: ['5']
@@ -62,7 +62,7 @@ describe 'identify', ->
             {
               functionDeclaration: 'function(arg1){ return'
               observable:
-                root:
+                factory:
                   id: 'ro0r'
                   type: 'just'
                   args: ['4*arg1']
@@ -73,7 +73,7 @@ describe 'identify', ->
 
   context 'merge', ->
     observable.is ->
-      root:
+      factory:
         type: 'just'
         args: ['5']
       operators: [
@@ -81,7 +81,7 @@ describe 'identify', ->
         args: [
           {
             observable:
-              root:
+              factory:
                 type: 'of'
                 args: ['1,2']
               operators: []
@@ -91,7 +91,7 @@ describe 'identify', ->
 
     it 'builds correctly', ->
       expect(subject()).toEqual
-        root:
+        factory:
           id: 'r'
           type: 'just'
           args: ['5']
@@ -101,7 +101,7 @@ describe 'identify', ->
           args: [
             {
               observable:
-                root:
+                factory:
                   id: 'ro0r'
                   type: 'of'
                   args: ['1,2']
@@ -112,7 +112,7 @@ describe 'identify', ->
 
   context 'combineLatest', ->
     observable.is ->
-      root:
+      factory:
         type: 'just'
         args: ['5']
 
@@ -121,7 +121,7 @@ describe 'identify', ->
         args: [
           {
             observable:
-              root:
+              factory:
                 type: 'timer'
                 args: [1000]
               operators: [
@@ -137,7 +137,7 @@ describe 'identify', ->
 
     it 'builds correctly', ->
       expect(subject()).toEqual
-        root:
+        factory:
           id: 'r'
           type: 'just'
           args: ['5']
@@ -148,7 +148,7 @@ describe 'identify', ->
           args: [
             {
               observable:
-                root:
+                factory:
                   id: 'ro0r'
                   type: 'timer'
                   args: [1000]

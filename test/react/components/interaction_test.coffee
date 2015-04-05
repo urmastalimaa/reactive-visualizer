@@ -42,14 +42,14 @@ describe 'Interaction', ->
     context 'with a merged observable', ->
       props.is ->
         defaultObservable:
-          root: { type: 'timer', args: [1000, ''] }
+          factory: { type: 'timer', args: [1000, ''] }
           operators: [
             {
               type: 'merge'
               args: [
                 {
                   observable:
-                    root: { type: 'timer', args: [1000, ''] }
+                    factory: { type: 'timer', args: [1000, ''] }
                     operators: []
                 }
               ]
@@ -71,7 +71,7 @@ describe 'Interaction', ->
     context 'with a flatmapped observable', ->
       props.is ->
         defaultObservable:
-          root: { type: 'timer', args: [1000, ''] }
+          factory: { type: 'timer', args: [1000, ''] }
           operators: [
             {
               type: 'flatMap'
@@ -80,7 +80,7 @@ describe 'Interaction', ->
                   functionDeclaration: 'function(x){ return'
                   observable:
                     {
-                      root: { type: 'of', args: ['x, x + 5'] }
+                      factory: { type: 'of', args: ['x, x + 5'] }
                       operators: []
                     }
                 }

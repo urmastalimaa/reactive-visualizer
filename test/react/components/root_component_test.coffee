@@ -2,28 +2,28 @@ require '../react_test_helper'
 sinon = require 'sinon'
 R = require 'ramda'
 
-describe 'RootComponent', ->
+describe 'FactoryComponent', ->
   props = memo().is -> {}
 
-  getRootSelector = getInput =  null
+  getFactorySelector = getInput =  null
 
   beforeEach ->
-    Root = require assetPath + 'react/components/root_component'
-    @root = root = render(React.createElement(Root, props()))
-    getRootSelector = -> findByClass(root, 'selectRoot')
-    getInput = (pos) -> scryByClass(root, 'codeTextarea')[pos]
+    Factory = require assetPath + 'react/components/factory_component'
+    @factory = factory = render(React.createElement(Factory, props()))
+    getFactorySelector = -> findByClass(factory, 'selectFactory')
+    getInput = (pos) -> scryByClass(factory, 'codeTextarea')[pos]
 
   it 'can be rendered', ->
 
-  context 'with simple root', ->
+  context 'with simple factory', ->
     type = 'timer'
     args = [300, 400]
     props.is ->
-      root: {type: type, args: args}
+      factory: {type: type, args: args}
       handleChange: sinon.stub()
 
-    it 'has the correct root selected', ->
-      expect(getRootSelector().getDOMNode().value).toEqual(type)
+    it 'has the correct factory selected', ->
+      expect(getFactorySelector().getDOMNode().value).toEqual(type)
 
     it 'has correctly populated arguments', ->
       R.forEachIndexed( (arg, index) ->
@@ -42,7 +42,7 @@ describe 'RootComponent', ->
     context 'when changing type', ->
       newType = 'interval'
       beforeEach ->
-        Simulate.change(getRootSelector(), target: {value: newType})
+        Simulate.change(getFactorySelector(), target: {value: newType})
 
       it 'calls onChange', ->
         sinon.assert.calledWith(props().handleChange, type: newType, args: [1000])

@@ -1,19 +1,19 @@
 R = require './ramda_additions'
 
-Roots = require './descriptors/roots'
+Factories = require './descriptors/factories'
 Operators = require './descriptors/operators'
 
 serializeObservable = (recursionLevel) ->
   R.compose(
-    R.propMap('root', serializeRoot(recursionLevel))
+    R.propMap('factory', serializeFactory(recursionLevel))
     R.propMap('operators', R.map(serializeOperator(recursionLevel)))
   )
 
-serializeRoot = R.curry (recursionLevel, root) ->
+serializeFactory = R.curry (recursionLevel, factory) ->
   R.assoc(
     'args',
-    serializeArgs(recursionLevel)(root.args || Roots[root.type].args)
-    root
+    serializeArgs(recursionLevel)(factory.args || Factories[factory.type].args)
+    factory
   )
 
 serializeOperator = R.curry (recursionLevel, operator) ->
@@ -55,4 +55,4 @@ serializeObservableArg = (recursionLevel) ->
 module.exports =
   serializeObservable: serializeObservable
   serializeOperator: serializeOperator
-  serializeRoot: serializeRoot
+  serializeFactory: serializeFactory

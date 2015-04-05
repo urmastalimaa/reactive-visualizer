@@ -1,7 +1,7 @@
 R = require '../ramda_additions'
 argTypes = require './argument_types'
 
-roots =
+factories =
   of:
     args: ["1,2,3"]
     argTypes: [argTypes.VALUE]
@@ -38,6 +38,8 @@ roots =
   pairs:
     args: ["{foo: 42, bar: 56, baz: 78}"]
     argTypes: [argTypes.VALUE, argTypes.SCHEDULER]
+  throw:
+    args: ["new Error('a problem')"]
+    argTypes: [argTypes.VALUE]
 
-
-module.exports = R.sortByKeys(roots)
+module.exports = R.sortByKeys(factories)

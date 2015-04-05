@@ -10,7 +10,7 @@ describe 'build', ->
 
   context 'simple map', ->
     observable.is ->
-      root:
+      factory:
         type: 'just'
         args: ['5']
       operators: [
@@ -24,7 +24,7 @@ describe 'build', ->
 
   context 'flatMap', ->
     observable.is ->
-      root:
+      factory:
         type: 'just'
         args: ['5']
       operators: [
@@ -33,7 +33,7 @@ describe 'build', ->
           {
             functionDeclaration: 'function(arg1){ return'
             observable:
-              root:
+              factory:
                 type: 'just'
                 args: ['4*arg1']
               operators: []
@@ -47,7 +47,7 @@ describe 'build', ->
 
   context 'merge', ->
     observable.is ->
-      root:
+      factory:
         type: 'just'
         args: ['5']
       operators: [
@@ -55,7 +55,7 @@ describe 'build', ->
         args: [
           {
             observable:
-              root:
+              factory:
                 type: 'of'
                 args: ['1,2']
               operators: []
@@ -69,7 +69,7 @@ describe 'build', ->
 
   context 'combineLatest', ->
     observable.is ->
-      root:
+      factory:
         type: 'just'
         args: ['5']
 
@@ -78,7 +78,7 @@ describe 'build', ->
         args: [
           {
             observable:
-              root:
+              factory:
                 type: 'timer'
                 args: [1000]
               operators: []

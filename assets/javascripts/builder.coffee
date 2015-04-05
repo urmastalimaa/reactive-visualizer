@@ -1,14 +1,14 @@
 R = require 'ramda'
 Operators = require './descriptors/operators'
-Roots = require './descriptors/roots'
+Factories = require './descriptors/factories'
 
-buildObservable = ({root, operators}) ->
+buildObservable = ({factory, operators}) ->
   (operatorInspector) ->
-    buildRoot(operatorInspector)(root) +
+    buildFactories(operatorInspector)(factory) +
       R.join('', R.map(buildOperator(operatorInspector))(operators))
 
-buildRoot = R.curry (operatorInspector, {id, type, args}) ->
-  rootEvaluators[type](args)(id, operatorInspector)
+buildFactories = R.curry (operatorInspector, {id, type, args}) ->
+  factory[type](args)(id, operatorInspector)
 
 buildOperator = R.curry (operatorInspector, {id, type, args, observable}) ->
   operatorEvaluators[type](args)(id, operatorInspector)
@@ -31,15 +31,15 @@ buildArgs = R.curry (operatorInspector, args) ->
       'null'
   )
 
-rootEvaluators = R.mapObjIndexed( ({argTypes}, key) ->
+factory = R.mapObjIndexed( ({argTypes}, key) ->
   (args) ->
     (id, operatorInspector) ->
-      argTypes = Roots[key].argTypes
+      argTypes = Factories[key].argTypes
       operatorInspector(id,
       "Rx.Observable.#{key}(#{
         R.join(',')(buildArgs(operatorInspector, args)(argTypes))
       })")
-  )(Roots)
+  )(Factories)
 
 operatorEvaluators = R.mapObjIndexed( ({argTypes}, key) ->
   (args) ->

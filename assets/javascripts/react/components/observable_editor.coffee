@@ -2,8 +2,8 @@ React = require 'react'
 R = require 'ramda'
 Operators = require '../../descriptors/operators'
 
-ObservableOperator = require './operator_component'
-ObservableRoot = require './root_component'
+Operator = require './operator_component'
+Factory = require './factory_component'
 
 serializeOperator = require('../../serializer').serializeOperator
 
@@ -37,24 +37,24 @@ ObservableEditor = React.createClass
     @props.onChange R.merge @props.observable,
       operators: R.reject(R.eq(operator), @props.observable.operators)
 
-  handleRootChange: (root) ->
+  handleFactoryChange: (factory) ->
     @props.onChange R.merge @props.observable,
-      root: root
+      factory: factory
 
   render: ->
     handleAddOperatorTo = R.curryN 2, @handleAddOperator
-    {root} = @props.observable
+    {factory} = @props.observable
 
     operatorNodes = @props.observable.operators.map (operator, index) =>
-      <ObservableOperator key={operator.type + operator.id + index} operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel}
+      <Operator key={operator.type + operator.id + index} operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel}
         onChange={@handleOperatorChange} ObservableEditor={ObservableEditor}>
         <AddOperator id={operator.id} onSelect={handleAddOperatorTo(operator)}/>
-      </ObservableOperator>
+      </Operator>
 
     <div className="observableEditor">
-     <ObservableRoot root={root} handleChange={@handleRootChange} recursionLevel={@props.recursionLevel} >
-      <AddOperator id={root.id} onSelect={handleAddOperatorTo(root)}/>
-     </ObservableRoot>
+     <Factory factory={factory} handleChange={@handleFactoryChange} recursionLevel={@props.recursionLevel} >
+      <AddOperator id={factory.id} onSelect={handleAddOperatorTo(factory)}/>
+     </Factory>
      {operatorNodes}
     </div>
 

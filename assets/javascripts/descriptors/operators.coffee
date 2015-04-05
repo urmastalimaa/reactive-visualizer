@@ -4,10 +4,10 @@ argTypes = require './argument_types'
 defaultFunc = (impl) ->
   "function(value) { #{impl} }"
 
-createSimpleObservable = R.curryN 2, (rootType, rootArgs) ->
-  root:
-    type: rootType
-    args: rootArgs
+createSimpleObservable = R.curryN 2, (type, args) ->
+  factory:
+    type: type
+    args: args
   operators: []
 
 getClosedOverArgName = (recursionLevel) ->
@@ -23,7 +23,7 @@ getReturningFunctionWithClosedOver = R.compose(getReturningFunctionDeclaration, 
 arr = -> Array.prototype.slice.call(arguments)
 
 justOverClosedArg =
-  root:
+  factory:
     type: 'just'
     args: [
       getClosedOverArgName
@@ -232,7 +232,7 @@ operators =
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
-        root:
+        factory:
           type: 'timer'
           args: [
             R.compose(R.add("1000 * "), getClosedOverArgName)
@@ -244,7 +244,7 @@ operators =
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
-        root:
+        factory:
           type: 'timer'
           args: [ R.always("1000") ]
         operators: []
@@ -254,7 +254,7 @@ operators =
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
-        root:
+        factory:
           type: 'range'
           args: [
             R.compose(
@@ -269,7 +269,7 @@ operators =
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
-        root:
+        factory:
           type: 'timer'
           args: [ getClosedOverArgName ]
         operators: []
@@ -279,7 +279,7 @@ operators =
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
-        root:
+        factory:
           type: 'just'
           args: [
             R.compose(
@@ -294,7 +294,7 @@ operators =
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
-        root:
+        factory:
           type: 'timer'
           args: [
             R.compose(
@@ -309,7 +309,7 @@ operators =
     args: [
       functionDeclaration: getReturningFunctionWithClosedOver
       observable:
-        root:
+        factory:
           type: 'timer'
           args: [ R.always("1000") ]
         operators: []
@@ -323,7 +323,7 @@ operators =
   amb:
     argTypes: [argTypes.OBSERVABLE]
     args: [
-      root:
+      factory:
         type: 'of'
       operators: [
         { type: 'delay', args: [1000] }
@@ -341,6 +341,9 @@ operators =
   takeUntil:
     argTypes: [argTypes.OBSERVABLE]
     args: [observable: createSimpleObservable('timer')(['1000'])]
+  catch:
+    argTypes: [argTypes.OBSERVABLE]
+    args: [observable: createSimpleObservable('empty')([])]
   #
   # recursive with combiner function
   #

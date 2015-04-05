@@ -19,7 +19,7 @@ loadExamples = ->
     []
 
 clearObservable = ->
-  save(null)
+  saveObservable(null)
 
 module.exports =
   save: saveObservable
