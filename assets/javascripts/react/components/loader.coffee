@@ -2,7 +2,7 @@ React = require 'react'
 R = require 'ramda'
 S = require('string')
 ModalButton = require './modal_button'
-{Button, PanelGroup, Panel} = require 'react-bootstrap'
+{Well, Button, PanelGroup, Panel} = require 'react-bootstrap'
 
 module.exports = React.createClass
   getDefaultProps: ->
@@ -19,7 +19,7 @@ module.exports = React.createClass
   createExample: R.curry (deletable, example, index) ->
     clickHandler = R.partial @selectOption, example.observable
 
-    <div className="example" key={index}>
+    <Well bsSize='small' key={index} className="example">
       <Button bsStyle="default" onClick={clickHandler} className="selectExample">
         {S(example.name).humanize().toString()}
       </Button>
@@ -27,7 +27,7 @@ module.exports = React.createClass
       <span className="exampleDescription">
         {example.description}
       </span>
-    </div>
+    </Well>
 
   selectOption: (observable) ->
     @props.onLoad(observable)
