@@ -1,7 +1,7 @@
 module.exports = [
   {
     name: 'simpleMap'
-    description: 'The squares of a few values over time'
+    description: 'The squares of a few values over time.'
     observable:
       root:
         type: 'fromTime'
@@ -15,7 +15,7 @@ module.exports = [
   }
   {
     name: 'mapAndTake'
-    description: 'The squares of infinite values bounded by take'
+    description: 'The squares of infinite values bounded by take.'
     observable:
       root:
         type: 'interval', args: ["500"]
@@ -27,7 +27,7 @@ module.exports = [
   {
     name: "raceCondition#1"
     description:
-      "User requests page 1, changes his mind and requests page 2, receives wrong page"
+      "User requests page 1, changes his mind and requests page 2, receives wrong page."
     observable:
       root:
         type: 'fromTime', args: ["{1000: 1, 2000: 2}"]
@@ -50,7 +50,7 @@ module.exports = [
   }
   {
     name: "fixedRaceCondition#1"
-    description: "Fix race condition #1 by mapping waiting for previous response before new request. The user gets the every requested page and has to wait"
+    description: "Fix race condition #1 by mapping waiting for previous response before new request. The user gets the every requested page and has to wait."
     observable:
       root:
         type: 'fromTime', args: ["{1000: 1, 2000: 2}"]
@@ -73,7 +73,7 @@ module.exports = [
   }
   {
     name: "fixedRaceCondition#2"
-    description: "Fix race condition #1 by flat mapping the latest request. The user gets the latest requested page immediately"
+    description: "Fix race condition #1 by flat mapping the latest request. The user gets the latest requested page immediately."
     observable:
       root:
         type: 'fromTime', args: ["{1000: 1, 2000: 2}"]
@@ -119,7 +119,7 @@ module.exports = [
   }
   {
     name: 'delayWithSelector'
-    description: "Every value takes progressively longer to process"
+    description: "Every value takes progressively longer to process."
     observable:
       root:
         type: 'interval', args: ["500"]
@@ -149,7 +149,7 @@ module.exports = [
   }
   {
     name: 'generateAndBuffer'
-    description: "Values come later and later, buffer length changes"
+    description: "Values come later and later, buffer length changes."
     observable:
       root:
         type: 'generateWithRelativeTime',
@@ -169,7 +169,7 @@ module.exports = [
   }
   {
     name: 'merge'
-    description: 'Merge two unrelated observables'
+    description: 'Merge two unrelated observables.'
     observable:
       root:
         type: 'timer'
