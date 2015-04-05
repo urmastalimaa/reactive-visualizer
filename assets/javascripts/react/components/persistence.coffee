@@ -1,19 +1,26 @@
 React = require 'react'
 R = require 'ramda'
-Persister = require '../../persistency/persister'
+
+Persister = require '../../persister'
 examples = require '../../../../example_observables'
+
 Loader = require './loader'
 Saver = require './saver'
+{Button, ButtonToolbar, ButtonGroup} = require 'react-bootstrap'
 
-ReactBootstrap = require 'react-bootstrap'
-{Button, ButtonToolbar, ButtonGroup} = ReactBootstrap
+Persistence =  React.createClass
 
-module.exports = React.createClass
+  getDefaultProps: ->
+    observable: {}
+    userExamples: []
+    bundledExamples: []
+    onLoad: ->
+
   getInitialState: ->
     userExamples: Persister.allExamples()
 
   onLoad: (observable) ->
-    @props.onChange observable
+    @props.onLoad observable
 
   onRemove: (example) ->
     newExamples = Persister.removeExample(example)
@@ -26,8 +33,12 @@ module.exports = React.createClass
       observable: @props.observable
     @setState userExamples: newExamples
 
+  componentWillReceiveProps: (props) ->
+    # Save the observable immediately when changed
+    Persister.save(props.observable)
+
   render: ->
-    <ButtonToolbar id="persistency" className="persistencyArea">
+    <ButtonToolbar id="persistence">
       <ButtonGroup>
         <Loader onLoad={@onLoad} onRemove={@onRemove} bundledExamples={examples} userExamples={@state.userExamples}/>
       </ButtonGroup>
@@ -36,3 +47,4 @@ module.exports = React.createClass
       </ButtonGroup>
     </ButtonToolbar>
 
+module.exports = Persistence

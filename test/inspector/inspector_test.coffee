@@ -1,7 +1,7 @@
 require '../test_helper'
 Rx = require 'rx'
-inspect = require '../../assets/javascripts/inspector/inspector'
-build = require '../../assets/javascripts/builder/builder'
+inspect = require '../../assets/javascripts/inspection_wrapper'
+build = require '../../assets/javascripts/builder'
 R = require 'ramda'
 
 {onNext, onCompleted} = Rx.ReactiveTest

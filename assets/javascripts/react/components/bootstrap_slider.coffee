@@ -26,13 +26,18 @@ Slider = React.createClass(
     @state.slider.destroy()
 
   componentDidMount: ->
-    slider = new BoostrapSlider @getDOMNode(),
-      R.pick(['id', 'min', 'max', 'step', 'value', 'tooltip'])(@props)
+    slider = new BoostrapSlider @refs.sliderContainer.getDOMNode(),
+      R.merge(
+        R.pick(['min', 'max', 'step', 'value', 'tooltip'])(@props),
+        id: 'virtualTimeTrack'
+      )
     slider.on 'change', @handleChange
     @setState slider: slider
 
   render: ->
-    <div id={@props.id} style={@props.style}/>
+    <div id={@props.id}>
+      <span ref="sliderContainer" />
+    </div>
 )
 
 module.exports = Slider

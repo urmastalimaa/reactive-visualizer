@@ -18,9 +18,13 @@ loadExamples = ->
   catch error
     []
 
+clearObservable = ->
+  save(null)
+
 module.exports =
   save: saveObservable
   load: loadObservable
+  clear: clearObservable
   allExamples: loadExamples
 
   addExample:

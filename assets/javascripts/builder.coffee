@@ -1,6 +1,6 @@
 R = require 'ramda'
-Operators = require '../descriptors/operators'
-Roots = require '../descriptors/roots'
+Operators = require './descriptors/operators'
+Roots = require './descriptors/roots'
 
 buildObservable = ({root, operators}) ->
   (operatorInspector) ->

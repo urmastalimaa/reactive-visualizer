@@ -3,10 +3,11 @@ R = require 'ramda'
 React = require 'react'
 Roots = require '../../descriptors/roots'
 InputArea = require './input_area'
-SimulationArea = require './simulation_nodes'
+Inspector = require './inspector'
 getDocLink = require('../../documentation_provider').getDocLink
 exampleObservable = require('../../../../example_observables')[0].observable
-serializeRoot = require('../../builder/serializer').serializeRoot
+classificator = require '../../classificator'
+serializeRoot = require('../../serializer').serializeRoot
 
 SelectRoot = React.createClass
   render: ->
@@ -47,7 +48,10 @@ Root = React.createClass
       <InputArea className={"input#{argType}"} value={arg} key={"" + @props.root.type + index} onChange={@handleArgChange(index).bind(@)} />
     )(root.args)
 
-    <div className="root" id={root.id}>
+    isSimple = classificator.isSimple(Roots[root.type])
+    className = "root#{if isSimple then ' simpleBlock' else ' observableBlock'}"
+
+    <div className={className} id={root.id}>
       <div className="rootDescriptionContainer">
         <span className="immutableCode">{'Rx.Observable.'}</span>
         <SelectRoot id={root.id} selected={root.type} onChange={@handleRootTypeChange}/>
@@ -57,7 +61,7 @@ Root = React.createClass
       </div>
       {@props.children}
       <a href={getDocLink(root.type)} target="_blank"> {"?"} </a>
-      <SimulationArea id={root.id} />
+      <Inspector id={root.id} />
     </div>
 
 module.exports = Root

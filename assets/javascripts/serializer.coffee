@@ -1,7 +1,7 @@
-R = require '../ramda_additions'
+R = require './ramda_additions'
 
-Roots = require '../descriptors/roots'
-Operators = require '../descriptors/operators'
+Roots = require './descriptors/roots'
+Operators = require './descriptors/operators'
 
 serializeObservable = (recursionLevel) ->
   R.compose(

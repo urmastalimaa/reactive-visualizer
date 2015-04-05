@@ -1,7 +1,7 @@
 require '../test_helper'
 R = require 'ramda'
 
-identify = require '../../assets/javascripts/builder/identifier'
+identify = require '../../assets/javascripts/identifier'
 
 describe 'identify', ->
   observable = memo().is ->

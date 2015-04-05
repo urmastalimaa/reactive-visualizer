@@ -1,7 +1,7 @@
 require '../test_helper'
 R = require 'ramda'
 
-build = require '../../assets/javascripts/builder/builder'
+build = require '../../assets/javascripts/builder'
 
 describe 'build', ->
   observable = memo().is ->

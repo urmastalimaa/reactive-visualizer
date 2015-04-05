@@ -1,4 +1,4 @@
-R = require '../ramda_additions'
+R = require './ramda_additions'
 
 identifyObservable = (baseId) ->
   R.compose(

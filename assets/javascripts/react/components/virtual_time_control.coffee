@@ -4,17 +4,16 @@ R = require 'ramda'
 TimeSlider = require './time_slider'
 
 NotificationStore = require '../stores/notification_store'
-ReactBootstrap = require 'react-bootstrap'
-{Alert, Button, ButtonToolbar} = ReactBootstrap
+{Alert, Button, ButtonToolbar} = require 'react-bootstrap'
 
-buildObservable    = require '../../builder/builder'
-inspect            = require '../../inspector/inspector'
-simulateObservable = require '../../simulator/simulator'
+build    = require '../../builder'
+inspect  = require '../../inspection_wrapper'
+simulate = require '../../simulator'
 
 getNotifications = R.compose(
-  simulateObservable
+  simulate
   inspect
-  buildObservable
+  build
 )
 
 ANALYZE_ERROR = "
@@ -67,11 +66,11 @@ module.exports = React.createClass
     showReplayArea = R.keys(@state.notifications).length > 0 && !@state.notifications.error
 
     replayArea = [
-      <Button key="play" className="play" id="play" onClick={@play} bsStyle="success" style={marginBottom: '5px'}>Play</Button>
       <TimeSlider key="slider" notifications={@state.notifications} handleChange={@handleTimeChange} value={@state.time} />
+      <Button key="play" className="play" id="play" onClick={@play} bsStyle="success" style={marginBottom: '5px'}>Play</Button>
     ]
 
-    <ButtonToolbar>
+    <div id="virtualTimeControl">
       <div id="analyzeError" ref="analyzeError" />
       { if showReplayArea then replayArea }
-    </ButtonToolbar>
+    </div>

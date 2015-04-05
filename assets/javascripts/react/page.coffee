@@ -1,17 +1,17 @@
 React = require 'react'
 
-BuildArea = require './components/build_area'
-Persister = require '../persistency/persister'
+Interaction = require './components/interaction'
+Persister = require '../persister'
 examples = require '../../../example_observables'
-Description = require './description'
+Manual = require './manual'
 
 Page = React.createClass
   render: ->
     startingStructure = Persister.load() || examples[0].observable
 
-    <div>
-      <Description />
-      <BuildArea defaultObservable={startingStructure} />
+    <div id="page">
+      <Manual />
+      <Interaction defaultObservable={startingStructure} />
     </div>
 
 module.exports = Page

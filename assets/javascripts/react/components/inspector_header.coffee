@@ -16,13 +16,19 @@ module.exports = React.createClass
     NotificationStore.removeChangeListener(@onNotificationsChange)
 
   render: ->
+    times = R.keys(@state.timeCounts)
     timeCols = R.mapObjIndexed( (count, time) ->
-      <div key={"time" + time} className="simulationTimeWrapper" style={minWidth: "#{count * 84}px"}>
+      index = R.findIndex(R.eq(time))(times)
+      opacity = ( 1 / times.length) * (index + 1)
+
+      <div key={"time" + time} className="simulationTimeWrapper" style={minWidth: "#{count * 84}px", opacity: opacity}>
+
         <div className="simulationValue">
           {time}
         </div>
       </div>
     )(@state.timeCounts)
+
     <div id="simulation-header" className="simulationHeader">
       <span className="simulationArea">
         {R.values(timeCols)}

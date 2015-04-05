@@ -4,14 +4,15 @@ Operators = require '../../descriptors/operators'
 getDocLink = require('../../documentation_provider').getDocLink
 argTypes = require '../../descriptors/argument_types'
 exampleObservable = require('../../../../example_observables')[0].observable
+classificator = require '../../classificator'
 
 InputArea = require './input_area'
-SimulationArea = require './simulation_nodes'
+Inspector = require './inspector'
 
 RecursiveOperator = React.createClass
   render: ->
     <span className="recursiveContainer">
-      <@props.ObservableComponent id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
+      <@props.ObservableEditor id={@props.id} observable={@props.observable} recursionLevel={@props.recursionLevel + 1} onChange={@props.onChildOperatorChange} />
     </span>
 
 Operator = React.createClass
@@ -50,12 +51,12 @@ Operator = React.createClass
             <span className="functionDeclaration" id={@props.operator.id}>
               <InputArea value={arg.functionDeclaration} onChange={onDeclarationChange}/>
             </span>
-            <RecursiveOperator id={@props.operator.id} observable={arg.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={onObservableChange} ObservableComponent={@props.ObservableComponent}/>
+            <RecursiveOperator id={@props.operator.id} observable={arg.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={onObservableChange} ObservableEditor={@props.ObservableEditor}/>
             {'}'}
           </span>
 
         when argTypes.OBSERVABLE
-          <RecursiveOperator key={index} id={@props.operator.id} observable={arg.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={onObservableChange} ObservableComponent={@props.ObservableComponent} />
+          <RecursiveOperator key={index} id={@props.operator.id} observable={arg.observable} recursionLevel={@props.recursionLevel} onChildOperatorChange={onObservableChange} ObservableEditor={@props.ObservableEditor} />
 
         when argTypes.FUNCTION, argTypes.VALUE
           <InputArea key={index} value={arg} onChange={handleArgChange} className={"input#{argType}"} />
@@ -66,8 +67,11 @@ Operator = React.createClass
     )(@props.operator.args)
 
   render: ->
+    isSimple = classificator.isSimple(Operators[@props.operator.type])
+    className = "operator#{if isSimple then ' simpleBlock' else ' observableBlock'}"
+
     docOperator = Operators[@props.operator.type].docAlias || @props.operator.type
-    <div data-type={@props.operator.type} className='operator'>
+    <div data-type={@props.operator.type} className={className}>
       <span className="operatorContainer">
         <span className="immutableCode">{".#{@props.operator.type}("}</span>
         {@getArgContainer(@props.operator.argTypes)}
@@ -78,7 +82,7 @@ Operator = React.createClass
       <a href={getDocLink(docOperator)} target="_blank">
         {"?"}
       </a>
-      <SimulationArea id={@props.operator.id} />
+      <Inspector id={@props.operator.id} />
     </div>
 
 RemoveOperator = React.createClass

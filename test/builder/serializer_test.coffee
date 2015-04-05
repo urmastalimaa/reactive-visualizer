@@ -1,7 +1,7 @@
 require '../test_helper'
 R = require 'ramda'
 
-serialize = require('../../assets/javascripts/builder/serializer').serializeObservable
+serialize = require('../../assets/javascripts/serializer').serializeObservable
 
 describe 'serialize', ->
   observable = memo().is -> {}

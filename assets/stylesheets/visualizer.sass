@@ -1,19 +1,48 @@
+// main content
 body
   background: whitesmoke !important
 
 #content
   padding-left: 2%
   padding-right: 2%
+  margin-top: 2%
+
+//manual
+
+#manual
+  width: 50%
+
+.manualText
+  padding-top: 10px
+
+.slider-selection
+  background: rgb(255, 235, 205) !important
+
+// observable editor
+.observableEditor
+  padding-left: inherit
+
+// virtual time control
+#virtualTimeControl
+  margin-top: 30px
+
+#virtualTimeTrack
+  width: 100%
+
+#timeSlider
+  width: 50%
+  padding: 3px
+
+//persistence
+
+#persistence
   margin-top: 5%
 
-#helpContainer
-  width: 50%
+
+// unstructured
 
 .modalButtonContainer
   display: inline-block
-
-.helpArea
-  padding-top: 10px
 
 .recursiveContainer
   padding-left: 20px
@@ -81,6 +110,16 @@ body
 .operator
   width: 100%
   display: inline-block
+
+.simpleBlock
+  background-color: rgba(138, 201, 223, 0.1)
+  background-clip: content-box
+
+.observableBlock
+  background-clip: content-box
+  border-style: dotted
+  border-width: 2px
+  border-color: rgba(138, 201, 223, 0.5)
 
 .examples
   height: 60vh
@@ -159,5 +198,3 @@ body
   margin-bottom: 5px
   margin-bottom: 5px
 
-#persistency
-  margin-top: 5%

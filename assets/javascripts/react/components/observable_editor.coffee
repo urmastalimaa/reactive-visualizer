@@ -5,9 +5,9 @@ Operators = require '../../descriptors/operators'
 ObservableOperator = require './operator_component'
 ObservableRoot = require './root_component'
 
-serializeOperator = require('../../builder/serializer').serializeOperator
+serializeOperator = require('../../serializer').serializeOperator
 
-Observable = React.createClass
+ObservableEditor = React.createClass
   handleAddOperator: (operator, type) ->
     return unless type
 
@@ -47,11 +47,11 @@ Observable = React.createClass
 
     operatorNodes = @props.observable.operators.map (operator, index) =>
       <ObservableOperator key={operator.type + operator.id + index} operator={operator} onRemove={@removeOperator} onChildOperatorChange={@handleChildObservableChange} recursionLevel={@props.recursionLevel}
-        onChange={@handleOperatorChange} ObservableComponent={Observable}>
+        onChange={@handleOperatorChange} ObservableEditor={ObservableEditor}>
         <AddOperator id={operator.id} onSelect={handleAddOperatorTo(operator)}/>
       </ObservableOperator>
 
-    <div className="observable" style={paddingLeft: 'inherit'}>
+    <div className="observableEditor">
      <ObservableRoot root={root} handleChange={@handleRootChange} recursionLevel={@props.recursionLevel} >
       <AddOperator id={root.id} onSelect={handleAddOperatorTo(root)}/>
      </ObservableRoot>
@@ -85,4 +85,4 @@ AddOperator = React.createClass
       </select>
     </span>
 
-module.exports = Observable
+module.exports = ObservableEditor

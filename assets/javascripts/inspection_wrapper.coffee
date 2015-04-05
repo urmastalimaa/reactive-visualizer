@@ -1,7 +1,7 @@
 R = require 'ramda'
-Rx = require '../custom_rx_operators'
+Rx = require './custom_rx_operators'
 
-createMockObserver = (scheduler, collect, id) ->
+createInspector = (scheduler, collect, id) ->
   Rx.Observer.create(
     (value) -> collect(id,
       Rx.ReactiveTest.onNext(scheduler.clock, value))
@@ -25,7 +25,7 @@ createCollector = ->
   results: -> resultMap
 
 createDoOperator = (id) ->
-  ".do(createMockObserver(scheduler, collector.collect, '#{id}'))"
+  ".do(createInspector(scheduler, collector.collect, '#{id}'))"
 
 inspect = R.curry (buildObservable, collector, scheduler) ->
   try
