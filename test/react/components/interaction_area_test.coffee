@@ -4,18 +4,18 @@ R = require 'ramda'
 
 # TODO test that loading actually changes arguments in inputs
 
-describe 'Interaction', ->
+describe 'InteractionArea', ->
   props = memo().is ->
 
   getTimeSlider = getLastSimulationContent = getArgument = changeArgument = null
 
   beforeEach ->
-    Interaction = require assetPath + 'react/components/interaction'
-    @interaction = interaction = render(React.createElement(Interaction, props()))
-    getTimeSlider = -> findById(interaction, 'timeSlider')
-    getArgument = (id, pos) -> scryByClass(findById(interaction, id), 'codeTextarea')[pos]
+    InteractionArea = require assetPath + 'react/components/interaction_area'
+    @interactionArea = interactionArea = render(React.createElement(InteractionArea, props()))
+    getTimeSlider = -> findById(interactionArea, 'timeSlider')
+    getArgument = (id, pos) -> scryByClass(findById(interactionArea, id), 'codeTextarea')[pos]
     getLastSimulationValue = (pos) ->
-      area = scryByClass(interaction, "simulationArea")[pos]
+      area = scryByClass(interactionArea, "simulationArea")[pos]
       R.last(scryByClass(area, 'simulationTimeWrapper'))
 
     changeArgument = R.curry (id, pos, value) ->

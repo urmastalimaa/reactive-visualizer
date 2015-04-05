@@ -15,6 +15,6 @@ describe 'Page', ->
     expect(document.getElementById('play')).toExist()
     expect(document.getElementById('load')).toExist()
     expect(document.getElementById('save')).toExist()
-    expect(document.getElementById('interaction')).toExist()
+    expect(document.getElementById('interactionArea')).toExist()
     expect(document.getElementById('manual')).toExist()
 

@@ -9,7 +9,7 @@ ObservableEditor = require './observable_editor'
 Persistence = require './persistence'
 VirtualTimeControl = require './virtual_time_control'
 
-Interaction = React.createClass
+InteractionArea = React.createClass
   getDefaultProps: ->
     defaultObservable: examples[0].observable
 
@@ -20,7 +20,7 @@ Interaction = React.createClass
     @setState observable: identify(observable)
 
   render: ->
-    <div id="interaction" style={@props.style}>
+    <div id="interactionArea" style={@props.style}>
       <InspectorHeader />
       <ObservableEditor observable={@state.observable} id='' recursionLevel=0 onChange={@handleChange} rowLength={@props.rowLength}/>
       <VirtualTimeControl observable={@state.observable}/>
@@ -28,4 +28,4 @@ Interaction = React.createClass
       <Persistence observable={@state.observable} onLoad={@handleChange} />
     </div>
 
-module.exports = Interaction
+module.exports = InteractionArea

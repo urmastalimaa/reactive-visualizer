@@ -1,6 +1,6 @@
 React = require 'react'
 
-Interaction = require './components/interaction'
+InteractionArea = require './components/interaction_area'
 Persister = require '../persister'
 examples = require '../../../example_observables'
 Manual = require './manual'
@@ -11,7 +11,7 @@ Page = React.createClass
 
     <div id="page">
       <Manual />
-      <Interaction defaultObservable={startingStructure} />
+      <InteractionArea defaultObservable={startingStructure} />
     </div>
 
 module.exports = Page
