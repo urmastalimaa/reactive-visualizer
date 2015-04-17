@@ -179,7 +179,7 @@ module.exports = [
           type: 'merge'
           args: [
             observable:
-              factorfactory:
+              factory:
                 type: 'timer'
                 args: [500]
               operators: []
