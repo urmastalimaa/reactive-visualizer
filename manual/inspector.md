@@ -6,7 +6,7 @@ Above the Observable editor is row containing integers which denote the virtual 
 Sometimes the integers might seem to be off by one, this is due to the asynchronous nature of the Observable.  
 
 ### Values
-The values leaving the Observable buildin blocks appear next to them.  
+The values leaving the Observable building blocks appear next to them.  
 Faintly colored visual clues help to identify which building block the values come from.  
 Note that only values **leaving** a building block are displayed.  
 
