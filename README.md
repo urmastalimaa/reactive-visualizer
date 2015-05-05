@@ -4,8 +4,9 @@
 
 ### Running it
 
-* Clone the repository: `git clone https://github.com/urmastalimaa/rx-visualize.git`
+* Clone the repository: `git clone https://github.com/urmastalimaa/reactive-visualizer`
 * Install dependencies: `npm install` (*package.json* lists dependencies) [(npmjs.com)](https://www.npmjs.com/)
+* Install grunt-cli: `npm install -g grunt-cli`
 * Build the source code and run a local web-server: `grunt` or `grunt default` (*Gruntfile.js* describes these targets)
 * Navigate to the application in a web browser `localhost:3700`
 
@@ -13,9 +14,9 @@
   The project will be soon made available as a package on `npm`
 
 ### Developing
-* `grunt dev_watch`
+* `./start`
 * make tests
-* implement stuff
+* implement features
 * enjoy live reload in browser
 
 
