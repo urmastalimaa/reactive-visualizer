@@ -45,7 +45,13 @@ Factory = React.createClass
     {factory} = @props
     argInputs = R.mapIndexed( (arg, index) =>
       argType = Factories[factory.type].argTypes[index]
-      <InputArea className={"input#{argType}"} value={arg} key={"" + @props.factory.type + index} onChange={@handleArgChange(index).bind(@)} />
+      inputArea = <InputArea className={"input#{argType}"} value={arg} key={"" + @props.factory.type + index} onChange={@handleArgChange(index).bind(@)} />
+      if index < factory.args.length - 1
+        <span key={index}>
+          {inputArea},
+        </span>
+      else
+        inputArea
     )(factory.args)
 
     isSimple = classificator.isSimple(Factories[factory.type])

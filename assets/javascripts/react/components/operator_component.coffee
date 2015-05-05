@@ -66,6 +66,14 @@ Operator = React.createClass
 
     )(@props.operator.args)
 
+  intersperseWithCommas: (elements) ->
+    R.mapIndexed(( element, index) ->
+      if index < elements.length - 1
+        <span key={index}>{element}, </span>
+      else
+        element
+    )(elements)
+
   render: ->
     isSimple = classificator.isSimple(Operators[@props.operator.type])
     className = "operator#{if isSimple then ' simpleBlock' else ' observableBlock'}"
@@ -74,7 +82,7 @@ Operator = React.createClass
     <div data-type={@props.operator.type} className={className}>
       <span className="operatorContainer">
         <span className="immutableCode">{".#{@props.operator.type}("}</span>
-        {@getArgContainer(@props.operator.argTypes)}
+        {@intersperseWithCommas(@getArgContainer(@props.operator.argTypes))}
         <span className="immutableCode">{')'}</span>
       </span>
       {@props.children}
