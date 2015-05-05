@@ -62,7 +62,7 @@ describe 'InteractionArea', ->
 
       context 'when changing on the arguments', ->
         beforeEach ->
-          changeArgument('r', 0, 500)
+          changeArgument('f', 0, 500)
         expectedSimulationValues.is -> [1001, '', '0C', '0C']
 
         it 'changes the simulation values immediately', ->

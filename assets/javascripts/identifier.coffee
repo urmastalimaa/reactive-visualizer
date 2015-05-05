@@ -1,8 +1,11 @@
 R = require './ramda_additions'
 
+FACTORY_IDENTIFIER = 'f'
+OPERATOR_IDENTIFIER = 'o'
+
 identifyObservable = (baseId) ->
   R.compose(
-    R.propMap('factory', R.assoc('id', baseId + 'r'))
+    R.propMap('factory', R.assoc('id', baseId + FACTORY_IDENTIFIER))
     R.propMap('operators', identifyOperators(baseId))
   )
 
@@ -15,7 +18,8 @@ identifyOperators = (baseId) ->
   )
 
 identifyOperator = R.curry (baseId, operator, index) ->
-  R.assoc('id', baseId + 'r' + Array(index + 2).join("o"), operator)
+  id = baseId + FACTORY_IDENTIFIER + Array(index + 2).join(OPERATOR_IDENTIFIER)
+  R.assoc('id', id, operator)
 
 identifyArgs = (operator) ->
   R.mapIndexed(identifyArg(operator.id))(operator.args)

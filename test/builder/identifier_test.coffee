@@ -21,11 +21,11 @@ describe 'identify', ->
     it 'builds correctly', ->
       expect(subject()).toEqual
         factory:
-          id: 'r'
+          id: 'f'
           type: 'just'
           args: ['5']
         operators: [
-          id: 'ro'
+          id: 'fo'
           type: 'map'
           args: ['function(x) { return x; }']
         ]
@@ -52,18 +52,18 @@ describe 'identify', ->
     it 'builds correctly', ->
       expect(subject()).toEqual
         factory:
-          id: 'r'
+          id: 'f'
           type: 'just'
           args: ['5']
         operators: [
-          id: 'ro'
+          id: 'fo'
           type: 'flatMap'
           args: [
             {
               functionDeclaration: 'function(arg1){ return'
               observable:
                 factory:
-                  id: 'ro0r'
+                  id: 'fo0f'
                   type: 'just'
                   args: ['4*arg1']
                 operators: []
@@ -92,17 +92,17 @@ describe 'identify', ->
     it 'builds correctly', ->
       expect(subject()).toEqual
         factory:
-          id: 'r'
+          id: 'f'
           type: 'just'
           args: ['5']
         operators: [
-          id: 'ro'
+          id: 'fo'
           type: 'merge'
           args: [
             {
               observable:
                 factory:
-                  id: 'ro0r'
+                  id: 'fo0f'
                   type: 'of'
                   args: ['1,2']
                 operators: []
@@ -138,23 +138,23 @@ describe 'identify', ->
     it 'builds correctly', ->
       expect(subject()).toEqual
         factory:
-          id: 'r'
+          id: 'f'
           type: 'just'
           args: ['5']
 
         operators: [
-          id: 'ro'
+          id: 'fo'
           type: 'combineLatest'
           args: [
             {
               observable:
                 factory:
-                  id: 'ro0r'
+                  id: 'fo0f'
                   type: 'timer'
                   args: [1000]
                 operators: [
                   {
-                    id: 'ro0ro'
+                    id: 'fo0fo'
                     type: 'take'
                     args: [4]
                   }
