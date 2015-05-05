@@ -1,4 +1,4 @@
-## rx-visualize
+## Reactive Visualizer
 
 ### A tool for building an RxJS observable and inspecting it's state 
 
