@@ -3,7 +3,7 @@ The Observable editor provides a JavaScript editor for creating an Observable.
 The building blocks for creating an Observable are factories and operators.
 
 ### Factory
-An Observable if created by specifying a factory, which produces the initial values.  
+An Observable is created by specifying a factory, which produces the initial values.  
 A list of factories is provided in the drop-down next to `Rx.Observable.`.
 
 The simplest Observable consists of a single factory:
