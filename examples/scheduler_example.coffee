@@ -15,4 +15,3 @@ Rx.Observable.generate(
   Rx.Scheduler.immediate
  ).take(1)
   .subscribe(createObserver())
-#
