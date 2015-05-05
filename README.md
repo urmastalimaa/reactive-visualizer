@@ -24,7 +24,7 @@
 The user interfaces requests an observable from the user.
 The observable is created using a builder.
 The observable cannot at this time contain any *real* asynchronous calls.
-The observable will be evalued and run through virtual time scheduler and the 
+The observable will be evaluated and run through virtual time scheduler and the 
 values from each operator will be collected.
 Overwriting any of the existing Rx functions is avoided.
 
