@@ -1,0 +1,186 @@
+body {
+  background: whitesmoke !important; }
+
+#content {
+  padding-left: 2%;
+  padding-right: 2%;
+  margin-top: 2%; }
+
+#manual {
+  width: 50%; }
+
+.manualText {
+  padding-top: 10px; }
+
+.slider-selection {
+  background: blanchedalmond !important; }
+
+.observableEditor {
+  padding-left: inherit; }
+
+#virtualTimeControl {
+  margin-top: 30px; }
+
+#virtualTimeTrack {
+  width: 100%; }
+
+#timeSlider {
+  width: 50%;
+  padding: 3px; }
+
+#persistence {
+  margin-top: 5%; }
+
+.modalButtonContainer {
+  display: inline-block; }
+
+.recursiveContainer {
+  padding-left: 20px; }
+
+.remove {
+  margin-left: 2px;
+  margin-right: 2px; }
+
+#saveNameInput, #saveDescriptionInput, #saveConfirm {
+  margin: 10px;
+  display: block; }
+
+#saveDescriptionInput {
+  width: 60%; }
+
+.simpleOperatorArgumentsContainer {
+  width: initial;
+  display: inline-block; }
+
+.codeTextarea {
+  min-height: 30px;
+  display: inline;
+  font-size: 14px;
+  width: initial;
+  padding-left: 3px; }
+
+.inputfunction {
+  min-width: 15em; }
+
+.immutableCode {
+  font-size: 18px; }
+
+.factoryDescriptionContainer > .codeTextarea {
+  width: inherit; }
+
+.simpleOperatorArgumentsContainer > .codeTextarea {
+  width: inherit; }
+
+.selectFactory {
+  display: inherit;
+  font-size: 18px; }
+
+.factory {
+  width: 100%;
+  display: block;
+  padding-top: 5px;
+  padding-bottom: 5px; }
+
+.factoryDescriptionContainer {
+  width: initial;
+  display: inline-block;
+  align-items: center;
+  padding-right: 1px;
+  max-width: 60%; }
+
+.operatorContainer {
+  width: initial;
+  padding-right: 1px;
+  max-width: 50%; }
+
+.operator {
+  width: 100%;
+  display: inline-block; }
+
+.simpleBlock {
+  background-color: rgba(138, 201, 223, 0.1);
+  background-clip: content-box; }
+
+.observableBlock {
+  background-clip: content-box;
+  border-style: dotted;
+  border-width: 2px;
+  border-color: rgba(138, 201, 223, 0.5); }
+
+.examples {
+  height: 60vh;
+  overflow: auto; }
+
+.smallClose {
+  -webkit-appearance: none;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  float: right;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  color: red;
+  text-shadow: 0 1px 0 #fff;
+  filter: alpha(opacity=20);
+  opacity: 0.6; }
+
+.simulationHeader {
+  width: 100%;
+  display: inline-block;
+  min-height: 30px; }
+
+.simulationArea {
+  min-height: 30px;
+  float: right;
+  white-space: nowrap;
+  margin-right: 10px; }
+
+.simulationTimeWrapper {
+  display: inline-block;
+  min-height: 30px;
+  text-align: -webkit-center;
+  border-left-style: outset;
+  border-left-width: thin;
+  border-left-color: darkgray; }
+
+::-webkit-scrollbar {
+  height: 1px;
+  width: 1px;
+  background-color: inherit; }
+
+.simulationValue {
+  min-height: 30px;
+  min-width: 80px;
+  max-width: 80px;
+  overflow: auto;
+  padding: 0px 2px 0px 2px;
+  display: table-cell; }
+
+.simulationComplete {
+  color: forestgreen;
+  font-weight: 600; }
+
+.simulationError {
+  color: red;
+  font-weight: 600; }
+
+.example {
+  display: inline-block;
+  padding-bottom: 5px;
+  width: 100%; }
+
+.exampleDescription {
+  width: 60%;
+  float: right; }
+
+#analyze {
+  margin-top: 5px;
+  margin-bottom: 5px; }
+
+#play {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-bottom: 5px; }
+
+/*# sourceMappingURL=visualizer.css.map */
